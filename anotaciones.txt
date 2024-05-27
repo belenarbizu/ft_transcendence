@@ -1,0 +1,32 @@
+Instalar Homebrew
+  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+Instalar node.js
+  brew install node
+
+Verificar instalación
+  node -v
+  npm -v
+
+Instalar Vite y crear package.json (si no lo tienes):
+    npm init -y
+    npm install vite --save-dev
+Ejecutar docker-compose:
+    docker-compose up --build
+Para acceder a la aplicación:
+    http://localhost:5173
+
+Archivo package.json:
+
+{
+  "name": "frontend-project",
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "serve": "vite preview"
+  },
+  "devDependencies": {
+    "vite": "^4.0.0"
+  }
+}

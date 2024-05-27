@@ -1,0 +1,51 @@
+version: "3.8"
+
+services:
+  frontend:
+    build: ./frontend
+    ports:
+      - "3000:3000"
+    volumes:
+      - frontend_data:/app
+    environment:
+      - NODE_ENV=development
+
+  backend:
+    build: ./backend
+    ports:
+      - "8000:8000"
+    volumes:
+      - backend_data:/app
+    depends_on:
+      - database
+    environment:
+      - DATABASE_URL=postgres://myuser:mypassword@database:5432/mydatabase
+
+  database:
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: myuser
+      POSTGRES_PASSWORD: mypassword
+      POSTGRES_DB: mydatabase
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  frontend_data:
+    driver: local
+    driver_opts:
+      device: ${PWD}/frontend/
+      o: bind
+      type: none
+  backend_data:
+    driver: local
+    driver_opts:
+      device: ${PWD}/backend/
+      o: bind
+      type: none
+  postgres_data:
+    driver: local
+    driver_opts:
+      device: ${PWD}/postgres/
+      o: bind
+      type: none

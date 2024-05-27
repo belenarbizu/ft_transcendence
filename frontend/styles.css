@@ -1,0 +1,20 @@
+html, body {
+    height: 100%;
+}
+
+.center-wrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 75vh; /* Hace que el contenedor ocupe toda la altura de la ventana teniendo en cuenta el header */
+}
+
+.form-signin {
+    max-width: 330px;
+    padding: 1rem;
+}    
+
+.gradient-custom {
+    background: linear-gradient(120deg, rgb(223, 41, 255), rgb(94, 158, 255))
+}
