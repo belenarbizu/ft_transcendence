@@ -4,7 +4,7 @@ services:
   frontend:
     build: ./frontend
     ports:
-      - "3000:3000"
+      - "5173:5173"
     volumes:
       - frontend_data:/app
     environment:
@@ -33,19 +33,7 @@ services:
 volumes:
   frontend_data:
     driver: local
-    driver_opts:
-      device: ${PWD}/frontend/
-      o: bind
-      type: none
   backend_data:
     driver: local
-    driver_opts:
-      device: ${PWD}/backend/
-      o: bind
-      type: none
   postgres_data:
     driver: local
-    driver_opts:
-      device: ${PWD}/postgres/
-      o: bind
-      type: none
