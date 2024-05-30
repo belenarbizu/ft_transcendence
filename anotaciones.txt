@@ -32,13 +32,3 @@ Archivo package.json:
     "vite": "^4.0.0"
   }
 }
-
-Certificados SSL/TLS con openssl:
-
-Instalar openssl:
-  apt-get -y install openssl
-
-Crear el certificado:
-  openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout transcendence.key -out transcendence.crt
-
-Añadir nginx a docker-compose. No hace falta Dockerfile porque podemos utilizar la imagen oficial de docker hub y configurar nginx.conf
