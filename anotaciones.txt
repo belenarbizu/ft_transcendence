@@ -32,3 +32,5 @@ Archivo package.json:
     "vite": "^4.0.0"
   }
 }
+
+spa: https://accreditly.io/articles/creating-single-page-applications-with-vanilla-javascript

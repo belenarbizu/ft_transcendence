@@ -16,14 +16,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    //Redirige a la página de registro
-    var signupButton = document.getElementById("signup-btn");
-    if (signupButton) {
-        signupButton.addEventListener("click", function() {
-            window.location.href = "signup.html";
-        });
-    }
-
     //Redirige a la página principal después de iniciar sesión
     var profileButton = document.getElementById("profile-btn");
     if (profileButton) {
