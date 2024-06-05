@@ -1,12 +1,4 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // Redirige a la página de inicio de sesión de 42
-    var loginButtons = document.querySelectorAll('.login');
-    loginButtons.forEach(function(button) {
-        button.addEventListener('click', function() {
-            window.location.href = 'https://api.intra.42.fr/oauth/authorize?client_id=u-s4t2ud-a5d66ac08de2c71e04180f8d4e281f2b6064474bea92d7595427e42ba870b5e4&redirect_uri=http%3A%2F%2Flocalhost%3A5173%2Floggedin.html&response_type=code';
-        });
-    });
-
     //Muestra el modal para editar el perfil
     var editProfileBtn = document.getElementById('editProfile');
     if (editProfileBtn) {

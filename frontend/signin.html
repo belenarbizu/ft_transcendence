@@ -21,18 +21,14 @@
           <li><a href="#" class="nav-link px-2">About</a></li>
         </ul>
         <div class="col-md-3 text-end">
-          <button type="button" class="btn btn-dark me-2 login">Login with 42</button>
+            <button type="button" class="btn btn-primary route" id="signup-btn" data-path="/signup">Sign up</button>
         </div>
       </header>
     </div>
     <div class="center-wrapper">
         <main class="form-signin w-100 m-auto">
             <form>
-                <h2 class="mb-3">Please sign up</h2>
-                <div class="form-floating mb-2">
-                    <input type="name" class="form-control" id="floatingName" placeholder="Name">
-                    <label for="floatingInput">Name</label>
-                </div>
+                <h2 class="mb-3">Please sign in</h2>
                 <div class="form-floating mb-2">
                     <input type="email" class="form-control" id="floatingInput" placeholder="name@example.com">
                     <label for="floatingInput">Email address</label>
@@ -41,14 +37,12 @@
                     <input type="password" class="form-control" id="floatingPassword" placeholder="Password">
                     <label for="floatingPassword">Password</label>
                 </div>
-                <div class="form-floating mb-3">
-                    <input type="password" class="form-control" id="floatingConfirmPassword" placeholder="Confirm Password">
-                    <label for="floatingPassword">Confirm Password</label>
-                </div>
                 <!--type tiene que ser button en vez de submit para que vaya a la siguiente pagina-->
-                <button class="btn btn-primary w-100 py-2" type="button" id="profile-btn">Sign up</button>
+                <button class="btn btn-primary w-100 py-2" type="button" id="profile-btn">Sign in</button>
             </form>
-            <button type="button" class="btn btn-dark w-100 my-2 login">Login with 42</button>
+            <div class="d-flex justify-content-center py-2">
+                <a href="https://api.intra.42.fr/oauth/authorize?client_id=u-s4t2ud-a5d66ac08de2c71e04180f8d4e281f2b6064474bea92d7595427e42ba870b5e4&redirect_uri=http%3A%2F%2Flocalhost%3A5173%2Floggedin.html&response_type=code" class="fw-bold">Login with 42</a>
+            </div>
         </main>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
