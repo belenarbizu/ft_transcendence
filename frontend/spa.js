@@ -63,7 +63,7 @@ function handleSPAChange()
     let view;
 
     document.getElementById('signup-btn').style.display = 'inline-block';
-    document.getElementById('login-btn').style.display = 'inline-block';
+    document.getElementById('signin-btn').style.display = 'inline-block';
 
     switch (path) {
         case '/login':

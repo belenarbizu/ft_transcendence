@@ -16,7 +16,7 @@ Instalar Vite y crear package.json (si no lo tienes):
 Ejecutar docker-compose:
     docker-compose up --build
 Para acceder a la aplicación:
-    http://localhost:5173
+    https://localhost:1025
 
 Archivo package.json:
 
