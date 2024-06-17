@@ -1,47 +1,59 @@
-version: "3.8"
-
 services:
-  frontend:
-    build: ./frontend
-    ports:
-      - "5173:5173"
+  django:
+    build: 
+      context: ./django
+      dockerfile: Dockerfile
+    container_name: 'django'
     volumes:
-      - frontend_data:/app
-    environment:
-      - NODE_ENV=development
-
-  backend:
-    build: ./backend
-    ports:
-      - "8000:8000"
-    volumes:
-      - backend_data:/app
+      - ./django:/app
+      - static_db:/app/static
     depends_on:
       - database
     environment:
       - DATABASE_URL=postgres://myuser:mypassword@database:5432/mydatabase
+    networks:
+      - app_network
+
+  daphne:
+    build:
+      context: ./django
+      dockerfile: Dockerfile.daphne
+    container_name: 'daphne'
+    depends_on:
+      - django
+    networks:
+      - app_network
 
   database:
     image: postgres:latest
+    container_name: 'database'
     environment:
       POSTGRES_USER: myuser
       POSTGRES_PASSWORD: mypassword
       POSTGRES_DB: mydatabase
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    networks:
+      - app_network
 
   nginx:
     build: ./nginx
+    container_name: 'nginx'
     ports:
       - "1025:1025"
     depends_on:
-      - "frontend"
-      - "backend"
+      - daphne
+    volumes:
+      - static_db:/app/static
+    networks:
+      - app_network
 
 volumes:
-  frontend_data:
-    driver: local
-  backend_data:
-    driver: local
   postgres_data:
     driver: local
+  static_db:
+    driver: local
+
+networks:
+  app_network:
+    driver: bridge

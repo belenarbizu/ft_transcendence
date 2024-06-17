@@ -1,0 +1,19 @@
+li a {
+    color: green;
+}
+
+body {
+    background: white url("images/background.gif") no-repeat right bottom;
+}
+
+html, body {
+    height: 100%;
+}
+
+.center-wrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 75vh; /* Hace que el contenedor ocupe toda la altura de la ventana teniendo en cuenta el header */
+}
