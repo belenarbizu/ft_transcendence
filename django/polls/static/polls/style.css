@@ -9,3 +9,8 @@ html, body {
     align-items: center;
     height: 75vh; /* Hace que el contenedor ocupe toda la altura de la ventana teniendo en cuenta el header */
 }
+
+.form-signin {
+    max-width: 330px;
+    padding: 1rem;
+}

@@ -21,7 +21,7 @@
                     <li><a href="#" class="nav-link px-2">FAQs</a></li>
                     <li><a href="#" class="nav-link px-2">About</a></li>
                 </ul>
-                <div class="col-md-3 text-end">
+                <div id="col-end" class="col-md-3 text-end">
                     <button type="button" class="btn btn-dark me-2 login route" id="signin-btn" data-path="/login">Sign in</button>
                     <button type="button" class="btn btn-primary route" id="signup-btn" data-path="/signup">Sign up</button>
                 </div>
@@ -37,8 +37,7 @@
             {% else %}
                 <p>No polls are available.</p>
             {% endif %}-->
-            <canvas id="canvasGame" style="background-color: black"></canvas>
         </div>
-        <script src="{% static 'polls/main.js' %}"></script>
+        <script type="module" src="{% static 'polls/spa.js' %}"></script>
     </body>
 </html>
