@@ -15,6 +15,7 @@ function handleSPAChange()
 
     document.getElementById('signup-btn').style.display = 'inline-block';
     document.getElementById('signin-btn').style.display = 'inline-block';
+    document.getElementById('col-end').style.display = 'none';
 
     console.log(path);
     switch (path) {
@@ -33,7 +34,26 @@ function handleSPAChange()
     
     document.getElementById('spa').innerHTML = view;
 
-    if (path === '/polls/' || path === '/loggedin') {
+    document.querySelectorAll('.route').forEach(button => {
+        button.addEventListener('click', function() {
+            const path = this.getAttribute('data-path');
+            history.pushState(null, '', path);
+            handleSPAChange();
+        });
+    });    
+
+    if (path === '/loggedin') {
+        var editProfileBtn = document.getElementById('editProfile');
+        if (editProfileBtn) {
+            editProfileBtn.addEventListener('click', function() {
+                var modal = new bootstrap.Modal(document.getElementById('editProfileModal'));
+                modal.show();
+            });
+        }
+        initPong();
+    }
+
+    if (path === '/polls/') {
         initPong();
     }
 
@@ -46,14 +66,6 @@ function handleSPAChange()
     }
 
 }
-
-document.querySelectorAll('.route').forEach(button => {
-    button.addEventListener('click', function() {
-        const path = this.getAttribute('data-path');
-        history.pushState(null, '', path);
-        handleSPAChange();
-    });
-});
 
 window.addEventListener('popstate', handleSPAChange);
 
