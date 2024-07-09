@@ -8,9 +8,8 @@ services:
       - ./django:/app
       - static_db:/app/static
     depends_on:
-      - database
-    environment:
-      - DATABASE_URL=postgres://myuser:mypassword@database:5432/mydatabase
+      database:
+        condition: service_healthy
     networks:
       - app_network
 
@@ -35,6 +34,11 @@ services:
       - postgres_data:/var/lib/postgresql/data
     networks:
       - app_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   nginx:
     build: ./nginx

@@ -1,43 +1,29 @@
 <!doctype html>
 <html lang="es">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>ft_transcendence</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    {% load static %}
-    <link rel="stylesheet" type="text/css" href="{% static 'polls/style.css' %}" />
-  </head>
-  <body>
-      <div class="container">
-          <header class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between py-3 mb-4">
-              <div class="col-md-3 mb-2 mb-md-0">
-                  <img src="{% static 'polls/images/8522275.png' %}" alt="Icono" class="img-fluid" style="max-height: 40px;">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>ft_transcendence</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+        <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&display=swap" rel="stylesheet">
+        {% load static %}
+        <link rel="stylesheet" type="text/css" href="{% static 'polls/style.css' %}" />
+    </head>
+    <body>
+        <div class="container" id="header">
+            <header class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between py-3 mb-4">
+                <div class="col-md-3 mb-2 mb-md-0">
+                    <img src="{% static 'polls/images/logo.png' %}" alt="Icono" class="img-fluid" style="max-height: 40px;">
                 </div>
-                <ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
-                    <li><a href="#" class="nav-link px-2 link-secondary">Home</a></li>
-                    <li><a href="#" class="nav-link px-2">Features</a></li>
-                    <li><a href="#" class="nav-link px-2">Pricing</a></li>
-                    <li><a href="#" class="nav-link px-2">FAQs</a></li>
-                    <li><a href="#" class="nav-link px-2">About</a></li>
-                </ul>
                 <div class="col-md-3 d-flex justify-content-end">
-                    <button type="button" class="btn btn-dark me-2 login route" id="signin-btn" data-path="/login">Sign in</button>
-                    <button type="button" class="btn btn-primary route" id="signup-btn" data-path="/signup">Sign up</button>
+                    <button type="button" class="btn btn-custom me-2 login route" id="signin-btn" data-path="/login">Sign in</button>
                     <div id="col-end">
                         <div class="row">
                             <div class="col">
-                                <div class="dropdown">
-                                    <button id="dropdownMenu" type="button" class="btn" data-bs-toggle="dropdown" aria-expanded="false">name</button>
-                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenu">
-                                        <li><a class="dropdown-item" href="#" id="viewProfile">View profile</a></li>
-                                        <li><a class="dropdown-item" href="#" id="editProfile">Edit profile</a></li>
-                                        <li><a class="dropdown-item" href="#">Log out</a></li>
-                                    </ul>
-                                </div>
+                                <button id="profile-btn" type="button" class="btn route" data-path="/profile">name</button>
                             </div>
                             <div class="col">
-                              <img src="{% static 'polls/images/icon.png' %}" class="img-fluid" style="max-height: 45px; margin-top: -3px;">
+                                <img src="{% static 'polls/images/icon.png' %}" class="img-fluid" style="max-height: 40px; margin-top: -3px;">
                             </div>
                         </div>
                     </div>
@@ -55,6 +41,61 @@
                 <p>No polls are available.</p>
             {% endif %}-->
         </div>
+        <div class="modal fade" id="exampleModalInvite" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Selecciona los jugadores</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
+                        <label class="form-check-label" for="flexRadioDefault1">4</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" checked>
+                        <label class="form-check-label" for="flexRadioDefault2">8</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" checked>
+                        <label class="form-check-label" for="flexRadioDefault2">16</label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary">Next</button>
+                </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="chooseRival" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Choose rival</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
+                        <label class="form-check-label" for="flexRadioDefault1">
+                          IA
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" checked>
+                        <label class="form-check-label" for="flexRadioDefault2">
+                            Player
+                        </label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary route" id="sendButton" data-path="/pong">Send</button>
+                </div>
+                </div>
+            </div>
+        </div>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
         <script type="module" src="{% static 'polls/spa.js' %}"></script>
     </body>
 </html>

@@ -1,7 +1,10 @@
 import { initPong } from "./main.js";
-import { signupView } from "./signup.js";
 import { loginView } from "./login.js";
 import { loggedinView } from "./loggedin.js";
+import { playPongView } from "./play-pong.js";
+import { pongView } from "./pong.js";
+import { profileView } from "./profile.js";
+import { chatView } from "./chat.js";
 
 function homeView()
 {
@@ -13,20 +16,28 @@ function handleSPAChange()
     const path = window.location.pathname;
     let view;
 
-    document.getElementById('signup-btn').style.display = 'inline-block';
+    document.getElementById('header').style.display = 'block';
     document.getElementById('signin-btn').style.display = 'inline-block';
     document.getElementById('col-end').style.display = 'none';
 
-    console.log(path);
     switch (path) {
+        case '/chat':
+            view = chatView();
+            break;
+        case '/profile':
+            view = profileView();
+            break;
+        case '/pong':
+            view = pongView();
+            break;
+        case '/playpong':
+            view = playPongView();
+            break;
         case '/loggedin':
             view = loggedinView();
             break;
         case '/login':
             view = loginView();
-            break;
-        case '/signup':
-            view = signupView();
             break;
         default:
             view = homeView();
@@ -35,36 +46,35 @@ function handleSPAChange()
     document.getElementById('spa').innerHTML = view;
 
     document.querySelectorAll('.route').forEach(button => {
-        button.addEventListener('click', function() {
+        button.addEventListener('click', function(event) {
+            event.preventDefault();
             const path = this.getAttribute('data-path');
             history.pushState(null, '', path);
             handleSPAChange();
         });
-    });    
+    });
 
-    if (path === '/loggedin') {
-        var editProfileBtn = document.getElementById('editProfile');
-        if (editProfileBtn) {
-            editProfileBtn.addEventListener('click', function() {
-                var modal = new bootstrap.Modal(document.getElementById('editProfileModal'));
-                modal.show();
-            });
-        }
+    if (path === '/polls/' || path === '/pong') {
         initPong();
-    }
-
-    if (path === '/polls/') {
-        initPong();
-    }
-
-    if (path === '/signup') {
-        document.getElementById('signup-btn').style.display = 'none';
     }
 
     if (path === '/login') {
         document.getElementById('signin-btn').style.display = 'none';
     }
 
+    const sendButton = document.getElementById('sendButton');
+    if (sendButton) {
+        sendButton.addEventListener('click', function(event) {
+            event.preventDefault();
+            const modal = bootstrap.Modal.getInstance(document.getElementById('chooseRival'));
+            if (modal) {
+                modal.hide();
+            }
+            const path = this.getAttribute('data-path');
+            history.pushState(null, '', path);
+            handleSPAChange();
+        });
+    }
 }
 
 window.addEventListener('popstate', handleSPAChange);

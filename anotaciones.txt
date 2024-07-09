@@ -38,3 +38,14 @@ spa: https://accreditly.io/articles/creating-single-page-applications-with-vanil
 nginx con postgresql: https://iamgideon.medium.com/configure-a-reverse-proxy-for-postgresql-with-nginx-63c18cefe09
 
 nginx, dpahne, django y postgresql: https://okbaboularaoui.medium.com/how-to-set-up-django-with-postgres-nginx-and-daphne-django-channels-on-ubuntu-20-04-b0d24dcc7da9
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'database_name',
+        'USER': 'database_user',
+        'PASSWORD': 'database_password',
+        'HOST': 'localhost',
+        'PORT': '',
+    }
+}

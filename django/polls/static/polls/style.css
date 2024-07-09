@@ -1,5 +1,6 @@
 html, body {
     height: 100%;
+    font-family: "Lexend", sans-serif;
 }
 
 .center-wrapper {
@@ -13,4 +14,56 @@ html, body {
 .form-signin {
     max-width: 330px;
     padding: 1rem;
+}
+
+#header {
+    background-image: url("images/back.png");
+    max-width: 100%;
+}
+
+.btn-custom {
+    background-color: white;
+    border-radius: 15px;
+    color: #1E2E50;
+    font-weight: bold;
+}
+
+.btn-custom:hover {
+    background-color: white;
+    color: #1E2E50;
+}
+
+.btn-image {
+    background-image: url("images/back.png");
+    background-position: right;
+    font-weight: bold;
+    border-radius: 15px;
+    color: white;
+}
+
+.btn-image:hover {
+    color: white;
+}
+
+.form-floating label {
+    color: #6C757D;
+    font-size: 0.875rem;
+}
+
+.chat-container {
+    height: 80vh;
+}
+
+.chat-column {
+    padding: 0;
+    border: 1px solid #dee2e6;
+}
+
+.chat-messages {
+    height: calc(100% - 3.5rem);
+    overflow-y: auto;
+}
+
+.message-input {
+    border-top: 1px solid #dee2e6;
 }

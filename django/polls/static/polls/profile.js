@@ -1,44 +1,7 @@
-<!doctype html>
-<html lang="es">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>ft_transcendence</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
-    <link rel="stylesheet" href="styles.css">
-  </head>
-  <body>
-    <div class="container">
-      <header class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between py-3 mb-4">
-        <div class="col-md-3 mb-2 mb-md-0">
-          <img src="8522275.png" alt="Icono" class="img-fluid" style="max-height: 40px;">
-        </div>
-        <ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
-          <li><a href="#" class="nav-link px-2 link-secondary">Home</a></li>
-          <li><a href="#" class="nav-link px-2">Features</a></li>
-          <li><a href="#" class="nav-link px-2">Pricing</a></li>
-          <li><a href="#" class="nav-link px-2">FAQs</a></li>
-          <li><a href="#" class="nav-link px-2">About</a></li>
-        </ul>
-          <div class="col-md-3 d-flex justify-content-end">
-            <div class="row">
-                <div class="col">
-                    <div class="dropdown">
-                        <button id="dropdownMenu" type="button" class="btn" data-bs-toggle="dropdown" aria-expanded="false">name</button>
-                        <ul class="dropdown-menu" aria-labelledby="dropdownMenu">
-                            <li><a class="dropdown-item" href="#" id="viewProfile">View profile</a></li>
-                            <li><a class="dropdown-item" href="#" id="editProfile">Edit profile</a></li>
-                            <li><a class="dropdown-item" href="#">Log out</a></li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="col">
-                    <img src="icon.png" class="img-fluid" style="max-height: 45px; margin-top: -3px;">
-                </div>
-            </div>
-          </div>
-        </header>
-    </div>
+export function profileView() {
+    document.getElementById('signin-btn').style.display = 'none';
+    document.getElementById('col-end').style.display = 'block';
+    return `
     <div class="container">
       <div class="row">
         <div class="col">
@@ -194,8 +157,5 @@
           <button type="button" class="btn btn-image route" data-path="/polls/">Log out</button>
         </div>
       </div>
-    </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
-    <script src="script.js"></script>
-  </body>
-</html>
+    </div>`;
+}

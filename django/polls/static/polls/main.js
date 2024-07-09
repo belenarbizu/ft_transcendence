@@ -51,7 +51,7 @@ export function initPong() {
         canvas.height = height;
         canvas.width = width;
     }
-    setCanvas(0, 0); //400, 640
+    //setCanvas(0, 0); //400, 640
     //Field size
     let fieldHeight = 0;
     let fieldWidth = 0;
