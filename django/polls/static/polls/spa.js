@@ -1,6 +1,5 @@
 import { initPong } from "./main.js";
 import { loginView } from "./login.js";
-import { loggedinView } from "./loggedin.js";
 import { playPongView } from "./play-pong.js";
 import { pongView } from "./pong.js";
 import { profileView } from "./profile.js";
@@ -32,9 +31,6 @@ function handleSPAChange()
             break;
         case '/playpong':
             view = playPongView();
-            break;
-        case '/loggedin':
-            view = loggedinView();
             break;
         case '/login':
             view = loginView();

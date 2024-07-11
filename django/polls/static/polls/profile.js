@@ -12,9 +12,9 @@ export function profileView() {
                   <div class="row g-0">
                     <div class="col-md-4 gradient-custom text-center" style="border-top-left-radius: .5rem; border-bottom-left-radius: .5rem;">
                       <h3 class="mt-3">Name</h3>
-                      <img src="icon.png" class="img-fluid my-4" style="width: 120px;">
+                      <img src="images/icon.png" class="img-fluid my-4" style="width: 120px;">
                     </div>
-                    <div class="col-md-8">
+                    <div class="col-md-4">
                       <div class="card-body p-4">
                         <div class="row mt-2">
                           <h3>
@@ -36,6 +36,20 @@ export function profileView() {
                             </div>
                           </div>
                         </div>
+                      </div>
+                    </div>
+                    <div class="col-md-4">
+                      <div class="row">
+                        <button type="button" class="btn btn-image w-75 mb-2 mt-3" data-bs-toggle="modal" data-bs-target="#chooseRival">EDIT PROFILE</button>
+                      </div>
+                      <div class="row">
+                        <button type="button" class="btn btn-image w-75 mb-2" data-bs-toggle="modal" data-bs-target="#chooseRival">PLAY</button>
+                      </div>
+                      <div class="row">
+                        <button type="button" class="btn btn-image w-75 mb-2" data-bs-toggle="modal" data-bs-target="#exampleModalInvite">CREATE A TOURNAMENT</button>
+                      </div>
+                      <div class="row">
+                        <button type="button" class="btn btn-image w-75 route" data-path="/chat">CHAT ROOM</button>
                       </div>
                     </div>
                   </div>
@@ -144,17 +158,6 @@ export function profileView() {
               </div>
             </div>
           </div>
-        </div>
-      </div>
-      <div class="row align-items-center">
-        <div class="col align-items-center">
-          <button type="button" class="btn btn-image me-2 route" data-path="/chat">Chat room</button>
-        </div>
-        <div class="col align-items-center">
-          <button type="button" class="btn btn-image" data-bs-toggle="modal" data-bs-target="#exampleModalInvite">Edit profile</button>
-        </div>
-        <div class="col align-items-center">
-          <button type="button" class="btn btn-image route" data-path="/polls/">Log out</button>
         </div>
       </div>
     </div>`;
