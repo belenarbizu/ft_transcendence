@@ -1,0 +1,35 @@
+{% load i18n %}
+
+<div class="card" style="height: 350px;">
+    <div class="card-body">
+        <h4 class="card-title mb-4">{% translate "Last games" %}</h4>
+    </div>
+    <div class="card-body table-responsive p-0">
+        <table class="table">
+            <thead>
+                <td></td>
+                <td>{% translate "Opponent" %}</td>
+                <td>{% translate "Game" %}</td>
+                <td>{% translate "Date" %}</td>
+                <td>{% translate "Result" %}</td>
+            </thead>
+            <tbody>
+                {% for game in games %}
+                <tr>
+                    <td></td>
+                    <td><a href="{% url 'backend:user' game.opponent %}" data-bs-toggle="tooltip" data-bs-title="{% translate 'View the profile of' %} {{ game.opponent }}">{{ game.opponent }}</a></td>
+                    <td>{{ game.game }}</td>
+                    <td>{{ game.date }}</td>
+                    <td>
+                    {% if game.winner %}
+                    <span class="badge rounded-pill bg-success">{{ game.result }}</span>
+                    {% else %}
+                    <span class="badge rounded-pill bg-danger">{{ game.result }}</span>
+                    {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>

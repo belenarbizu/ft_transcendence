@@ -1,0 +1,63 @@
+{% load i18n %}
+
+<div class="card" style="height: 350px;">
+    <div class="card-body">
+        <h4 class="card-title mb-4">{% translate 'Friends' %}</h4>
+        <div class="input-group mb-3">
+            <input type="text" class="form-control" placeholder="{% translate 'username' %}" aria-label="{% translate 'username' %}"
+                aria-describedby="button-addon2">
+            <button class="btn btn-primary" type="button" id="button-addon2" onclick="toast_message('{% translate 'A user with the specified name was not found' %}')">{% translate 'Invite' %}</button>
+        </div>
+    </div>
+    <div class="card-body table-responsive p-0">
+        <table class="table">
+            <tbody>
+                {% for friend in friends.invitations %}
+                <tr>
+                    <td></td>
+                    <td><a href="{% url 'backend:user' friend.name %}" data-bs-toggle="tooltip"
+                            data-bs-title="{% translate 'View the profile of' %} {{ friend.name }}">{{ friend.name }}</a> {% translate 'invited you' %}</td>
+                    </td>
+                    <td>
+                        <i class="text-success bi bi-check-circle-fill" data-bs-toggle="tooltip"
+                            data-bs-title="{% translate 'Accept invitation from' %} {{ friend.name }}" onclick="toast_message('{% translate 'You have a new friend' %}')"></i>
+                        <i class="text-danger bi bi-x-circle-fill" data-bs-toggle="tooltip"
+                            data-bs-title="{% translate 'Dismiss invitation from' %} {{ friend.name }}" onclick="toast_message('{% translate 'You dismissed an invitation' %}')"></i>
+                    </td>
+                </tr>
+                {% endfor %}
+                {% for friend in friends.pending %}
+                <tr>
+                    <td></td>
+                    <td><a href="{% url 'backend:user' friend.name %}" data-bs-toggle="tooltip"
+                            data-bs-title="{% translate 'View the profile of' %} {{ friend.name }}">{{ friend.name }}</a> {% translate 'received your invitation' %}</td>
+                    </td>
+                    <td>
+                        <i class="text-danger bi bi-x-circle-fill" data-bs-toggle="tooltip"
+                            data-bs-title="{% translate 'Cancel invitation for' %} {{ friend.name }}" onclick="toast_message('{% translate 'You cancelled an invitation' %}')"></i>
+                    </td>
+                </tr>
+                {% endfor %}
+                {% for friend in friends.accepted %}
+                <tr>
+                    <td></td>
+                    <td><a href="{% url 'backend:user' friend.name %}" data-bs-toggle="tooltip"
+                            data-bs-title="{% translate 'View the profile of' %} {{ friend.name }}">{{ friend.name }}</a></td>
+                    <td>
+                        <a data-bs-toggle="modal" data-bs-target="#chatModal">
+                            {% if friend.unread == 0 %}<i class="text-success bi bi-chat-fill" data-bs-toggle="tooltip"
+                                data-bs-title="{% translate 'Open chat with' %} {{ friend.name }}"></i>
+                            {% else %}<i class="text-success bi bi-chat-fill" data-bs-toggle="tooltip"
+                                data-bs-title="{% translate 'Open chat with' %} {{ friend.name }} ({{ friend.unread }} {% translate 'new messages' %})">
+                                <span class="badge rounded-pill bg-success">{{ friend.unread }}</span></i>
+                            {% endif %}
+                        </a>
+                        <i class="text-primary bi bi-joystick" data-bs-toggle="tooltip"
+                            data-bs-title="{% translate 'Play with' %} {{ friend.name }}"></i>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>

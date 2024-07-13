@@ -1,0 +1,20 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+<div class="col">
+    <div class="row p-4">
+        <div class="col col-12">
+            {% include "backend/components/user_info.html" %}
+        </div>
+    </div>
+    <div class="row px-4">
+        <div class="col col-12 col-lg-6 pb-4">
+            {% include "backend/components/friends.html" %}
+        </div>
+        <div class="col col-12 col-lg-6 pb-4">
+            {% include "backend/components/last_games.html" %}
+        </div>
+    </div>
+</div>
+{% include "backend/components/chat_modal.html" %}
+{% endblock %}

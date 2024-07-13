@@ -1,0 +1,41 @@
+{% load i18n %}
+
+<div class="card" id="user_info">
+    <div class="card-body pb-0">
+        <div class="row align-items-center">
+            <div class="col-md-2 p-4">
+                <div class="text-center">
+                    <img src="https://bootdey.com/img/Content/avatar/avatar1.png"
+                        class="img-fluid avatar-xxl rounded-circle" alt="">
+                    <h4 class="text-primary font-size-20 mt-3 mb-2">{{username}}</h4>
+                </div>
+            </div><!-- end col -->
+            <div class="col">
+                <div class="row align-items-center">
+                    <div class="col">
+                        <div class="ms-3">
+                            <div>
+                                <h4 class="card-title mb-2">Hyperpong</h4>
+                                <p class="mb-0 text-muted">2 {% translate 'Games played' %}</p>
+                                <p class="mb-0 text-muted">1 {% translate 'Games won' %}</p>
+                                <p class="mb-0 text-muted">1 {% translate 'Games lost' %}</p>
+                                <p></p>
+                            </div>
+                        </div>
+                    </div><!-- end col -->
+                    <div class="col">
+                        <div class="ms-3">
+                            <div>
+                                <h4 class="card-title mb-2">Pirates Revenge</h4>
+                                <p class="mb-0 text-muted">2 {% translate 'Games played' %}</p>
+                                <p class="mb-0 text-muted">1 {% translate 'Games won' %}</p>
+                                <p class="mb-0 text-muted">1 {% translate 'Games lost' %}</p>
+                                <p></p>
+                            </div>
+                        </div>
+                    </div><!-- end col -->
+                </div>
+            </div>
+        </div><!-- end row -->
+    </div><!-- end card body -->
+</div>
