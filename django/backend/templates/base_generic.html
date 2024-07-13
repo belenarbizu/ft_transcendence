@@ -1,4 +1,5 @@
 {% load static %}
+
 <!doctype html>
 <html lang="es">
 
@@ -14,7 +15,7 @@
     <title>Transcendence</title>
 </head>
 
-<body class="hold-transition layout-top-nav" style="background-image: url('/static/backend/background.webp');height: 100%;background-repeat: no-repeat;background-size: cover;">
+<body class="hold-transition layout-top-nav" style="background-image: url({% static 'backend/images/background.webp' %});height: 100%;background-repeat: no-repeat;background-size: cover;">
     <div class="wrapper">
         {% block navbar %}
         {% include "backend/components/navbar.html" %}

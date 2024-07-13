@@ -1,13 +1,15 @@
 {% load i18n %}
+{% load static %}
 
-{% get_current_language as LANGUAGE_CODE %}
-{% get_available_languages as LANGUAGES %}
-{% get_language_info_list for LANGUAGES as languages %}
-{% for language in languages %}
 <form action="{% url 'set_language' %}" method="post">{% csrf_token %}
-    <input name="next" type="hidden" value="{{ redirect_to }}" />
-    <input name="language" type="hidden" value="{{ language.code }}" />
-    <button class="btn" type="submit" value="{{ language.code }}"><img src="/static/backend/{{ language.code }}.png"
+    <input name="next" type="hidden" value="{{ request.path }}" />
+    <input name="language" type="hidden" value="en" />
+    <button class="btn" type="submit" value="en"><img src="{% static 'backend/images/en.png' %}"
             class="rounded-circle" style="height:25px;" alt=""></button>
 </form>
-{% endfor %}
+<form action="{% url 'set_language' %}" method="post">{% csrf_token %}
+    <input name="next" type="hidden" value="{{ request.path }}" />
+    <input name="language" type="hidden" value="es" />
+    <button class="btn" type="submit" value="es"><img src="{% static 'backend/images/es.png' %}"
+            class="rounded-circle" style="height:25px;" alt=""></button>
+</form>
