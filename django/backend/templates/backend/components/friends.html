@@ -15,7 +15,7 @@
                 {% for friend in friends.invitations %}
                 <tr>
                     <td></td>
-                    <td><a href="{% url 'backend:user' friend.name %}" data-bs-toggle="tooltip"
+                    <td><a href="{% url 'backend:user' friend.name %}" spa data-bs-toggle="tooltip"
                             data-bs-title="{% translate 'View the profile of' %} {{ friend.name }}">{{ friend.name }}</a> {% translate 'invited you' %}</td>
                     </td>
                     <td>
@@ -29,7 +29,7 @@
                 {% for friend in friends.pending %}
                 <tr>
                     <td></td>
-                    <td><a href="{% url 'backend:user' friend.name %}" data-bs-toggle="tooltip"
+                    <td><a href="{% url 'backend:user' friend.name %}" spa data-bs-toggle="tooltip"
                             data-bs-title="{% translate 'View the profile of' %} {{ friend.name }}">{{ friend.name }}</a> {% translate 'received your invitation' %}</td>
                     </td>
                     <td>
@@ -41,7 +41,7 @@
                 {% for friend in friends.accepted %}
                 <tr>
                     <td></td>
-                    <td><a href="{% url 'backend:user' friend.name %}" data-bs-toggle="tooltip"
+                    <td><a href="{% url 'backend:user' friend.name %}" spa data-bs-toggle="tooltip"
                             data-bs-title="{% translate 'View the profile of' %} {{ friend.name }}">{{ friend.name }}</a></td>
                     <td>
                         <a data-bs-toggle="modal" data-bs-target="#chatModal">

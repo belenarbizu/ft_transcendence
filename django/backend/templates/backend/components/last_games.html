@@ -17,7 +17,7 @@
                 {% for game in games %}
                 <tr>
                     <td></td>
-                    <td><a href="{% url 'backend:user' game.opponent %}" data-bs-toggle="tooltip" data-bs-title="{% translate 'View the profile of' %} {{ game.opponent }}">{{ game.opponent }}</a></td>
+                    <td><a href="{% url 'backend:user' game.opponent %}" spa data-bs-toggle="tooltip" data-bs-title="{% translate 'View the profile of' %} {{ game.opponent }}">{{ game.opponent }}</a></td>
                     <td>{{ game.game }}</td>
                     <td>{{ game.date }}</td>
                     <td>
