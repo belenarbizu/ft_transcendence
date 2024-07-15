@@ -11,9 +11,6 @@ RUN pip install --upgrade pip && \
 
 COPY . /app/
 
-RUN python manage.py collectstatic --noinput
-RUN python manage.py makemigrations polls
-
 EXPOSE 8000
 
 CMD ["/bin/bash", "init.sh"]
