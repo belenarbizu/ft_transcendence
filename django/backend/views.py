@@ -3,7 +3,7 @@ import random
 
 # Create your views here.
 
-def index_view(request, username):
+def user_view(request, username):
     users = [
         "akentgo", "aoropeza", "angalsty", "azubieta",
         "anquinte", "jose-rig", "secarras", "lromero",
