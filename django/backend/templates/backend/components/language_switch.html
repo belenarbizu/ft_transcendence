@@ -1,0 +1,16 @@
+{% load i18n %}
+{% load static %}
+
+<form action="{% url 'set_language' %}" method="post">{% csrf_token %}
+    <input name="next" type="hidden" value="{{ request.path }}" />
+    <input name="language" type="hidden" value="en" />
+    <input name="spa" type="hidden" value="true" />
+    <button spa class="btn" type="submit" value="en"><img src="{% static 'backend/images/en.png' %}"
+            class="rounded-circle" style="height:25px;" alt=""></button>
+</form>
+<form action="{% url 'set_language' %}" method="post">{% csrf_token %}
+    <input name="next" type="hidden" value="{{ request.path }}" />
+    <input name="language" type="hidden" value="es" />
+    <button spa class="btn" type="submit" value="es"><img src="{% static 'backend/images/es.png' %}"
+            class="rounded-circle" style="height:25px;" alt=""></button>
+</form>
