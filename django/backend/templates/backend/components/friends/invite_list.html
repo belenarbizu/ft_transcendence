@@ -1,0 +1,26 @@
+{% load i18n %}
+{% load static %}
+
+{% for user in users %}
+<li class="list-group-item">
+
+        <div class="row">
+            <div class="col align-self-start">
+                {% if user.picture %}
+                <img src="{{ user.picture.url }}" class="avatar-sm rounded-circle"
+                        alt="">
+                {% else %}
+                <img src="{% static 'backend/images/profile.png' %}" class="avatar-sm rounded-circle"
+                        alt="">
+                {% endif %}
+            </div>
+            <div class="col">
+                {{ user.username }}
+            </div>
+            <div class="col align-self-end">
+                <button class="btn btn-sm btn-outline-primary w-100">{{ user.username }}</button>
+            </div>
+        </div>
+
+    </li>
+{% endfor %}
