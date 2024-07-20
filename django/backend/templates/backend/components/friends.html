@@ -3,53 +3,82 @@
 <div class="card" style="height: 350px;">
     <div class="card-body">
         <h4 class="card-title mb-4">{% translate 'Friends' %}</h4>
-        <div class="input-group mb-3">
-            <input type="text" class="form-control" placeholder="{% translate 'username' %}" aria-label="{% translate 'username' %}"
-                aria-describedby="button-addon2">
-            <button class="btn btn-primary" type="button" id="button-addon2" onclick="toast_message('{% translate 'A user with the specified name was not found' %}')">{% translate 'Invite' %}</button>
-        </div>
+        
+        {% if request.user.username == user.username %} 
+        <form action="{% url 'backend:invitation_create' %}" method="POST">
+            {% csrf_token %}
+            <input name="next" type="hidden" value="{{ request.path }}" />
+            <div class="input-group mb-3">
+                <input type="text" name="username" class="form-control" placeholder="{% translate 'username' %}"
+                    aria-label="{% translate 'username' %}" aria-describedby="button-addon2">
+                <button spa class="btn btn-primary" type="submit" id="button-addon2">{% translate 'Invite' %}</button>
+            </div>
+        </form>
+        {% endif %}
+
     </div>
     <div class="card-body table-responsive p-0">
-        <table class="table">
+        <table class="table align-top">
             <tbody>
+                {% if request.user.username == user.username %} 
                 {% for friend in friends.invitations %}
                 <tr>
                     <td></td>
-                    <td><a href="{% url 'backend:user' friend.name %}" spa data-bs-toggle="tooltip"
-                            data-bs-title="{% translate 'View the profile of' %} {{ friend.name }}">{{ friend.name }}</a> {% translate 'invited you' %}</td>
+                    <td><a href="{% url 'backend:user' friend.username %}" spa data-bs-toggle="tooltip"
+                            data-bs-title="{% translate 'View the profile of' %} {{ friend.username }}">
+                            {{friend.username }}</a> {% translate 'invited you' %}</td>
                     </td>
                     <td>
-                        <i class="text-success bi bi-check-circle-fill" data-bs-toggle="tooltip"
-                            data-bs-title="{% translate 'Accept invitation from' %} {{ friend.name }}" onclick="toast_message('{% translate 'You have a new friend' %}')"></i>
-                        <i class="text-danger bi bi-x-circle-fill" data-bs-toggle="tooltip"
-                            data-bs-title="{% translate 'Dismiss invitation from' %} {{ friend.name }}" onclick="toast_message('{% translate 'You dismissed an invitation' %}')"></i>
+                        <form class="form-inline" action="{% url 'backend:invitation_accept' %}" method="POST">
+                            {% csrf_token %}
+                            <input name="next" type="hidden" value="{{ request.path }}" />
+                            <input name="username" type="hidden" value="{{ friend.username }}" />
+                            <button type="submit" spa class="btn btn-link m-0 p-0">
+                                <i class="text-success bi bi-check-circle-fill" data-bs-toggle="tooltip"
+                                data-bs-title="{% translate 'Accept invitation from' %} {{ friend.username }}"></i></button>
+                        </form>
+                        <form class="form-inline" action="{% url 'backend:invitation_dismiss' %}" method="POST">
+                            {% csrf_token %}
+                            <input name="next" type="hidden" value="{{ request.path }}" />
+                            <input name="username" type="hidden" value="{{ friend.username }}" />
+                            <button type="submit" spa class="btn btn-link m-0 p-0"><i class="text-danger bi bi-x-circle-fill" data-bs-toggle="tooltip"
+                            data-bs-title="{% translate 'Dismiss invitation from' %} {{ friend.username }}"></i></button>
+                        </form>
                     </td>
                 </tr>
                 {% endfor %}
                 {% for friend in friends.pending %}
                 <tr>
                     <td></td>
-                    <td><a href="{% url 'backend:user' friend.name %}" spa data-bs-toggle="tooltip"
-                            data-bs-title="{% translate 'View the profile of' %} {{ friend.name }}">{{ friend.name }}</a> {% translate 'received your invitation' %}</td>
+                    <td><a href="{% url 'backend:user' friend.username %}" spa data-bs-toggle="tooltip"
+                            data-bs-title="{% translate 'View the profile of' %} {{ friend.username }}">
+                            {{ friend.username }}</a> {% translate 'received your invitation' %}</td>
                     </td>
-                    <td>
-                        <i class="text-danger bi bi-x-circle-fill" data-bs-toggle="tooltip"
-                            data-bs-title="{% translate 'Cancel invitation for' %} {{ friend.name }}" onclick="toast_message('{% translate 'You cancelled an invitation' %}')"></i>
+                    <td>             
+                        <form class="form-inline" action="{% url 'backend:invitation_cancel' %}" method="POST">
+                            {% csrf_token %}
+                            <input name="next" type="hidden" value="{{ request.path }}" />
+                            <input name="username" type="hidden" value="{{ friend.username }}" />
+                            <button type="submit" spa class="btn btn-link m-0 p-0"><i class="text-danger bi bi-x-circle-fill" data-bs-toggle="tooltip"
+                            data-bs-title="{% translate 'Cancel invitation for' %} {{ friend.username }}"></i></button>
+                        </form>
                     </td>
                 </tr>
                 {% endfor %}
+                {% endif %}
                 {% for friend in friends.accepted %}
                 <tr>
                     <td></td>
-                    <td><a href="{% url 'backend:user' friend.name %}" spa data-bs-toggle="tooltip"
-                            data-bs-title="{% translate 'View the profile of' %} {{ friend.name }}">{{ friend.name }}</a></td>
+                    <td><a href="{% url 'backend:user' friend.friend_of.username %}" spa data-bs-toggle="tooltip"
+                            data-bs-title="{% translate 'View the profile of' %} {{ friend.friend_of.username }}">
+                            {{ friend.friend_of.username }}</a></td>
                     <td>
                         <a data-bs-toggle="modal" data-bs-target="#chatModal">
                             {% if friend.unread == 0 %}<i class="text-success bi bi-chat-fill" data-bs-toggle="tooltip"
-                                data-bs-title="{% translate 'Open chat with' %} {{ friend.name }}"></i>
+                                data-bs-title="{% translate 'Open chat with' %} {{ friend.friend_of.username }}"></i>
                             {% else %}<i class="text-success bi bi-chat-fill" data-bs-toggle="tooltip"
-                                data-bs-title="{% translate 'Open chat with' %} {{ friend.name }} ({{ friend.unread }} {% translate 'new messages' %})">
-                                <span class="badge rounded-pill bg-success">{{ friend.unread }}</span></i>
+                                data-bs-title="{% translate 'Open chat with' %} {{ friend.friend_of.username }} ({{ friend.unread_messages }} {% translate 'new messages' %})">
+                                <span class="badge rounded-pill bg-success">{{ friend.unread_messages }}</span></i>
                             {% endif %}
                         </a>
                         <i class="text-primary bi bi-joystick" data-bs-toggle="tooltip"
