@@ -3,7 +3,7 @@
 <div class="card" style="height: 350px;">
     <div class="card-body">
         <h4 class="card-title mb-4">{% translate 'Friends' %}</h4>
-        
+        {% include 'backend/components/friends/invite_modal.html' %}
         {% if request.user.username == user.username %} 
         <form action="{% url 'backend:invitation_create' %}" method="POST">
             {% csrf_token %}
