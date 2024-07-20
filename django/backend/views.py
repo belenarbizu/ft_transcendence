@@ -63,3 +63,10 @@ def cancel_invitation(request):
     except Exception as e:
         return HttpResponse(str(e), status=409)
     return redirect(next)
+
+@require_http_methods(["POST"])
+def uninvited_users(request):
+    username = request.POST.get('username', '')
+    users = CustomUser.objects.filter(username__startswith=username)
+    data = {'users': users}
+    return render(request, "backend/components/friends/invite_list.html", data)
