@@ -8,4 +8,5 @@ urlpatterns = [
     path('invitation/dismiss', views.dismiss_invitation, name="invitation_dismiss"),
     path('invitation/accept', views.accept_invitation, name="invitation_accept"),
     path('invitation/cancel', views.cancel_invitation, name="invitation_cancel"),
+    path('invitation/uninvited', views.uninvited_users, name="uninvited_users")
 ]
