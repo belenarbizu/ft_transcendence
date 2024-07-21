@@ -2,11 +2,12 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser, UserManager
 from django.utils.translation import gettext as _
 from . import querysets
+from . import managers
 
 
 class CustomUser(AbstractUser):
 
-    objects = UserManager.from_queryset(querysets.CustomUserQuerySet)()
+    objects = managers.CustomUserManager()
 
     LANGUAGE_CHOICES = (
         ('es', 'Spanish'),
