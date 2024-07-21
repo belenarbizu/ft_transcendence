@@ -4,23 +4,28 @@
 {% for user in users %}
 <li class="list-group-item">
 
-        <div class="row">
-            <div class="col align-self-start">
+    <form spa hide action="{% url 'backend:invitation_create' %}" method="POST">
+        <div class="form-row d-flex justify-content-between align-items-center">
+            <div class="col">
                 {% if user.picture %}
-                <img src="{{ user.picture.url }}" class="avatar-sm rounded-circle"
-                        alt="">
+                <img src="{{ user.picture.url }}" class="avatar-sm rounded-circle" alt="">
                 {% else %}
-                <img src="{% static 'backend/images/profile.png' %}" class="avatar-sm rounded-circle"
-                        alt="">
+                <img src="{% static 'backend/images/profile.png' %}" class="avatar-sm rounded-circle" alt="">
                 {% endif %}
+                <span class="px-2">{{ user.username }}</span>
             </div>
             <div class="col">
-                {{ user.username }}
-            </div>
-            <div class="col align-self-end">
-                <button class="btn btn-sm btn-outline-primary w-100">{{ user.username }}</button>
+                {% csrf_token %}
+                <input name="next" type="hidden" value="{% url 'backend:user' request.user.username %}" />
+                <input type="hidden" name="username" value="{{ user.username }}" class="form-control"
+                    placeholder="{% translate 'username' %}" aria-label="{% translate 'username' %}"
+                    aria-describedby="button-addon2">
+                <button spa class="btn btn-sm btn-outline-primary w-100" type="submit" id="button-addon2">
+                    {% translate 'Invite' %} {{ user.username }}
+                </button>
             </div>
         </div>
-
-    </li>
+        
+    </form>
+</li>
 {% endfor %}

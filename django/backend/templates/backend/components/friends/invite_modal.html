@@ -1,9 +1,5 @@
 {% load i18n %}
 
-<button class="btn btn-primary mx-1" data-bs-toggle="modal" data-bs-target="#invitationModal">
-  {% translate 'Play' %}
-</button>
-
 <div class="modal fade" id="invitationModal" tabindex="-1" aria-labelledby="invitationModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg">
     <div class="modal-content" style="height: 350px;">
@@ -14,7 +10,7 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-header">
-        <form spa action="{% url 'backend:uninvited_users' %}" method="POST" target=".invitation_list_body">
+        <form spa action="{% url 'backend:uninvited_users' %}" method="POST" target=".invitation_list_body" autocomplete="off">
           {% csrf_token %}
           <input spa type="text" name="username" class="form-control" placeholder="{% translate 'username' %}"
             aria-label="{% translate 'username' %}" aria-describedby="button-addon2">

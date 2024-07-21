@@ -96,6 +96,11 @@ function get_target(element) {
     }
 }
 
+function get_hide(element)
+{
+    return element.hasAttribute("hide");
+}
+
 /**
  * Handles link navigation and form submission for a single-page application 
  * (SPA).
@@ -118,8 +123,7 @@ function follow_link(event) {
 
 function submit_form(event, push) {
     var form = event.target;
-    if (form.nodeName != "form")
-    {
+    if (form.nodeName != "form") {
         form = form.closest("form");
     }
     const data = new URLSearchParams();
@@ -131,7 +135,7 @@ function submit_form(event, push) {
             data.append(pair[0], pair[1]);
         }
     }
-    post_request(get_action(form), data, get_target(form), push);
+    post_request(get_action(form), data, get_target(form), push, get_hide(form));
 }
 
 /**
@@ -169,8 +173,21 @@ function start_spa() {
     create_tooltips();
 }
 
-function end_spa() {
+function end_spa(hide) {
     dispose_tooltips();
+    if (hide)
+    {
+        hide_modals();
+    }
+}
+
+function hide_modals()
+{
+    dispose_tooltips();
+    document.querySelectorAll('.modal').forEach(modal => {
+        console.log(modal); let currentModal = bootstrap.Modal.getInstance(modal)
+        if (currentModal) currentModal.hide()
+    });
 }
 
 /**
@@ -199,9 +216,9 @@ function end_spa() {
  *   - target: The CSS selector of the DOM element to be updated.
  */
 
-function handle_response(response, target, push) {
+function handle_response(response, target, push, hide) {
     if (response.status == 200) {
-        end_spa();
+        end_spa(hide);
         const url = response.url.split('?')[0];
         if (push == true && window.location.href != url) {
             history.pushState({ path: url }, '', url);
@@ -224,10 +241,10 @@ function get_request(action, target, push) {
     ).then(response => { handle_response(response, target, push); });
 }
 
-function post_request(action, data, target, push) {
+function post_request(action, data, target, push, hide) {
     fetch(action, { method: 'post', body: data, })
         .then(response => {
-            handle_response(response, target, push);
+            handle_response(response, target, push, hide);
         });
 }
 

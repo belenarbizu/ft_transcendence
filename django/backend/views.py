@@ -28,6 +28,7 @@ def user_view(request, username):
 def create_invitation(request):
     invited_username = request.POST.get("username", "")
     next = request.POST.get("next", "/")
+    print(next)
     try:
         request.user.create_invitation(invited_username)
     except Exception as e:
