@@ -36,7 +36,7 @@
                 </div>
                 <div class="d-flex">
 
-                    <form class="form px-1 d-flex justify-content-between align-items-center"
+                    <form spa class="form px-1 d-flex justify-content-between align-items-center"
                         action="{% url 'backend:invitation_accept' %}" method="POST">
                         {% csrf_token %}
                         <input name="next" type="hidden" value="{{ request.path }}" />
@@ -46,7 +46,7 @@
                                 data-bs-title="{% translate 'Accept invitation from' %} {{ friend.username }}"></i></button>
                     </form>
 
-                    <form class="form px-1 d-flex justify-content-between align-items-center"
+                    <form spa class="form px-1 d-flex justify-content-between align-items-center"
                         action="{% url 'backend:invitation_dismiss' %}" method="POST">
                         {% csrf_token %}
                         <input name="next" type="hidden" value="{{ request.path }}" />
@@ -73,7 +73,7 @@
                 </div>
                 <div class="d-flex">
 
-                    <form class="form px-1 d-flex justify-content-between align-items-center"
+                    <form spa class="form px-1 d-flex justify-content-between align-items-center"
                         action="{% url 'backend:invitation_cancel' %}" method="POST">
                         {% csrf_token %}
                         <input name="next" type="hidden" value="{{ request.path }}" />
@@ -90,28 +90,28 @@
             {% for friend in friends.accepted %}
             <li class="list-group-item d-flex justify-content-between align-items-center">
                 <div>
-                    {% if friend.friend_of.picture %}
-                    <img src="{{ friend.friend_of.picture.url }}" class="avatar-sm rounded-circle" alt="">
+                    {% if friend.picture %}
+                    <img src="{{ friend.picture.url }}" class="avatar-sm rounded-circle" alt="">
                     {% else %}
                     <img src="{% static 'backend/images/profile.png' %}" class="avatar-sm rounded-circle" alt="">
                     {% endif %}
-                    <a class="px-2" href="{% url 'backend:user' friend.friend_of.username %}" spa
+                    <a class="px-2" href="{% url 'backend:user' friend.username %}" spa
                         data-bs-toggle="tooltip"
                         data-bs-title="{% translate 'View the profile of' %} {{ friend.friend_of.username }}">
-                        {{friend.friend_of.username }}</a>
+                        {{friend.username }}</a>
                 </div>
                 <div class="d-flex">
 
                     <a data-bs-toggle="modal px-2" data-bs-target="#chatModal">
                         {% if friend.unread == 0 %}<i class="text-success bi bi-chat-fill" data-bs-toggle="tooltip"
-                            data-bs-title="{% translate 'Open chat with' %} {{ friend.friend_of.username }}"></i>
+                            data-bs-title="{% translate 'Open chat with' %} {{ friend.username }}"></i>
                         {% else %}<i class="text-success bi bi-chat-fill" data-bs-toggle="tooltip"
-                            data-bs-title="{% translate 'Open chat with' %} {{ friend.friend_of.username }} ({{ friend.unread_messages }} {% translate 'new messages' %})">
+                            data-bs-title="{% translate 'Open chat with' %} {{ friend.username }} ({{ friend.unread_messages }} {% translate 'new messages' %})">
                             <span class="badge rounded-pill bg-success">{{ friend.unread_messages }}</span></i>
                         {% endif %}
                     </a>
                     <i class="text-primary bi bi-joystick px-2" data-bs-toggle="tooltip"
-                        data-bs-title="{% translate 'Play with' %} {{ friend.friend_of.username }}"></i>
+                        data-bs-title="{% translate 'Play with' %} {{ friend.username }}"></i>
 
                 </div>
             </li>
