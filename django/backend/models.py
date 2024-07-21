@@ -18,7 +18,7 @@ class CustomUser(AbstractUser):
         max_length = 500,
         verbose_name = "Bio",
         )
-    
+
     picture = models.ImageField(
         null = True,
         blank = True,
@@ -112,6 +112,22 @@ class CustomUser(AbstractUser):
 
 
 class ChatMessage(models.Model):
+
+    objects = querysets.ChatMessageQuerySet.as_manager()
+
+    sender = models.ForeignKey(
+        CustomUser,
+        on_delete = models.CASCADE,
+        related_name = "messages_sent",
+        verbose_name = "sender",
+    )
+
+    recipient = models.ForeignKey(
+        CustomUser,
+        on_delete = models.CASCADE,
+        related_name = "messages_received",
+        verbose_name = "recipient",
+    )
 
     message = models.CharField(
         max_length = 500,

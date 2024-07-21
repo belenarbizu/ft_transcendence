@@ -36,3 +36,23 @@ class CustomUserQuerySet(models.QuerySet):
         return self.exclude(
             id = user.id
         )
+
+
+class ChatMessageQuerySet(models.QuerySet):
+
+    def to_user(self, user):
+        return self.filter(recipient = user.id)
+    
+    def from_user(self, user):
+        return self.filter(sender = user.id)
+    
+    def between(self, user_a, user_b):
+        return self.to_user(user_a).from_user(user_b) \
+            | self.to_user(user_b).from_user(user_a)
+    
+    def ordered(self):
+        return self.order_by('date')
+    
+    def send_message(self, **kwargs):
+        if (kwargs['message']):
+            self.create(**kwargs).save()
