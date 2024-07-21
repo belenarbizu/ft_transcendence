@@ -1,0 +1,43 @@
+{% load i18n %}
+{% load static %}
+
+{% for message in messages %}
+<li class="d-flex justify-content-between mb-2">
+    {% if message.sender.username == request.user.username %}
+    <div class="m-4"></div>
+    <div class="d-flex">
+        <div class="card">
+            <div class="card-body">
+                <small class="my-0">
+                    {{ message.sender.username }}  {{ message.date }}
+                </small>
+                <p class="my-0">
+                    {{ message.message }}
+                </p>
+            </div>
+        </div>
+        <div class="m-2">
+            <img src="{% static 'backend/images/profile.png' %}" class="avatar-sm rounded-circle" alt="">
+        </div>
+    </div>
+    {% else %}
+    <div class="d-flex">
+        <div class="m-2">
+            <img src="{% static 'backend/images/profile.png' %}" class="avatar-sm rounded-circle" alt="">
+        </div>
+        <div class="card">
+            <div class="card-body">
+                <small class="my-0">
+                    {{ message.sender.username }}  {{ message.date }}
+                </small>
+                <p class="my-0">
+                    {{ message.message }}
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="m-4"></div>
+
+    {% endif %}
+</li>
+{% endfor %}
