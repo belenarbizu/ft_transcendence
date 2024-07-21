@@ -17,6 +17,11 @@ class CustomUserQuerySet(models.QuerySet):
             id__in = user.friends.all()
         )
     
+    def friend_of(self, user):
+        return self.filter(
+            id__in = user.friends.all()
+        )
+    
     def not_invitation_to(self, user):
         return self.exclude(
             id__in = user.invited_users.all()
