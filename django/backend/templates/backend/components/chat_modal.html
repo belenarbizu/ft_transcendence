@@ -11,54 +11,16 @@
                 <div class="container">
                     <div class="row">
                         <div class="col table-responsive" style="max-height: 50vh;">
-                            <ul class="list-unstyled">
-                                <li class="d-flex justify-content-between mb-2">
-                                    <div class="card">
-                                        <div class="card-body">
-                                            <p class="mb-0">
-                                                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-                                                tempor incididunt ut
-                                                labore et dolore magna aliqua.
-                                            </p>
-                                        </div>
-                                    </div>
-                                    <img src="https://bootdey.com/img/Content/avatar/avatar1.png"
-                                    class="rounded-circle m-2" style="height:25px;" alt="">
-                                </li>
-                                <li class="d-flex justify-content-between mb-2">
-                                    <img src="https://bootdey.com/img/Content/avatar/avatar1.png"
-                                    class="rounded-circle m-2" style="height:25px;" alt="">
-                                    <div class="card">
-                                        <div class="card-body mb-0">
-                                            <p class="mb-0">
-                                                Sed ut perspiciatis unde omnis iste natus error sit voluptatem
-                                                accusantium doloremque
-                                                laudantium.
-                                            </p>
-                                        </div>
-                                    </div>
-                                </li>
-                                <li class="d-flex justify-content-between mb-2">
-                                    <img src="https://bootdey.com/img/Content/avatar/avatar1.png"
-                                    class="rounded-circle m-2" style="height:25px;" alt="">
-                                    <div class="card">
-                                        <div class="card-body">
-                                            <p class="mb-0">
-                                                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-                                                tempor incididunt ut
-                                                labore et dolore magna aliqua.
-                                            </p>
-                                        </div>
-                                    </div>
-                                </li>
+                            <ul chat class="list-unstyled">
+                                
                             </ul>
                         </div>
                     </div><div class="row mh-100">
                         <div class="col table-responsive">
                             <div class="input-group mb-3">
-                                <input type="text" class="form-control" placeholder="{% translate 'message' %}" aria-label="{% translate 'message' %}"
-                                    aria-describedby="button-addon2">
-                                <button class="btn btn-primary" type="button" id="button-addon2">{% translate 'Send' %}</button>
+                                <input chat type="text" class="form-control" placeholder="{% translate 'message' %}" aria-label="{% translate 'message' %}"
+                                    aria-describedby="button-addon2" oninput="handleMessageEnter">
+                                <button class="btn btn-primary" type="button" id="button-addon2" onclick="sendMessage();">{% translate 'Send' %}</button>
                             </div>
                         </div>
                     </div>

@@ -1,0 +1,26 @@
+{% load i18n %}
+
+<div class="modal fade" id="invitationModal" tabindex="-1" aria-labelledby="invitationModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content" style="height: 350px;">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">
+          {% translate 'Invite frirend' %}
+        </h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-header">
+        <form spa action="{% url 'backend:uninvited_users' %}" method="POST" target=".invitation_list_body" autocomplete="off">
+          {% csrf_token %}
+          <input spa type="text" name="username" class="form-control" placeholder="{% translate 'username' %}"
+            aria-label="{% translate 'username' %}" aria-describedby="button-addon2">
+        </form>
+      </div>
+      <div class="card-body table-responsive p-0">
+        <ul class="list-group invitation_list_body">
+          {% include 'backend/components/friends/invite_list.html' %}
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>

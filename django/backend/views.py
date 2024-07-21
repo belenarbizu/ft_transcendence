@@ -1,48 +1,73 @@
 from django.shortcuts import render
-import random
+from .models import CustomUser
+from django.shortcuts import get_object_or_404, redirect
+from django.views.decorators.http import require_http_methods
+from django.http import HttpResponse
+from django.urls import reverse
+from django.db import models
 
-# Create your views here.
+def index_view(request):
+    if request.user.is_authenticated:
+        return redirect(reverse("backend:user", kwargs={'username':request.user.username}))
+    return 0
 
 def user_view(request, username):
-    users = [
-        "akentgo", "aoropeza", "angalsty", "azubieta",
-        "anquinte", "jose-rig", "secarras", "lromero",
-        "barbizu", "fgalan", "jariza-o"
-    ]
-    random.shuffle(users)
-    users = users[:7]
+    user = get_object_or_404(CustomUser, username=username)
     data = {
-        "username": username,
+        "user": user,
         "friends": {
-            "pending": [
-                {
-                    "name": n,
-                }
-                for n in users[0:2]
-            ],
-            "invitations": [
-                {
-                    "name": n,
-                }
-                for n in [users[3]]
-            ],
-            "accepted": [
-                {
-                    "name": n,
-                    "unread": random.choice([0, 1, 1, 2, 3, 5, 8]),
-                }
-                for n in users[4:]
-            ]
+            "pending": user.invited_by.all(),
+            "invitations": user.invited_users.all(),
+            "accepted": CustomUser.objects.friend_of(user),
         },
-        "games": [
-            {
-                "opponent": n,
-                "game": random.choice(["Pirates Revenge", "Hyperpong"]),
-                "date": "today",
-                "result": "1/1",
-                "winner": random.choice([True, False]),
-            }
-            for n in users * 6
-        ]
+        "games": []
     }
     return render(request, "backend/index.html", data)
+
+@require_http_methods(["POST"])
+def create_invitation(request):
+    invited_username = request.POST.get("username", "")
+    next = request.POST.get("next", "/")
+    print(next)
+    try:
+        request.user.create_invitation(invited_username)
+    except Exception as e:
+        return HttpResponse(str(e), status=409)
+    return redirect(next)
+
+@require_http_methods(["POST"])
+def dismiss_invitation(request):
+    invited_username = request.POST.get("username", "")
+    next = request.POST.get("next", "/")
+    try:
+        request.user.dismiss_invitation(invited_username)
+    except Exception as e:
+        return HttpResponse(str(e), status=409)
+    return redirect(next)
+
+@require_http_methods(["POST"])
+def accept_invitation(request):
+    invited_username = request.POST.get("username", "")
+    next = request.POST.get("next", "/")
+    try:
+        request.user.accept_invitation(invited_username)
+    except Exception as e:
+        return HttpResponse(str(e), status=409)
+    return redirect(next)
+
+@require_http_methods(["POST"])
+def cancel_invitation(request):
+    invited_username = request.POST.get("username", "")
+    next = request.POST.get("next", "/")
+    try:
+        request.user.cancel_invitation(invited_username)
+    except Exception as e:
+        return HttpResponse(str(e), status=409)
+    return redirect(next)
+
+@require_http_methods(["POST"])
+def uninvited_users(request):
+    username = request.POST.get('username', '')
+    users = CustomUser.objects.uninvited_users(request.user, username)
+    data = {'users': users}
+    return render(request, "backend/components/friends/invite_list.html", data)

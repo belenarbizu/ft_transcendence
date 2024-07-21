@@ -1,40 +1,37 @@
 {% load i18n %}
+{% load static %}
 
 <div class="card" id="user_info">
     <div class="card-body pb-0">
         <div class="row align-items-center">
-            <div class="col-md-2 p-4">
-                <div class="text-center">
-                    <img src="https://bootdey.com/img/Content/avatar/avatar1.png"
-                        class="img-fluid avatar-xxl rounded-circle" alt="">
-                    <h4 class="text-primary font-size-20 mt-3 mb-2">{{username}}</h4>
+            <div class="col-md-3 p-4">
+                <div class="text-center" style="min-height: 180px;">
+                    {% if user.picture %}
+                    <img src="{{ user.picture.url }}" class="img-fluid avatar-xxl rounded-circle"
+                        alt="">
+                    {% else %}
+                    <img src="{% static 'backend/images/profile.png' %}" class="img-fluid avatar-xxl rounded-circle"
+                        alt="">
+                    {% endif %}
                 </div>
             </div><!-- end col -->
             <div class="col">
-                <div class="row align-items-center">
-                    <div class="col">
-                        <div class="ms-3">
-                            <div>
-                                <h4 class="card-title mb-2">Hyperpong</h4>
-                                <p class="mb-0 text-muted">2 {% translate 'Games played' %}</p>
-                                <p class="mb-0 text-muted">1 {% translate 'Games won' %}</p>
-                                <p class="mb-0 text-muted">1 {% translate 'Games lost' %}</p>
-                                <p></p>
-                            </div>
-                        </div>
-                    </div><!-- end col -->
-                    <div class="col">
-                        <div class="ms-3">
-                            <div>
-                                <h4 class="card-title mb-2">Pirates Revenge</h4>
-                                <p class="mb-0 text-muted">2 {% translate 'Games played' %}</p>
-                                <p class="mb-0 text-muted">1 {% translate 'Games won' %}</p>
-                                <p class="mb-0 text-muted">1 {% translate 'Games lost' %}</p>
-                                <p></p>
-                            </div>
-                        </div>
-                    </div><!-- end col -->
+                <div class="row">
+                    <h3>{{ user.username }}</h3>
+                    <p>{{ user.bio }}</p>
+                    <p><b>{% translate 'Preferred language' %}</b> {{ user.preferred_language }}</p>
                 </div>
+                <div class="row">
+                    <div class="btn-toolbar" role="toolbar">
+                        <button class="btn btn-primary mx-1" data-bs-toggle="modal" data-bs-target="#profileModal">{% translate 'Edit profile' %}</button>
+                        <button class="btn btn-primary mx-1">{% translate 'Invite' %}</button>
+                        <button class="btn btn-primary mx-1" data-bs-toggle="modal" data-bs-target="#localModal">{% translate 'Play' %}</button>
+                        <button class="btn btn-primary mx-1" data-bs-toggle="modal" data-bs-target="#chatModal">{% translate 'Chat' %}</button>
+                        <button class="btn btn-primary mx-1">{% translate 'Block' %}</button>
+                        <button class="btn btn-primary mx-1">{% translate 'Unblock' %}</button>
+                    </div>
+                </div>
+
             </div>
         </div><!-- end row -->
     </div><!-- end card body -->

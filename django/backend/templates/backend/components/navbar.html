@@ -6,10 +6,23 @@
             <a class="navbar-brand" href="#">Transcendence</a>
             <div>
                 <ul class="navbar-nav">
-                    {% include "backend/components/language_switch.html" %}
                     <li class="nav-item">
-                        <a class="nav-link" href="#">{% translate 'Logout' %}</a>
+                        {{ request.user.username }}
                     </li>
+                    <li class="nav-item">
+                        {% if request.user.is_authenticated %}
+                        <form action="{% url 'logout' %}" method="POST">
+                            {% csrf_token %}
+                            <input type="hidden" name="next" value="{{ request.url }}" />
+                            <button class="btn btn-link" type="submit">{% translate 'Logout' %}</button>
+                        </form>
+                        {% else %}
+                        <form action="{% url 'login' %}" method="GET">
+                            <button class="btn btn-link" type="submit">{% translate 'Login' %}</button>
+                        </form>
+                        {% endif %}
+                    </li>
+                    {% include "backend/components/language_switch.html" %}
                 </ul>
             </div>
         </div>

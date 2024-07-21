@@ -9,7 +9,7 @@
     </div>
     <div class="row px-4">
         <div class="col col-12 col-lg-6 pb-4">
-            {% include "backend/components/friends.html" %}
+            {% include "backend/components/friends/friends.html" %}
         </div>
         <div class="col col-12 col-lg-6 pb-4">
             {% include "backend/components/last_games.html" %}
@@ -17,4 +17,6 @@
     </div>
 </div>
 {% include "backend/components/chat_modal.html" %}
+{% include "backend/components/profile_modal.html" %}
+{% include "backend/components/local_modal.html" %}
 {% endblock %}
