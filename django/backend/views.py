@@ -18,7 +18,7 @@ def user_view(request, username):
         "friends": {
             "pending": user.invited_by.all(),
             "invitations": user.invited_users.all(),
-            "accepted": user.friend_user.all(),
+            "accepted": CustomUser.objects.friend_of(user),
         },
         "games": []
     }
