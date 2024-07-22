@@ -73,7 +73,7 @@ def uninvited_users(request):
     return render(request, "backend/components/friends/invite_list.html", data)
 
 @require_http_methods(["POST"])
-def chat_messages(request):
+def chat_messages_form(request):
     username = request.POST.get('username', '')
     user = CustomUser.objects.get(username = username)
     messages = ChatMessage.objects.between(user, request.user)

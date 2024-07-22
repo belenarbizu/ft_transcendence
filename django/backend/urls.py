@@ -9,6 +9,6 @@ urlpatterns = [
     path('invitation/accept/', views.accept_invitation, name="invitation_accept"),
     path('invitation/cancel/', views.cancel_invitation, name="invitation_cancel"),
     path('invitation/uninvited/', views.uninvited_users, name="uninvited_users"),
-    path('messages/', views.chat_messages, name="chat_messages"),
+    path('messages/', views.chat_messages_form, name="chat_messages"),
     path('messages/send/', views.send_message, name="send_message")
 ]
