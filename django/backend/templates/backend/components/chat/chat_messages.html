@@ -17,13 +17,21 @@
             </div>
         </div>
         <div class="m-2">
+            {% if message.sender.picture %}
+            <img src="{{ message.sender.picture.url }}" class="avatar-sm rounded-circle" alt="">
+            {% else %}
             <img src="{% static 'backend/images/profile.png' %}" class="avatar-sm rounded-circle" alt="">
+            {% endif %}
         </div>
     </div>
     {% else %}
     <div class="d-flex">
         <div class="m-2">
+            {% if message.sender.picture %}
+            <img src="{{ message.sender.picture.url }}" class="avatar-sm rounded-circle" alt="">
+            {% else %}
             <img src="{% static 'backend/images/profile.png' %}" class="avatar-sm rounded-circle" alt="">
+            {% endif %}
         </div>
         <div class="card">
             <div class="card-body">
