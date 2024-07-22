@@ -36,3 +36,14 @@ class CustomUserQuerySet(models.QuerySet):
         return self.exclude(
             id = user.id
         )
+
+class MatchQuerySet(models.QuerySet):
+    
+    def as_home(self, user):
+        return self.filter(home = user)
+    
+    def as_guest(self, user):
+        return self.filter(guest = user)
+    
+    def played_by(self, user):
+        return self.as_home(user) | self.as_guest(user)
