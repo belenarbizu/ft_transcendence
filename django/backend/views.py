@@ -98,3 +98,8 @@ def send_message(request):
         }
     return render(request, "backend/components/chat/chat_form.html", data)
 
+def chat_index(request):
+    return render(request, "backend/chat.html")
+
+def room(request, room_name):
+    return render(request, "backend/room.html", {"room_name": room_name})
