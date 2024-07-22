@@ -10,3 +10,7 @@ class CustomUserManager(
 class ChatMessageManager(
     models.Manager.from_queryset(querysets.ChatMessageQuerySet)):
     pass
+
+
+class MatchManager(models.Manager.from_queryset(querysets.MatchQuerySet)):
+    pass

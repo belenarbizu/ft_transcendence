@@ -17,16 +17,29 @@
                 {% for game in games %}
                 <tr>
                     <td></td>
-                    <td><a href="{% url 'backend:user' game.opponent %}" spa data-bs-toggle="tooltip" data-bs-title="{% translate 'View the profile of' %} {{ game.opponent }}">{{ game.opponent }}</a></td>
+                    {% if game.home.username == user.username %}
+                    <td><a href="{% url 'backend:user' game.guest %}" spa data-bs-toggle="tooltip" data-bs-title="{% translate 'View the profile of' %} {{ game.home }}">{{ game.guest }}</a></td>
                     <td>{{ game.game }}</td>
                     <td>{{ game.date }}</td>
                     <td>
-                    {% if game.winner %}
-                    <span class="badge rounded-pill bg-success">{{ game.result }}</span>
+                    {% if game.winner.id == user.id %}
+                    <span class="badge rounded-pill bg-success">{{ game.home_score }} - {{ game.guest_score }}</span>
                     {% else %}
-                    <span class="badge rounded-pill bg-danger">{{ game.result }}</span>
+                    <span class="badge rounded-pill bg-danger">{{ game.home_score }} - {{ game.guest_score }}</span>
                     {% endif %}
                     </td>
+                    {% else %}
+                    <td><a href="{% url 'backend:user' game.home %}" spa data-bs-toggle="tooltip" data-bs-title="{% translate 'View the profile of' %} {{ game.home }}">{{ game.home }}</a></td>
+                    <td>{{ game.game }}</td>
+                    <td>{{ game.date }}</td>
+                    <td>
+                    {% if game.winner.id == user.id %}
+                    <span class="badge rounded-pill bg-success">{{ game.home_score }} - {{ game.guest_score }}</span>
+                    {% else %}
+                    <span class="badge rounded-pill bg-danger">{{ game.home_score }} - {{ game.guest_score }}</span>
+                    {% endif %}
+                    </td>
+                    {% endif %}
                 </tr>
                 {% endfor %}
             </tbody>

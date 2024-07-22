@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from .models import CustomUser, ChatMessage
+from .models import CustomUser, ChatMessage, Match
 from django.shortcuts import get_object_or_404, redirect
 from django.views.decorators.http import require_http_methods
 from django.http import HttpResponse
@@ -20,7 +20,7 @@ def user_view(request, username):
             "invitations": user.invited_users.all(),
             "accepted": CustomUser.objects.friend_of(user),
         },
-        "games": []
+        "games": Match.objects.played_by(user),
     }
     return render(request, "backend/index.html", data)
 

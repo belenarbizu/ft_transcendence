@@ -37,7 +37,7 @@ class CustomUserQuerySet(models.QuerySet):
             id = user.id
         )
 
-
+      
 class ChatMessageQuerySet(models.QuerySet):
 
     def to_user(self, user):
@@ -56,3 +56,16 @@ class ChatMessageQuerySet(models.QuerySet):
     def send_message(self, **kwargs):
         if (kwargs['message']):
             self.create(**kwargs).save()
+
+            
+class MatchQuerySet(models.QuerySet):
+    
+    def as_home(self, user):
+        return self.filter(home = user)
+    
+    def as_guest(self, user):
+        return self.filter(guest = user)
+    
+    def played_by(self, user):
+        return self.as_home(user) | self.as_guest(user)
+

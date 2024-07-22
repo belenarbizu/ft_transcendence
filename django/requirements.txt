@@ -3,4 +3,5 @@ psycopg2-binary==2.9.9
 channels==4.1.0
 daphne==4.1.2
 gunicorn==22.0.0
+pillow
 twisted[tls,http2]

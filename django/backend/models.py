@@ -71,6 +71,7 @@ class CustomUser(AbstractUser):
         related_name = "matches_as_guest",
         through = "Match",
         symmetrical = False,
+        through_fields = ('home','guest'),
     )
 
     def create_invitation(self, invited):
@@ -142,10 +143,26 @@ class ChatMessage(models.Model):
 
 class Match(models.Model):
 
+    objects = managers.MatchManager()
+
     STATE_CHOICES = (
         ('pend', 'pending'),
         ('star', 'started'),
         ('fini', 'finished'),
+    )
+
+    home = models.ForeignKey(
+        CustomUser,
+        on_delete = models.CASCADE,
+        related_name = "home_matches",
+        verbose_name = "home user",
+    )
+
+    guest = models.ForeignKey(
+        CustomUser,
+        on_delete = models.CASCADE,
+        related_name = "guest_matches",
+        verbose_name = "guest user",
     )
 
     game = models.TextField(
