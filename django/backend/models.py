@@ -127,6 +127,8 @@ class ChatMessage(models.Model):
 
 class Match(models.Model):
 
+    objects = managers.MatchManager()
+
     STATE_CHOICES = (
         ('pend', 'pending'),
         ('star', 'started'),
