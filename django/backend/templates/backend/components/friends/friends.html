@@ -95,24 +95,23 @@
                     {% else %}
                     <img src="{% static 'backend/images/profile.png' %}" class="avatar-sm rounded-circle" alt="">
                     {% endif %}
-                    <a class="px-2" href="{% url 'backend:user' friend.username %}" spa
-                        data-bs-toggle="tooltip"
+                    <a class="px-2" href="{% url 'backend:user' friend.username %}" spa data-bs-toggle="tooltip"
                         data-bs-title="{% translate 'View the profile of' %} {{ friend.friend_of.username }}">
                         {{friend.username }}</a>
                 </div>
                 <div class="d-flex">
-
-                    <a data-bs-toggle="modal px-2" data-bs-target="#chatModal">
-                        {% if friend.unread == 0 %}<i class="text-success bi bi-chat-fill" data-bs-toggle="tooltip"
-                            data-bs-title="{% translate 'Open chat with' %} {{ friend.username }}"></i>
-                        {% else %}<i class="text-success bi bi-chat-fill" data-bs-toggle="tooltip"
-                            data-bs-title="{% translate 'Open chat with' %} {{ friend.username }} ({{ friend.unread_messages }} {% translate 'new messages' %})">
-                            <span class="badge rounded-pill bg-success">{{ friend.unread_messages }}</span></i>
-                        {% endif %}
-                    </a>
+                    <form spa target=".chat-modal" class="form px-1 d-flex justify-content-between align-items-center"
+                        action="{% url 'backend:chat_messages' %}" method="POST">
+                        {% csrf_token %}
+                        <input name="username" type="hidden" value="{{ friend.username }}" />
+                        <button type="submit" spa class="btn btn-link m-0 p-0" data-bs-toggle="modal" data-bs-target="#chatModal">
+                            <i class="text-success bi bi-chat-fill" data-bs-toggle="tooltip"
+                                data-bs-title="{% translate 'Open chat with' %} {{ friend.username }}">
+                            </i>
+                        </button>
+                    </form>
                     <i class="text-primary bi bi-joystick px-2" data-bs-toggle="tooltip"
                         data-bs-title="{% translate 'Play with' %} {{ friend.username }}"></i>
-
                 </div>
             </li>
             {% endfor %}

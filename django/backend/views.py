@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from .models import CustomUser, Match
+from .models import CustomUser, ChatMessage, Match
 from django.shortcuts import get_object_or_404, redirect
 from django.views.decorators.http import require_http_methods
 from django.http import HttpResponse
@@ -71,3 +71,30 @@ def uninvited_users(request):
     users = CustomUser.objects.uninvited_users(request.user, username)
     data = {'users': users}
     return render(request, "backend/components/friends/invite_list.html", data)
+
+@require_http_methods(["POST"])
+def chat_messages_form(request):
+    username = request.POST.get('username', '')
+    user = CustomUser.objects.get(username = username)
+    data = {
+        'messages': ChatMessage.objects.between(user, request.user).ordered(),
+        'user': user
+        }
+    return render(request, "backend/components/chat/chat_form.html", data)
+
+@require_http_methods(["POST"])
+def send_message(request):
+    user = CustomUser.objects.get(
+        username = request.POST.get('username', '')
+        )
+    ChatMessage.objects.send_message(
+        sender = request.user,
+        recipient = user,
+        message = request.POST.get('message', '')
+        )
+    data = {
+        'messages': ChatMessage.objects.between(user, request.user).ordered(),
+        'user': user
+        }
+    return render(request, "backend/components/chat/chat_form.html", data)
+

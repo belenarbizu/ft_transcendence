@@ -101,6 +101,11 @@ function get_hide(element)
     return element.hasAttribute("hide");
 }
 
+function get_push(element)
+{
+    return element.hasAttribute("push-state");
+}
+
 /**
  * Handles link navigation and form submission for a single-page application 
  * (SPA).
@@ -121,7 +126,7 @@ function follow_link(event) {
     get_request(get_action(element), get_target(element), true);
 }
 
-function submit_form(event, push) {
+function submit_form(event) {
     var form = event.target;
     if (form.nodeName != "form") {
         form = form.closest("form");
@@ -135,7 +140,7 @@ function submit_form(event, push) {
             data.append(pair[0], pair[1]);
         }
     }
-    post_request(get_action(form), data, get_target(form), push, get_hide(form));
+    post_request(get_action(form), data, get_target(form), get_push(form), get_hide(form));
 }
 
 /**
@@ -161,7 +166,7 @@ function start_spa() {
     document.querySelectorAll('form[spa]').forEach(button => {
         button.addEventListener('submit', event => {
             event.preventDefault();
-            submit_form(event, true);
+            submit_form(event);
         });
     });
     document.querySelectorAll('input[spa]').forEach(button => {

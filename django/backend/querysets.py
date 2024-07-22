@@ -37,6 +37,27 @@ class CustomUserQuerySet(models.QuerySet):
             id = user.id
         )
 
+      
+class ChatMessageQuerySet(models.QuerySet):
+
+    def to_user(self, user):
+        return self.filter(recipient = user.id)
+    
+    def from_user(self, user):
+        return self.filter(sender = user.id)
+    
+    def between(self, user_a, user_b):
+        return self.to_user(user_a).from_user(user_b) \
+            | self.to_user(user_b).from_user(user_a)
+    
+    def ordered(self):
+        return self.order_by('date')
+    
+    def send_message(self, **kwargs):
+        if (kwargs['message']):
+            self.create(**kwargs).save()
+
+            
 class MatchQuerySet(models.QuerySet):
     
     def as_home(self, user):
@@ -47,3 +68,4 @@ class MatchQuerySet(models.QuerySet):
     
     def played_by(self, user):
         return self.as_home(user) | self.as_guest(user)
+
