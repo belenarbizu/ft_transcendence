@@ -76,9 +76,8 @@ def uninvited_users(request):
 def chat_messages_form(request):
     username = request.POST.get('username', '')
     user = CustomUser.objects.get(username = username)
-    messages = ChatMessage.objects.between(user, request.user)
     data = {
-        'messages': messages,
+        'messages': ChatMessage.objects.between(user, request.user).ordered(),
         'user': user
         }
     return render(request, "backend/components/chat/chat_form.html", data)
