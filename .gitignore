@@ -1,2 +1,4 @@
 **/*.pyc
 django/static/*
+django/db.sqlite3
+**/migrations
