@@ -17,7 +17,7 @@ class ChatMessageManager(
             self.create(**kwargs).save()
             channel_layer = get_channel_layer()
             async_to_sync(channel_layer.group_send)(
-                f'user_{kwargs['recipient'].id}',
+                f'user_{kwargs["recipient"].id}',
                 {
                     "type": "chat_message",
                     'sender': kwargs['sender'],
