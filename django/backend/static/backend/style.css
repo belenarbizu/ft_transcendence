@@ -1,3 +1,17 @@
+html, body {
+  font-family: "Lexend", sans-serif;
+}
+
+.iconMsg{
+  position: relative;
+}
+
+.iconMsg span{
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  display: block;
+}
 .avatar-sm {
   max-width: 2em;
 }
