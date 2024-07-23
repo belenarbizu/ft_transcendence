@@ -1,0 +1,10 @@
+services:
+  django:
+    build: 
+      context: ../
+      dockerfile: ./development/dockerfile
+    container_name: 'django-dev'
+    volumes:
+      - ../django:/app
+    ports:
+      - 8000:8000

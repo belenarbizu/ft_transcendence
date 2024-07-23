@@ -1,0 +1,10 @@
+FROM python:3.9
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
+WORKDIR /app
+COPY ../django/requirements.txt /utils/
+RUN pip install --upgrade pip && \
+    pip install -r /utils/requirements.txt
+COPY ../development/development.sh /utils/
+EXPOSE 8000
+CMD ["/bin/bash", "/utils/development.sh"]
