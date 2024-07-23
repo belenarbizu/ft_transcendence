@@ -29,6 +29,11 @@ class Command(BaseCommand):
         self.belen = CustomUser.objects.create_user(
             username='belen', password='belen')
         self.belen.save()
+        for i in range(10):
+            CustomUser.objects.create_user(
+                username=f'demo_user_{i}',
+                password=f'demo_user_{i}'
+                ).save()
         
     def create_friendships(self):
         print ("Creating emotional bonds")
@@ -42,6 +47,12 @@ class Command(BaseCommand):
         self.belen.invited_by.add(self.fermin)
         self.alejandra.invited_by.add(self.pablo)
         self.fermin.invited_by.add(self.alejandra)
+        for i in range(10):
+            self.pablo.create_invitation(f'demo_user_{i}')
+            self.alejandro.create_invitation(f'demo_user_{i}')
+            self.belen.create_invitation(f'demo_user_{i}')
+            self.alejandra.create_invitation(f'demo_user_{i}')
+            self.fermin.create_invitation(f'demo_user_{i}')
 
     def create_matchs(self):
         print ("Falsifying game results")
