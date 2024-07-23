@@ -1,6 +1,7 @@
 import json
 from asgiref.sync import async_to_sync
 from channels.generic.websocket import WebsocketConsumer
+from django.utils.translation import gettext as _
 
 class UserConsumer(WebsocketConsumer):
 
@@ -24,5 +25,5 @@ class UserConsumer(WebsocketConsumer):
 
     def chat_message(self, event):
         sender = event["sender"].username
-        message = f'{sender}: {event["message"]}'
+        message = f'{sender} ' + _("sent you a message")
         self.send(text_data=json.dumps({"message": message, "sender": sender}))

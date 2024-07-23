@@ -114,7 +114,7 @@ class CustomUser(AbstractUser):
 
 class ChatMessage(models.Model):
 
-    objects = querysets.ChatMessageQuerySet.as_manager()
+    objects = managers.ChatMessageManager()
 
     sender = models.ForeignKey(
         CustomUser,
