@@ -19,3 +19,9 @@ html, body {
 .card-height-sm {
   height: 350px;
 }
+
+.flex-reverse {
+  overflow: auto;
+  display: flex;
+  flex-direction: column-reverse;
+}

@@ -98,3 +98,13 @@ def send_message(request):
         }
     return render(request, "backend/components/chat/chat_form.html", data)
 
+@require_http_methods(["POST"])
+def list_messages(request):
+    user = CustomUser.objects.get(
+        username = request.POST.get('username', '')
+        )
+    data = {
+        'messages': ChatMessage.objects.between(user, request.user).ordered(),
+        'user': user
+        }
+    return render(request, "backend/components/chat/chat_messages.html", data)

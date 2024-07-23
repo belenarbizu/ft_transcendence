@@ -52,12 +52,8 @@ class ChatMessageQuerySet(models.QuerySet):
     
     def ordered(self):
         return self.order_by('date')
-    
-    def send_message(self, **kwargs):
-        if (kwargs['message']):
-            self.create(**kwargs).save()
 
-            
+
 class MatchQuerySet(models.QuerySet):
     
     def as_home(self, user):

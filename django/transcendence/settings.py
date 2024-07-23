@@ -36,10 +36,10 @@ ALLOWED_HOSTS = ["localhost", "0.0.0.0", "127.0.0.1", 'asgiserver']
 # Application definition
 
 INSTALLED_APPS = [
-    'polls.apps.PollsConfig',
-    'backend.apps.BackendConfig',
     'daphne',
     'channels',
+    'polls.apps.PollsConfig',
+    'backend.apps.BackendConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -81,7 +81,11 @@ TEMPLATES = [
 
 ASGI_APPLICATION = "transcendence.asgi.application"
 WSGI_APPLICATION = 'transcendence.wsgi.application'
-
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer"
+    }
+}
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases

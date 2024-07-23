@@ -1,47 +1,30 @@
+export { connect_to_user_websocket };
+import { show_notification, submit_form } from "./spa.js";
 
-function sentMessageTemplate(message) {
-    return `<li class="d-flex justify-content-between mb-2">
-                <div class="m-4"></div>
-                <div class="card">
-                    <div class="card-body">
-                        <p class="mb-0">
-                            ${message}
-                        </p>
-                    </div>
-                </div>
-            </li>`
-}
+var chatSocket = null;
 
-function receivedMessageTemplate(message) {
-    return `<li class="d-flex justify-content-between mb-2">
-                <div class="card">
-                    <div class="card-body">
-                        <p class="mb-0">
-                            ${message}
-                        </p>
-                    </div>
-                </div>
-                <div class="mx-4"></div>
-            </li>`
-}
+var ws_protocol = 'ws://';
 
-function handleMessageEnter(event) {
-    if (event.key === "Enter") {
-        event.preventDefault();
-        sendMessage();
+function connect_to_user_websocket() {
+    try {
+        if (chatSocket == null) {
+            const user_id = document.getElementById('user_id').value;
+            chatSocket = new WebSocket(
+                ws_protocol + window.location.host + '/ws/user/' + user_id + '/');
+            chatSocket.onmessage = function (e) {
+                const data = JSON.parse(e.data);
+                show_notification(data.message + '\n');
+                try {
+                    const refresh_form = document.querySelector('#chat-refresh');
+                    submit_form(refresh_form);
+                } catch { }
+            };
+            chatSocket.onclose = function (e) {
+                chatSocket = null;
+            };
+        }
     }
+    catch { }
 }
 
-function clearChat() {
-    document.querySelector('ul[chat-box]').innerHTML += "";
-}
-
-function sendMessage() {
-    const message = document.querySelector('input[chat]').value;
-    document.querySelector('input[chat]').value = "";
-    console.log(message);
-    document.querySelector('ul[chat]').innerHTML
-        += sentMessageTemplate(message);
-    document.querySelector('ul[chat]').innerHTML
-        += receivedMessageTemplate(message);
-}
+connect_to_user_websocket();

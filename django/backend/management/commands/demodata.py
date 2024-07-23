@@ -91,4 +91,5 @@ class Command(BaseCommand):
         self.clean_tables()
         self.create_users()
         self.create_friendships()
-        self.create_matchs()
+        for i in range(12):
+            self.create_matchs()

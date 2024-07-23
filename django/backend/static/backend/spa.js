@@ -1,3 +1,5 @@
+export { show_notification, submit_form };
+import { connect_to_user_websocket } from "./chat.js";
 
 /**
  * Displays a Bootstrap toast notification with a specified message.
@@ -96,13 +98,11 @@ function get_target(element) {
     }
 }
 
-function get_hide(element)
-{
+function get_hide(element) {
     return element.hasAttribute("hide");
 }
 
-function get_push(element)
-{
+function get_push(element) {
     return element.hasAttribute("push-state");
 }
 
@@ -126,8 +126,7 @@ function follow_link(event) {
     get_request(get_action(element), get_target(element), true);
 }
 
-function submit_form(event) {
-    var form = event.target;
+function submit_form(form) {
     if (form.nodeName != "form") {
         form = form.closest("form");
     }
@@ -156,38 +155,39 @@ function submit_form(event) {
  *   resources.
  */
 
+function link_event_listener(event) {
+    event.preventDefault();
+    follow_link(event);
+}
+
+function form_event_listener(event) {
+    event.preventDefault();
+    var form = event.target;
+    submit_form(form);
+}
+
 function start_spa() {
     document.querySelectorAll('a[spa]').forEach(link => {
-        link.addEventListener('click', event => {
-            event.preventDefault();
-            follow_link(event);
-        });
+        link.addEventListener('click', link_event_listener);
     });
     document.querySelectorAll('form[spa]').forEach(button => {
-        button.addEventListener('submit', event => {
-            event.preventDefault();
-            submit_form(event);
-        });
+        button.addEventListener('submit', form_event_listener);
     });
     document.querySelectorAll('input[spa]').forEach(button => {
-        button.oninput = (event => {
-            event.preventDefault();
-            submit_form(event);
-        });
+        button.oninput = form_event_listener;
     });
     create_tooltips();
+    connect_to_user_websocket();
 }
 
 function end_spa(hide) {
     dispose_tooltips();
-    if (hide)
-    {
+    if (hide) {
         hide_modals();
     }
 }
 
-function hide_modals()
-{
+function hide_modals() {
     dispose_tooltips();
     document.querySelectorAll('.modal').forEach(modal => {
         console.log(modal); let currentModal = bootstrap.Modal.getInstance(modal)
