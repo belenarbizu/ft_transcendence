@@ -1,4 +1,5 @@
 export { show_notification, submit_form };
+import { connect_to_user_websocket } from "./chat.js";
 
 /**
  * Displays a Bootstrap toast notification with a specified message.
@@ -176,6 +177,7 @@ function start_spa() {
         button.oninput = form_event_listener;
     });
     create_tooltips();
+    connect_to_user_websocket();
 }
 
 function end_spa(hide) {
