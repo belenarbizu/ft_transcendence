@@ -1,6 +1,11 @@
 {% extends "base_generic.html" %}
 
 {% block content %}
+
+{% if request.user.is_authenticated %}
+<input type="hidden" id="user_id" value="{{ user.id }}" />
+{% endif %}
+
 <div class="col">
     <div class="row p-4">
         <div class="col col-12">

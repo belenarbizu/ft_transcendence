@@ -7,8 +7,8 @@
 <div class="modal-body col">
     <div class="container">
         <div class="row">
-            <div class="col table-responsive" style="max-height: 50vh;">
-                <ul chat class="list-group chat-messages">
+            <div class="col table-responsive flex-reverse" style="height: 50vh;">
+                <ul chat class="list-group chat-messages" id="chat-messages">
                     {% include 'backend/components/chat/chat_messages.html' %}
                 </ul>
             </div>
@@ -17,6 +17,11 @@
 </div>
 <div class="modal-body col-12">
 
+    <form spa target=".chat-messages" id="chat-refresh" class="form px-1 d-flex justify-content-between align-items-center"
+        action="{% url 'backend:list_messages' %}" method="POST">
+        {% csrf_token %}
+        <input name="username" type="hidden" value="{{ user.username }}" />
+    </form>
     <form spa target=".chat-modal" class="form px-1 d-flex justify-content-between align-items-center"
         action="{% url 'backend:send_message' %}" method="POST">
         {% csrf_token %}

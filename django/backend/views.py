@@ -98,8 +98,13 @@ def send_message(request):
         }
     return render(request, "backend/components/chat/chat_form.html", data)
 
-def chat_index(request):
-    return render(request, "backend/chat.html")
-
-def room(request, room_name):
-    return render(request, "backend/room.html", {"room_name": room_name})
+@require_http_methods(["POST"])
+def list_messages(request):
+    user = CustomUser.objects.get(
+        username = request.POST.get('username', '')
+        )
+    data = {
+        'messages': ChatMessage.objects.between(user, request.user).ordered(),
+        'user': user
+        }
+    return render(request, "backend/components/chat/chat_messages.html", data)

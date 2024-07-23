@@ -58,13 +58,17 @@ class ChatMessageQuerySet(models.QuerySet):
     def send_message(self, **kwargs):
         if (kwargs['message']):
             self.create(**kwargs).save()
-        channel_layer = get_channel_layer()
-        async_to_sync(channel_layer.group_send)(
-            'chat_caca',
-            {"type": "chat_message",'message': kwargs['message']}
-        )
+            channel_layer = get_channel_layer()
+            async_to_sync(channel_layer.group_send)(
+                f'user_{kwargs['recipient'].id}',
+                {
+                    "type": "chat_message",
+                    'sender': kwargs['sender'],
+                    'message': kwargs['message'],
+                }
+            )
 
-            
+
 class MatchQuerySet(models.QuerySet):
     
     def as_home(self, user):
