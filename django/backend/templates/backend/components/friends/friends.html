@@ -96,19 +96,21 @@
                         {{friend.username }}</a>
                 </td>
                 <td>
-                    <form spa target=".chat-modal" class="form px-1 iconMsg text-decoration-none"
-                        action="{% url 'backend:chat_messages' %}" method="POST">
-                        {% csrf_token %}
-                        <input name="username" type="hidden" value="{{ friend.username }}" />
-                        <button type="submit" spa class="btn btn-link m-0 p-0" data-bs-toggle="modal" data-bs-target="#chatModal">
-                            <i class="bi bi-chat-fill" data-bs-toggle="tooltip"
-                                data-bs-title="{% translate 'Open chat with' %} {{ friend.username }}">
-                                <span class="badge rounded-pill bg-danger">{{ friend.unread_messages }}</span>
-                            </i>
-                        </button>
-                    </form>
-                    <i class="fs-4 text-primary bi bi-controller ms-3" data-bs-toggle="tooltip"
-                        data-bs-title="{% translate 'Play with' %} {{ friend.username }}"></i>
+                    <div class="d-flex">
+                        <form spa target=".chat-modal" class="form px-1 iconMsg text-decoration-none mt-1"
+                            action="{% url 'backend:chat_messages' %}" method="POST">
+                            {% csrf_token %}
+                            <input name="username" type="hidden" value="{{ friend.username }}" />
+                            <button type="submit" spa class="btn btn-link m-0 p-0" data-bs-toggle="modal" data-bs-target="#chatModal">
+                                <i class="bi bi-chat-fill" data-bs-toggle="tooltip"
+                                    data-bs-title="{% translate 'Open chat with' %} {{ friend.username }}">
+                                    <span class="badge rounded-pill bg-danger">{{ friend.unread_messages }}</span>
+                                </i>
+                            </button>
+                        </form>
+                        <i class="fs-4 text-primary bi bi-controller ms-3" data-bs-toggle="tooltip"
+                            data-bs-title="{% translate 'Play with' %} {{ friend.username }}"></i>
+                    </div>
                 </td>
             </tr>
             {% endfor %}
