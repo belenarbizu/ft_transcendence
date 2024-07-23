@@ -37,6 +37,11 @@ class Command(BaseCommand):
         self.alejandro.friends.add(self.alejandra)
         self.alejandro.friends.add(self.fermin)
         self.belen.friends.add(self.alejandra)
+        self.pablo.invited_by.add(self.alejandro)
+        self.alejandro.invited_by.add(self.belen)
+        self.belen.invited_by.add(self.fermin)
+        self.alejandra.invited_by.add(self.pablo)
+        self.fermin.invited_by.add(self.alejandra)
 
     def create_matchs(self):
         print ("Falsifying game results")
