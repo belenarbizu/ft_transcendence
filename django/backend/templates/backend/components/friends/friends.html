@@ -7,114 +7,116 @@
     {% include 'backend/components/friends/invite_modal.html' %}
     {% endif %}
 
-    <h4 class="card-header d-flex justify-content-between align-items-center">
-        <div class="p-2">
-            {% translate 'Friends' %}
-        </div>
-        {% if request.user.username == user.username %}
-        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#invitationModal">
-            {% translate 'Invite friend' %}
-        </button>
-        {% endif %}
-    </h4>
-
-    <div class="card-body table-responsive p-0">
-        <table class="table align-top">
-        <tbody>
+    <div class="card-body">
+        <h4 class="card-title mb-3 d-flex justify-content-between align-items-center">
+            <div class="p-2">
+                {% translate 'Friends' %}
+            </div>
             {% if request.user.username == user.username %}
-            {% for friend in friends.invitations %}
-            <tr>
-                <td class="ps-3 align-middle w-75">
-                    {% if friend.picture %}
-                    <img src="{{ friend.picture.url }}" class="avatar-sm rounded-circle" alt="">
-                    {% else %}
-                    <img src="{% static 'backend/images/profile.png' %}" class="avatar-sm rounded-circle" alt="">
-                    {% endif %}
-                    <a class="px-2 link-dark text-decoration-none text-capitalize" href="{% url 'backend:user' friend.username %}" spa data-bs-toggle="tooltip"
-                        data-bs-title="{% translate 'View the profile of' %} {{ friend.username }}">
-                        {{friend.username }}</a> {% translate 'invited you' %}
-                </td>
-                <td>
-                    <form spa class="form px-1 d-flex justify-content-between align-items-center"
-                        action="{% url 'backend:invitation_accept' %}" method="POST">
-                        {% csrf_token %}
-                        <input name="next" type="hidden" value="{{ request.path }}" />
-                        <input name="username" type="hidden" value="{{ friend.username }}" />
-                        <button type="submit" spa class="btn btn-link m-0 p-0">
-                            <i class="text-success bi bi-check-circle-fill" data-bs-toggle="tooltip"
-                                data-bs-title="{% translate 'Accept invitation from' %} {{ friend.username }}"></i></button>
-                    </form>
-    
-                    <form spa class="form px-1 d-flex justify-content-between align-items-center"
-                        action="{% url 'backend:invitation_dismiss' %}" method="POST">
-                        {% csrf_token %}
-                        <input name="next" type="hidden" value="{{ request.path }}" />
-                        <input name="username" type="hidden" value="{{ friend.username }}" />
-                        <button type="submit" spa class="btn btn-link m-0 p-0"><i
-                                class="text-danger bi bi-x-circle-fill" data-bs-toggle="tooltip"
-                                data-bs-title="{% translate 'Dismiss invitation from' %} {{ friend.username }}"></i></button>
-                    </form>
-                </td>
-            </tr>
-            {% endfor %}
-            {% for friend in friends.pending %}
-            <tr>
-                <td class="ps-3 align-middle w-75">
-                    {% if friend.picture %}
-                    <img src="{{ friend.picture.url }}" class="avatar-sm rounded-circle" alt="">
-                    {% else %}
-                    <img src="{% static 'backend/images/profile.png' %}" class="avatar-sm rounded-circle" alt="">
-                    {% endif %}
-                    <a class="px-2 link-dark text-decoration-none text-capitalize" href="{% url 'backend:user' friend.username %}" spa data-bs-toggle="tooltip"
-                        data-bs-title="{% translate 'View the profile of' %} {{ friend.username }}">
-                        {{friend.username }}</a> {% translate 'received your invitation' %}
-                </td>
-                <td>
-                    <form spa class="form px-1 d-flex justify-content-between align-items-center"
-                        action="{% url 'backend:invitation_cancel' %}" method="POST">
-                        {% csrf_token %}
-                        <input name="next" type="hidden" value="{{ request.path }}" />
-                        <input name="username" type="hidden" value="{{ friend.username }}" />
-                        <button type="submit" spa class="btn btn-link m-0 p-0"><i
-                                class="text-danger bi bi-x-circle-fill" data-bs-toggle="tooltip"
-                                data-bs-title="{% translate 'Cancel invitation for' %} {{ friend.username }}"></i></button>
-                    </form>
-                </td>
-            </tr>
-            {% endfor %}
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#invitationModal">
+                {% translate 'Invite friend' %}
+            </button>
             {% endif %}
-            {% for friend in friends.accepted %}
-            <tr>
-                <td class="ps-3 align-middle w-75">
-                    {% if friend.picture %}
-                    <img src="{{ friend.picture.url }}" class="avatar-sm rounded-circle" alt="">
-                    {% else %}
-                    <img src="{% static 'backend/images/profile.png' %}" class="avatar-sm rounded-circle" alt="">
-                    {% endif %}
-                    <a class="px-2 link-dark text-decoration-none text-capitalize" href="{% url 'backend:user' friend.username %}" spa data-bs-toggle="tooltip"
-                        data-bs-title="{% translate 'View the profile of' %} {{ friend.friend_of.username }}">
-                        {{friend.username }}</a>
-                </td>
-                <td>
-                    <div class="d-flex">
-                        <form spa target=".chat-modal" class="form px-1 iconMsg text-decoration-none mt-1"
-                            action="{% url 'backend:chat_messages' %}" method="POST">
+        </h4>
+        <div class="table-responsive p-0">
+
+            <table class="table align-top">
+            <tbody>
+                {% if request.user.username == user.username %}
+                {% for friend in friends.invitations %}
+                <tr>
+                    <td class="ps-3 align-middle w-75">
+                        {% if friend.picture %}
+                        <img src="{{ friend.picture.url }}" class="avatar-sm rounded-circle" alt="">
+                        {% else %}
+                        <img src="{% static 'backend/images/profile.png' %}" class="avatar-sm rounded-circle" alt="">
+                        {% endif %}
+                        <a class="px-2 link-dark text-decoration-none text-capitalize" href="{% url 'backend:user' friend.username %}" spa data-bs-toggle="tooltip"
+                            data-bs-title="{% translate 'View the profile of' %} {{ friend.username }}">
+                            {{friend.username }}</a> {% translate 'invited you' %}
+                    </td>
+                    <td>
+                        <form spa class="form px-1 d-flex justify-content-between align-items-center"
+                            action="{% url 'backend:invitation_accept' %}" method="POST">
                             {% csrf_token %}
+                            <input name="next" type="hidden" value="{{ request.path }}" />
                             <input name="username" type="hidden" value="{{ friend.username }}" />
-                            <button type="submit" spa class="btn btn-link m-0 p-0" data-bs-toggle="modal" data-bs-target="#chatModal">
-                                <i class="bi bi-chat-fill" data-bs-toggle="tooltip"
-                                    data-bs-title="{% translate 'Open chat with' %} {{ friend.username }}">
-                                    <span class="badge rounded-pill bg-danger">{{ friend.unread_messages }}</span>
-                                </i>
-                            </button>
+                            <button type="submit" spa class="btn btn-link m-0 p-0">
+                                <i class="text-success bi bi-check-circle-fill" data-bs-toggle="tooltip"
+                                    data-bs-title="{% translate 'Accept invitation from' %} {{ friend.username }}"></i></button>
                         </form>
-                        <i class="fs-4 text-primary bi bi-controller ms-3" data-bs-toggle="tooltip"
-                            data-bs-title="{% translate 'Play with' %} {{ friend.username }}"></i>
-                    </div>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-        </table>
+        
+                        <form spa class="form px-1 d-flex justify-content-between align-items-center"
+                            action="{% url 'backend:invitation_dismiss' %}" method="POST">
+                            {% csrf_token %}
+                            <input name="next" type="hidden" value="{{ request.path }}" />
+                            <input name="username" type="hidden" value="{{ friend.username }}" />
+                            <button type="submit" spa class="btn btn-link m-0 p-0"><i
+                                    class="text-danger bi bi-x-circle-fill" data-bs-toggle="tooltip"
+                                    data-bs-title="{% translate 'Dismiss invitation from' %} {{ friend.username }}"></i></button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+                {% for friend in friends.pending %}
+                <tr>
+                    <td class="ps-3 align-middle w-75">
+                        {% if friend.picture %}
+                        <img src="{{ friend.picture.url }}" class="avatar-sm rounded-circle" alt="">
+                        {% else %}
+                        <img src="{% static 'backend/images/profile.png' %}" class="avatar-sm rounded-circle" alt="">
+                        {% endif %}
+                        <a class="px-2 link-dark text-decoration-none text-capitalize" href="{% url 'backend:user' friend.username %}" spa data-bs-toggle="tooltip"
+                            data-bs-title="{% translate 'View the profile of' %} {{ friend.username }}">
+                            {{friend.username }}</a> {% translate 'received your invitation' %}
+                    </td>
+                    <td>
+                        <form spa class="form px-1 d-flex justify-content-between align-items-center"
+                            action="{% url 'backend:invitation_cancel' %}" method="POST">
+                            {% csrf_token %}
+                            <input name="next" type="hidden" value="{{ request.path }}" />
+                            <input name="username" type="hidden" value="{{ friend.username }}" />
+                            <button type="submit" spa class="btn btn-link m-0 p-0"><i
+                                    class="text-danger bi bi-x-circle-fill" data-bs-toggle="tooltip"
+                                    data-bs-title="{% translate 'Cancel invitation for' %} {{ friend.username }}"></i></button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+                {% endif %}
+                {% for friend in friends.accepted %}
+                <tr>
+                    <td class="ps-3 align-middle w-75">
+                        {% if friend.picture %}
+                        <img src="{{ friend.picture.url }}" class="avatar-sm rounded-circle" alt="">
+                        {% else %}
+                        <img src="{% static 'backend/images/profile.png' %}" class="avatar-sm rounded-circle" alt="">
+                        {% endif %}
+                        <a class="px-2 link-dark text-decoration-none text-capitalize" href="{% url 'backend:user' friend.username %}" spa data-bs-toggle="tooltip"
+                            data-bs-title="{% translate 'View the profile of' %} {{ friend.friend_of.username }}">
+                            {{friend.username }}</a>
+                    </td>
+                    <td>
+                        <div class="d-flex">
+                            <form spa target=".chat-modal" class="form px-1 iconMsg text-decoration-none mt-1"
+                                action="{% url 'backend:chat_messages' %}" method="POST">
+                                {% csrf_token %}
+                                <input name="username" type="hidden" value="{{ friend.username }}" />
+                                <button type="submit" spa class="btn btn-link m-0 p-0" data-bs-toggle="modal" data-bs-target="#chatModal">
+                                    <i class="bi bi-chat-fill" data-bs-toggle="tooltip"
+                                        data-bs-title="{% translate 'Open chat with' %} {{ friend.username }}">
+                                        <span class="badge rounded-pill bg-danger">{{ friend.unread_messages }}</span>
+                                    </i>
+                                </button>
+                            </form>
+                            <i class="fs-4 text-primary bi bi-controller ms-3" data-bs-toggle="tooltip"
+                                data-bs-title="{% translate 'Play with' %} {{ friend.username }}"></i>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+            </table>
+        </div>
     </div>
 </div>
