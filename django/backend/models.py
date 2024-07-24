@@ -1,18 +1,38 @@
 from django.db import models
-from django.contrib.auth.models import AbstractUser, UserManager
+from django.contrib.auth.models import AbstractUser
 from django.utils.translation import gettext as _
-from . import querysets
 from . import managers
 
+GAME_MODE_CHOICES = (
+    ("lo", _("Practice (local)")),
+    ("re", _("Competition (remote)"))
+)
+
+GAME_STATE_CHOICES = (
+    ('wa', _('Waiting')),
+    ('st', _('Started')),
+    ('fi', _('Finished')),
+)
+
+TOURNAMENT_STATE_CHOICES = (
+    ("cr", _("Open to new competitors")),
+    ("st", _("The tournament is being played")),
+    ("fi", _("The tournamen ended"))
+)
+
+GAME_CHOICES = (
+    ("po", _("Pong")),
+    ("pr", _("Pirates Revenge"))
+)
+
+LANGUAGE_CHOICES = (
+    ('es', _('Spanish')),
+    ('en', _('English')),
+)
 
 class CustomUser(AbstractUser):
 
     objects = managers.CustomUserManager()
-
-    LANGUAGE_CHOICES = (
-        ('es', 'Spanish'),
-        ('en', 'English'),
-    )
 
     bio = models.CharField(
         max_length = 500,
@@ -63,15 +83,6 @@ class CustomUser(AbstractUser):
         related_name = "received_messages",
         through = "ChatMessage",
         symmetrical = False,
-    )
-
-    matches = models.ManyToManyField(
-        "self",
-        verbose_name = "Matches at home",
-        related_name = "matches_as_guest",
-        through = "Match",
-        symmetrical = False,
-        through_fields = ('home','guest'),
     )
 
     def create_invitation(self, invited):
@@ -145,29 +156,30 @@ class Match(models.Model):
 
     objects = managers.MatchManager()
 
-    STATE_CHOICES = (
-        ('pend', 'pending'),
-        ('star', 'started'),
-        ('fini', 'finished'),
+    mode = models.CharField(
+        max_length = 2,
+        choices = GAME_MODE_CHOICES,
+        verbose_name = "Game mode",
     )
 
     home = models.ForeignKey(
-        CustomUser,
+        "Competitor",
         on_delete = models.CASCADE,
         related_name = "home_matches",
-        verbose_name = "home user",
+        verbose_name = "Home player",
     )
 
     guest = models.ForeignKey(
-        CustomUser,
+        "Competitor",
         on_delete = models.CASCADE,
         related_name = "guest_matches",
-        verbose_name = "guest user",
+        verbose_name = "Guest player",
     )
 
     game = models.TextField(
-        max_length = 20,
-        verbose_name = "Game name",
+        max_length = 2,
+        verbose_name = "Game type",
+        choices = GAME_CHOICES,
     )
 
     home_score = models.IntegerField(
@@ -181,7 +193,7 @@ class Match(models.Model):
     )
 
     winner = models.ForeignKey(
-        CustomUser,
+        "Competitor",
         null = True,
         blank = True,
         on_delete = models.CASCADE,
@@ -190,10 +202,27 @@ class Match(models.Model):
     )
 
     state = models.TextField(
-        max_length = 4,
-        choices = STATE_CHOICES,
+        max_length = 2,
+        choices = GAME_STATE_CHOICES,
         verbose_name = "Match state",
     )
+
+    tournament = models.ForeignKey(
+        "Tournament",
+        null = True,
+        blank = True,
+        verbose_name = "Tournament",
+        related_name = "matches",
+        on_delete = models.CASCADE,
+    )
+
+    @property
+    def is_practice(self):
+        return self.tournament_mode == "pr"
+    
+    @property
+    def is_single_game(self):
+        return self.tournament == None
 
 
 class Friend(models.Model):
@@ -216,3 +245,100 @@ class Friend(models.Model):
         related_name = "friend_of",
         verbose_name = "fiend of",
     )
+
+
+class Competitor(models.Model):
+
+    user = models.ForeignKey(
+        "CustomUser",
+        on_delete = models.CASCADE,
+        null = True,
+        blank = True,
+        related_name = "competes_in",
+        verbose_name = "Competitor",
+    )
+
+    alias = models.CharField(
+        max_length = 50,
+        verbose_name = "Alias",
+    )
+
+    eliminated = models.BooleanField(
+        default = False,
+        verbose_name = "The competitor was eliminated",
+    )
+
+    tournament = models.ForeignKey(
+        "Tournament",
+        on_delete = models.CASCADE,
+        null = True,
+        blank = True,
+        related_name = "competitors",
+        verbose_name = "Tournament",
+    )
+
+    @property
+    def is_single_game_competitor(self):
+        return self.tournament == None
+    
+    @property
+    def is_practice(self):
+        return self.user == None
+
+
+class Tournament(models.Model):
+
+    name = models.CharField(
+        max_length=120,
+        verbose_name = "Name of the tournament",
+    )
+
+    description = models.CharField(
+        max_length = 500,
+        verbose_name = "Description of the tournament",
+    )
+
+    image = models.ImageField(
+        null = True,
+        blank = True,
+        upload_to = "tournament_pictures",
+        verbose_name = "Tournament picture",
+    )
+
+    owner = models.ForeignKey(
+        "CustomUser",
+        on_delete = models.CASCADE,
+        related_name = "tournaments",
+        verbose_name = "Owner of the tournament",
+    )
+
+    tournament_mode = models.CharField(
+        max_length = 2,
+        verbose_name = "Mode of the tournament",
+        choices = GAME_MODE_CHOICES,
+    )
+
+    tournament_state = models.CharField(
+        max_length = 2,
+        verbose_name = "State of the tournament",
+        choices = TOURNAMENT_STATE_CHOICES,
+    )
+
+    game = models.CharField(
+        max_length = 2,
+        verbose_name = "Game",
+        choices = GAME_CHOICES,
+    )
+
+    winner = models.ForeignKey(
+        "Competitor",
+        on_delete = models.CASCADE,
+        related_name = "tournaments_won",
+        verbose_name = "Competitors",
+        null = True,
+        blank = True,
+    )
+
+    @property
+    def is_practice(self):
+        return self.tournament_mode == "pr"
