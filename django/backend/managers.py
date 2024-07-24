@@ -26,5 +26,16 @@ class ChatMessageManager(
             )
 
 
-class MatchManager(models.Manager.from_queryset(querysets.MatchQuerySet)):
+class MatchManager(
+    models.Manager.from_queryset(querysets.MatchQuerySet)):
+    pass
+
+
+class TournamentManager(
+    models.Manager.from_queryset(querysets.TournamentQuerySet)):
+    pass    
+
+
+class CompetitorManager(
+    models.Manager.from_queryset(querysets.CompetitorQuerySet)):
     pass

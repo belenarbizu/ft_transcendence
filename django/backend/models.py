@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _
 from . import managers
 
 GAME_MODE_CHOICES = (
@@ -43,7 +43,7 @@ class CustomUser(AbstractUser):
         null = True,
         blank = True,
         upload_to = "profile_pictures",
-        verbose_name = "Profile picture",
+        verbose_name = _("Profile picture"),
     )
 
     preferred_language = models.CharField(
@@ -51,14 +51,14 @@ class CustomUser(AbstractUser):
         null = True,
         blank = True,
         choices = LANGUAGE_CHOICES,
-        verbose_name = "Preferred language",
+        verbose_name = _("Preferred language"),
     )
 
     blocked_users = models.ManyToManyField(
         "self",
         blank = True,
         related_name = "blocked_by",
-        verbose_name = "Blocked users",
+        verbose_name = _("Blocked users"),
         symmetrical = False,
     )
 
@@ -66,20 +66,20 @@ class CustomUser(AbstractUser):
         "self",
         blank = True,
         related_name = "invited_users",
-        verbose_name = "Invitations",
+        verbose_name = _("Invitations"),
         symmetrical = False,
     )
 
     friends = models.ManyToManyField(
         "self",
-        verbose_name = "Is friend of",
+        verbose_name = _("Is friend of"),
         through = "Friend",
         symmetrical = True,
     )
 
     sent_messages = models.ManyToManyField(
         "self",
-        verbose_name = "Sent messages",
+        verbose_name = _("Sent messages"),
         related_name = "received_messages",
         through = "ChatMessage",
         symmetrical = False,
@@ -131,24 +131,24 @@ class ChatMessage(models.Model):
         CustomUser,
         on_delete = models.CASCADE,
         related_name = "messages_sent",
-        verbose_name = "sender",
+        verbose_name = _("Sender"),
     )
 
     recipient = models.ForeignKey(
         CustomUser,
         on_delete = models.CASCADE,
         related_name = "messages_received",
-        verbose_name = "recipient",
+        verbose_name = _("Recipient"),
     )
 
     message = models.CharField(
         max_length = 500,
-        verbose_name = "Message",
+        verbose_name = _("Message"),
     )
 
     date = models.DateTimeField(
         auto_now = True,
-        verbose_name = "Date",
+        verbose_name = _("Date"),
     )
 
 
@@ -159,37 +159,37 @@ class Match(models.Model):
     mode = models.CharField(
         max_length = 2,
         choices = GAME_MODE_CHOICES,
-        verbose_name = "Game mode",
+        verbose_name = _("Game mode"),
     )
 
     home = models.ForeignKey(
         "Competitor",
         on_delete = models.CASCADE,
         related_name = "home_matches",
-        verbose_name = "Home player",
+        verbose_name = _("Home player"),
     )
 
     guest = models.ForeignKey(
         "Competitor",
         on_delete = models.CASCADE,
         related_name = "guest_matches",
-        verbose_name = "Guest player",
+        verbose_name = _("Guest player"),
     )
 
     game = models.TextField(
         max_length = 2,
-        verbose_name = "Game type",
+        verbose_name = _("Game type"),
         choices = GAME_CHOICES,
     )
 
     home_score = models.IntegerField(
         default = 0,
-        verbose_name = "Score of home player",
+        verbose_name = _("Score of home player"),
     )
 
     guest_score = models.IntegerField(
         default = 0,
-        verbose_name = "Score of guest player",
+        verbose_name = _("Score of guest player"),
     )
 
     winner = models.ForeignKey(
@@ -197,21 +197,21 @@ class Match(models.Model):
         null = True,
         blank = True,
         on_delete = models.CASCADE,
-        verbose_name = "Winner of the match",
+        verbose_name = _("Winner of the match"),
         related_name = "matches_won",
     )
 
     state = models.TextField(
         max_length = 2,
         choices = GAME_STATE_CHOICES,
-        verbose_name = "Match state",
+        verbose_name = _("Match state"),
     )
 
     tournament = models.ForeignKey(
         "Tournament",
         null = True,
         blank = True,
-        verbose_name = "Tournament",
+        verbose_name = _("Tournament"),
         related_name = "matches",
         on_delete = models.CASCADE,
     )
@@ -229,25 +229,27 @@ class Friend(models.Model):
 
     unread_messages = models.IntegerField(
         default = 0,
-        verbose_name = "Unread messages",
+        verbose_name = _("Unread messages"),
     )
 
     user = models.ForeignKey(
         CustomUser,
         on_delete = models.CASCADE,
         related_name = "friend_user",
-        verbose_name = "user friend of",
+        verbose_name = _("user friend of"),
     )
 
     friend_of = models.ForeignKey(
         CustomUser,
         on_delete = models.CASCADE,
         related_name = "friend_of",
-        verbose_name = "fiend of",
+        verbose_name = _("fiend of"),
     )
 
 
 class Competitor(models.Model):
+
+    objects = managers.CompetitorManager()
 
     user = models.ForeignKey(
         "CustomUser",
@@ -255,17 +257,17 @@ class Competitor(models.Model):
         null = True,
         blank = True,
         related_name = "competes_in",
-        verbose_name = "Competitor",
+        verbose_name = _("Competitor"),
     )
 
     alias = models.CharField(
         max_length = 50,
-        verbose_name = "Alias",
+        verbose_name = _("Alias"),
     )
 
     eliminated = models.BooleanField(
         default = False,
-        verbose_name = "The competitor was eliminated",
+        verbose_name = _("The competitor was eliminated"),
     )
 
     tournament = models.ForeignKey(
@@ -274,7 +276,7 @@ class Competitor(models.Model):
         null = True,
         blank = True,
         related_name = "competitors",
-        verbose_name = "Tournament",
+        verbose_name = _("Tournament"),
     )
 
     @property
@@ -288,45 +290,47 @@ class Competitor(models.Model):
 
 class Tournament(models.Model):
 
+    objects = managers.TournamentManager()
+
     name = models.CharField(
         max_length=120,
-        verbose_name = "Name of the tournament",
+        verbose_name = _("Name of the tournament"),
     )
 
     description = models.CharField(
         max_length = 500,
-        verbose_name = "Description of the tournament",
+        verbose_name = _("Description of the tournament"),
     )
 
     image = models.ImageField(
         null = True,
         blank = True,
         upload_to = "tournament_pictures",
-        verbose_name = "Tournament picture",
+        verbose_name = _("Tournament picture"),
     )
 
     owner = models.ForeignKey(
         "CustomUser",
         on_delete = models.CASCADE,
         related_name = "tournaments",
-        verbose_name = "Owner of the tournament",
+        verbose_name = _("Owner of the tournament"),
     )
 
     tournament_mode = models.CharField(
         max_length = 2,
-        verbose_name = "Mode of the tournament",
+        verbose_name = _("Mode of the tournament"),
         choices = GAME_MODE_CHOICES,
     )
 
     tournament_state = models.CharField(
         max_length = 2,
-        verbose_name = "State of the tournament",
+        verbose_name = _("State of the tournament"),
         choices = TOURNAMENT_STATE_CHOICES,
     )
 
     game = models.CharField(
         max_length = 2,
-        verbose_name = "Game",
+        verbose_name = _("Game"),
         choices = GAME_CHOICES,
     )
 
@@ -334,7 +338,7 @@ class Tournament(models.Model):
         "Competitor",
         on_delete = models.CASCADE,
         related_name = "tournaments_won",
-        verbose_name = "Competitors",
+        verbose_name = _("Competitors"),
         null = True,
         blank = True,
     )

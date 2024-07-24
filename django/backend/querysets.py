@@ -65,3 +65,10 @@ class MatchQuerySet(models.QuerySet):
     def played_by(self, user):
         return self.as_home(user) | self.as_guest(user)
 
+
+class CompetitorQuerySet(models.QuerySet):
+    pass
+
+
+class TournamentQuerySet(models.QuerySet):
+    pass
