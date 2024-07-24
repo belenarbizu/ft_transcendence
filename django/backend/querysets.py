@@ -71,4 +71,16 @@ class CompetitorQuerySet(models.QuerySet):
 
 
 class TournamentQuerySet(models.QuerySet):
-    pass
+    
+    def ended(self):
+        return self.filter(state = 'en')
+    
+    def started(self):
+        return self.filter(state = 'st')
+    
+    def created(self):
+        return self.filter(state = 'cr')
+    
+    def owned_by(self, user):
+        return self.filter(owner = user)
+

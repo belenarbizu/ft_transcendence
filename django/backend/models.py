@@ -322,7 +322,7 @@ class Tournament(models.Model):
         choices = GAME_MODE_CHOICES,
     )
 
-    tournament_state = models.CharField(
+    state = models.CharField(
         max_length = 2,
         verbose_name = _("State of the tournament"),
         choices = TOURNAMENT_STATE_CHOICES,
