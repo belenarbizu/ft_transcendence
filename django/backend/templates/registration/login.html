@@ -15,22 +15,25 @@
       <p>Please login to see this page.</p>
     {% endif %}
   {% endif %}
-
-  <form method="post" action="{% url 'login' %}">
-    {% csrf_token %}
-    <table>
-      <tr>
-        <td>{{ form.username.label_tag }}</td>
-        <td>{{ form.username }}</td>
-      </tr>
-      <tr>
-        <td>{{ form.password.label_tag }}</td>
-        <td>{{ form.password }}</td>
-      </tr>
-    </table>
-    <input type="hidden" name="next" value="{% url 'backend:index' %}">
-    <button spa type="submit" value="login">{% translate 'login' %}</button>
-  </form>
+  <div class="row justify-content-evenly mt-5">
+    <div class="col-4">
+          <form method="post" action="{% url 'login' %}">
+            {% csrf_token %}
+            <table>
+              <tr>
+                <td class="text-white">{{ form.username.label_tag }}</td>
+                <td>{{ form.username }}</td>
+              </tr>
+              <tr>
+                <td class="text-white">{{ form.password.label_tag }}</td>
+                <td>{{ form.password }}</td>
+              </tr>
+            </table>
+            <input type="hidden" name="next" value="{% url 'backend:index' %}">
+            <button spa class="btn bg-primary" type="submit" value="login">{% translate 'login' %}</button>
+          </form>
+    </div>
+  </div>
 
   {# Assumes you set up the password_reset view in your URLconf #}
   <p><a href="{% url 'password_reset' %}">Lost password?</a></p>
