@@ -30,12 +30,16 @@
               </tr>
             </table>
             <input type="hidden" name="next" value="{% url 'backend:index' %}">
-            <button spa class="btn bg-primary" type="submit" value="login">{% translate 'login' %}</button>
+            <div class="d-flex justify-content-center">
+              <button spa class="btn bg-primary mt-3 w-50" type="submit" value="login">{% translate 'login' %}</button>
+            </div>
           </form>
+          {# Assumes you set up the password_reset view in your URLconf #}
+          <div class="d-flex justify-content-center">
+            <p class="mt-2"><a href="{% url 'password_reset' %}">Lost password?</a></p>
+          </div>
     </div>
   </div>
 
-  {# Assumes you set up the password_reset view in your URLconf #}
-  <p><a href="{% url 'password_reset' %}">Lost password?</a></p>
 
 {% endblock %}
