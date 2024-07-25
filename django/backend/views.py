@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from .models import CustomUser, ChatMessage, Match
+from .models import CustomUser, ChatMessage, Match, Tournament
 from django.shortcuts import get_object_or_404, redirect
 from django.views.decorators.http import require_http_methods
 from django.http import HttpResponse
@@ -108,3 +108,10 @@ def list_messages(request):
         'user': user
         }
     return render(request, "backend/components/chat/chat_messages.html", data)
+
+@require_http_methods(["GET"])
+def tournament_view(request, tournament_id):
+    tournament = get_object_or_404(Tournament, id = tournament_id)
+    return render(request, "backend/tournament.html", {
+        "tournament": tournament
+        })

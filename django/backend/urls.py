@@ -12,4 +12,5 @@ urlpatterns = [
     path('messages/', views.chat_messages_form, name="chat_messages"),
     path('messages/send/', views.send_message, name="send_message"),
     path('messages/list/', views.list_messages, name="list_messages"),
+    path('tournament/<tournament_id>/', views.tournament_view, name="tournament"),
 ]

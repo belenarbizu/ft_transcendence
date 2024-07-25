@@ -262,6 +262,8 @@ class Competitor(models.Model):
 
     alias = models.CharField(
         max_length = 50,
+        null = True,
+        blank = True,
         verbose_name = _("Alias"),
     )
 
@@ -286,6 +288,20 @@ class Competitor(models.Model):
     @property
     def is_practice(self):
         return self.user == None
+    
+    @property
+    def get_display_name(self):
+        if self.alias:
+            return self.alias
+        if self.user:
+            return self.user.username
+        return "Unnamed user"
+    
+    @property
+    def get_profile_picture(self):
+        if self.user:
+            return self.user.picture.url
+        return ""
 
 
 class Tournament(models.Model):
@@ -320,18 +336,21 @@ class Tournament(models.Model):
         max_length = 2,
         verbose_name = _("Mode of the tournament"),
         choices = GAME_MODE_CHOICES,
+        default = "pr",
     )
 
     state = models.CharField(
         max_length = 2,
         verbose_name = _("State of the tournament"),
         choices = TOURNAMENT_STATE_CHOICES,
+        default = "cr",
     )
 
     game = models.CharField(
         max_length = 2,
         verbose_name = _("Game"),
         choices = GAME_CHOICES,
+        default = "po",
     )
 
     winner = models.ForeignKey(
@@ -346,3 +365,15 @@ class Tournament(models.Model):
     @property
     def is_practice(self):
         return self.tournament_mode == "pr"
+
+    @property
+    def is_created(self):
+        return self.state == "cr"
+
+    @property
+    def is_started(self):
+        return self.state == "st"
+    
+    @property
+    def is_finished(self):
+        return self.state == "fi"

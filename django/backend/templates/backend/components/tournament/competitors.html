@@ -1,0 +1,25 @@
+{% load i18n %}
+
+<div class="card card-height-sm">
+        <h4 class="card-header bg-white">
+            <div class="p-2">{% translate "Competitors" %}</div>
+        </h4>
+        <div class="card-body table-responsive p-0">
+            <table class="table table-borderless table-striped">
+                <thead class="">
+                    <td class="ps-3">{% translate "Competitor" %}</td>
+                </thead>
+                <tbody>
+                    {% for competitor in tournament.competitors.all %}
+                    <tr>
+                        <td class="ps-3 align-middle w-75">
+                            <img src="{{ competitor.get_profile_picture }}" class="avatar-sm rounded-circle" alt="">
+                            {{ competitor.get_display_name }}
+                        </td>
+                        <td>Eliminar participante</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+    </div>
+</div>

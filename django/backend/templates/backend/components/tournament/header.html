@@ -1,0 +1,47 @@
+{% load i18n %}
+{% load static %}
+
+<div class="card" id="user_info">
+    <div class="card-body pb-0">
+        <div class="row align-items-center">
+            <div class="col-md-3 p-4">
+                <div class="text-center" style="min-height: 180px;">
+                    {% if user.picture %}
+                    <img src="{{ user.picture.url }}" class="img-fluid avatar-xxl rounded-circle"
+                        alt="">
+                    {% else %}
+                    <img src="{% static 'backend/images/profile.png' %}" class="img-fluid avatar-xxl rounded-circle"
+                        alt="">
+                    {% endif %}
+                </div>
+            </div><!-- end col -->
+            <div class="col">
+                <div class="row">
+                    <h3>{{ tournament.name }}</h3>
+                    <p>{{ tournament.description }}</p>
+                    <p>{{ tournament.get_state_display }}</p>
+                </div>
+                <div class="row">
+                    <div class="btn-toolbar" role="toolbar">
+                        {% if request.user.username == user.username %}
+                        <button class="btn mx-1" data-bs-toggle="modal" data-bs-target="#profileModal">{% translate 'Edit profile' %}</button>
+                            {% if request.user.is_authenticated %}
+                            <form action="{% url 'logout' %}" method="POST">
+                                {% csrf_token %}
+                                <input type="hidden" name="next" value="{{ request.url }}" />
+                                <button class="btn btn-outline-primary mx-1" type="submit">{% translate 'Logout' %}</button>
+                            </form>
+                            {% endif %}
+                        {% endif %}
+                        <button class="btn btn-primary mx-1">{% translate 'Invite' %}</button>
+                        <button class="btn btn-primary mx-1" data-bs-toggle="modal" data-bs-target="#localModal">{% translate 'Play' %}</button>
+                        <button class="btn btn-primary mx-1" data-bs-toggle="modal" data-bs-target="#chatModal">{% translate 'Chat' %}</button>
+                        <button class="btn btn-primary mx-1">{% translate 'Block' %}</button>
+                        <button class="btn btn-primary mx-1">{% translate 'Unblock' %}</button>
+                        
+                    </div>
+                </div>
+            </div>
+        </div><!-- end row -->
+    </div><!-- end card body -->
+</div>
