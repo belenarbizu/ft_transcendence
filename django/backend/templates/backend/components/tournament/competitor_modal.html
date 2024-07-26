@@ -1,0 +1,21 @@
+{% load i18n %}
+
+<div class="modal fade" id="competitorModal" tabindex="-1" aria-labelledby="invitationModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content" style="height: 350px;">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">
+          {% translate 'New competitor' %}
+        </h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-header">
+        <form spa action="{% url 'backend:uninvited_users' %}" method="POST" target=".invitation_list_body" autocomplete="off">
+          {% csrf_token %}
+          <input type="text" name="alias" class="form-control" placeholder="{% translate 'alias' %}">
+            <input type="hidden" name="user" class="form-control" placeholder="{% translate 'username' %}">
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

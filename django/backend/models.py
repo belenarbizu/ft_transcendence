@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.utils.translation import gettext_lazy as _
+from django.templatetags.static import static
 from . import managers
 
 GAME_MODE_CHOICES = (
@@ -121,6 +122,12 @@ class CustomUser(AbstractUser):
             raise Exception(_("The user doesn't exist"))
         self.invited_by.remove(invited_user)
         self.save()
+
+    @property
+    def get_profile_picture(self):
+        if self.user.picture:
+            return self.user.picture.url
+        return static('backend/images/profile.png')
 
 
 class ChatMessage(models.Model):
@@ -282,7 +289,7 @@ class Competitor(models.Model):
     )
 
     @property
-    def is_single_game_competitor(self):
+    def is_single_game(self):
         return self.tournament == None
     
     @property
@@ -299,9 +306,9 @@ class Competitor(models.Model):
     
     @property
     def get_profile_picture(self):
-        if self.user:
+        if self.user and self.user.picture:
             return self.user.picture.url
-        return ""
+        return static('backend/images/profile.png')
 
 
 class Tournament(models.Model):
@@ -364,7 +371,7 @@ class Tournament(models.Model):
 
     @property
     def is_practice(self):
-        return self.tournament_mode == "pr"
+        return self.tournament_mode == "lo"
 
     @property
     def is_created(self):

@@ -13,4 +13,6 @@ urlpatterns = [
     path('messages/send/', views.send_message, name="send_message"),
     path('messages/list/', views.list_messages, name="list_messages"),
     path('tournament/<tournament_id>/', views.tournament_view, name="tournament"),
+    path('tournament/<tournament_id>/remove_competitor', views.tournament_remove_competitor, name="tournament_remove_competitor"),
+    path('tournament/<tournament_id>/add_competitor', views.tournament_register_competitor, name="tournament_add_competitor"),
 ]

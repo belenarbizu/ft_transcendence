@@ -1,7 +1,8 @@
 from django.shortcuts import render
-from .models import CustomUser, ChatMessage, Match, Tournament
+from .models import *
 from django.shortcuts import get_object_or_404, redirect
 from django.views.decorators.http import require_http_methods
+from django.utils.translation import gettext_lazy as _
 from django.http import HttpResponse
 from django.urls import reverse
 from django.db import models
@@ -20,7 +21,7 @@ def user_view(request, username):
             "invitations": user.invited_users.all(),
             "accepted": CustomUser.objects.friend_of(user),
         },
-        "games": Match.objects.played_by(user),
+        "games": [],
     }
     return render(request, "backend/index.html", data)
 
@@ -115,3 +116,40 @@ def tournament_view(request, tournament_id):
     return render(request, "backend/tournament.html", {
         "tournament": tournament
         })
+
+@require_http_methods(["POST"])
+def tournament_remove_competitor(request, tournament_id):
+    tournament = get_object_or_404(Tournament, id = tournament_id)
+    competitor_id = request.POST.get("competitor", "")
+    competitor = get_object_or_404(Competitor, id = competitor_id)
+    if not tournament.is_created:
+        return HttpResponse(_("Competitors can't be removed once the tournament is started"), status=409)
+    competitor.delete()
+    print ("Removed from tournament ", competitor)
+    return render(request, "backend/tournament.html", {
+        "tournament": tournament
+        })
+
+@require_http_methods(["POST"])
+def tournament_register_competitor(request, tournament_id):
+    tournament = get_object_or_404(Tournament, id = tournament_id)
+    if not tournament.is_created:
+        return HttpResponse(_("Competitors can't be added once the tournament is started"), status=409)
+    competitor_alias = request.POST.get("alias", "")
+    user_id = request.POST.get("user_id", "")
+    user = None
+    if user_id:
+        user = CustomUser.objects.get(id = user_id)
+    if tournament.is_practice:
+        if competitor_alias == "":
+            return HttpResponse(_("You must choose an alias for this tournament"), status=409)
+        if competitor_alias in tournament.competitors.values_list('alias', flat = True):
+            return HttpResponse(_("The alias is already in use"), status=409)
+        competitor = Competitor.objects.create(
+            alias = competitor_alias,
+            user = request.user,
+            tournament = tournament)
+        competitor.save()
+    return render(request, "backend/tournament.html", {
+        "tournament": tournament
+    })
