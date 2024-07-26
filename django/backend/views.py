@@ -125,15 +125,10 @@ def tournament_view(request, tournament_id):
 @login_required
 @require_http_methods(["POST"])
 def tournament_remove_competitor(request, tournament_id):
-    tournament = get_object_or_404(Tournament, id = tournament_id)
-    competitor_id = request.POST.get("competitor", "")
-    competitor = get_object_or_404(Competitor, id = competitor_id)
-    if not tournament.is_created:
-        return HttpResponse(
-            _("Competitors can't be removed once the tournament is started"),
-            status=409)
-    competitor.delete()
-    print ("Removed from tournament ", competitor)
+    try:
+        Competitor.objects.remove_competitor(request.POST.get("competitor", ""))
+    except Exception as e:
+        return HttpResponse(str(e), status=409)
     return redirect(reverse("backend:tournament",
         kwargs={'tournament_id':tournament_id}))
 

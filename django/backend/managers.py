@@ -105,3 +105,12 @@ class CompetitorManager(
                 user = user,
                 tournament = tournament)
             competitor.save()
+
+    def remove_competitor(self, competitor_id):
+        try:
+            competitor = self.get(id = competitor_id)
+        except:
+            raise Exception(_("Competitor not found"))
+        if not competitor.tournament.is_created:
+            raise Exception(_("Competitors can't be removed once the tournament is started"))
+        competitor.delete()
