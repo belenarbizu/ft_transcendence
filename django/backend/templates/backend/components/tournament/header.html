@@ -17,30 +17,39 @@
             </div><!-- end col -->
             <div class="col">
                 <div class="row">
-                    <h3>{{ tournament.name }}</h3>
+                    <h3>{{ tournament.name }} - {{ tournament.get_game_display }}</h3>
                     <p>{{ tournament.description }}</p>
                     <p>{{ tournament.get_state_display }} - {{ tournament.get_tournament_mode_display }}</p>
                 </div>
-                <div class="row">
-                    <div class="btn-toolbar" role="toolbar">
-                        {% if request.user.username == user.username %}
-                        <button class="btn mx-1" data-bs-toggle="modal" data-bs-target="#profileModal">{% translate 'Edit profile' %}</button>
-                            {% if request.user.is_authenticated %}
-                            <form action="{% url 'logout' %}" method="POST">
-                                {% csrf_token %}
-                                <input type="hidden" name="next" value="{{ request.url }}" />
-                                <button class="btn btn-outline-primary mx-1" type="submit">{% translate 'Logout' %}</button>
-                            </form>
-                            {% endif %}
+                <div class="row pb-3">
+                    <div class="btn-toolbar">
+                        {% if tournament.is_created %}
+                        <form spa action="{% url 'backend:tournament_start' tournament.id %}" method="POST" autocomplete="off">
+                            {% csrf_token %}
+                            <div class="input-group mx-1">
+                                <button type="submit" class="btn btn-primary" type="button">
+                                    {% translate 'Start tournament' %}
+                                </button>
+                            </div>
+                        </form>
                         {% endif %}
-                        <button class="btn btn-primary mx-1">{% translate 'Invite' %}</button>
-                        <button class="btn btn-primary mx-1" data-bs-toggle="modal" data-bs-target="#localModal">{% translate 'Play' %}</button>
-                        <button class="btn btn-primary mx-1" data-bs-toggle="modal" data-bs-target="#chatModal">{% translate 'Chat' %}</button>
-                        <button class="btn btn-primary mx-1">{% translate 'Block' %}</button>
-                        <button class="btn btn-primary mx-1">{% translate 'Unblock' %}</button>
-                        
                     </div>
                 </div>
+
+                {% if competitor and not tournament.is_practice %}
+
+                <div class="row">
+                    <p>{% translate 'You joined the tournament as' %} {{ competitor.alias }}</p>
+                </div>
+
+                {% endif %}
+                
+                {% if tournament.is_finished %}
+                <div class="alert alert-success text-center" role="alert">
+                    <h3>{{ tournament.winner.get_display_name }} {% translate 'won the tournament. Congratulations!' %}</h3>
+                    
+                  </div>
+                {% endif %}
             </div>
         </div><!-- end row -->
     </div><!-- end card body -->

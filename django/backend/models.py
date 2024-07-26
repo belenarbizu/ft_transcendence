@@ -211,6 +211,7 @@ class Match(models.Model):
     state = models.TextField(
         max_length = 2,
         choices = GAME_STATE_CHOICES,
+        default = "wa",
         verbose_name = _("Match state"),
     )
 
@@ -230,6 +231,18 @@ class Match(models.Model):
     @property
     def is_single_game(self):
         return self.tournament == None
+    
+    @property
+    def is_waiting(self):
+        return self.state == "wa"
+    
+    @property
+    def is_started(self):
+        return self.state == "st"
+    
+    @property
+    def is_finished(self):
+        return self.state == "fi"
 
 
 class Friend(models.Model):

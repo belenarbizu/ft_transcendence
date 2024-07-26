@@ -8,22 +8,17 @@
         </div>
     </div>
     {% if tournament.is_created %}
-    <div class="row p-4">
+    <div class="row px-4">
         <div class="col col-12">
             {% include "backend/components/tournament/competitors.html" %}
         </div>
     </div>
-    {% endif %}
-    {% if tournament.is_started %}
-    <div class="row p-4">
-        <div class="col col-12">
-            {% include "backend/components/tournament/competitors.html" %}
+    {% else %}
+    <div class="row px-4">
+        <div class="col-8">
+            {% include "backend/components/tournament/tournament_matches.html" %}
         </div>
-    </div>
-    {% endif %}
-    {% if tournament.is_finished %}
-    <div class="row p-4">
-        <div class="col col-12">
+        <div class="col-4">
             {% include "backend/components/tournament/competitors.html" %}
         </div>
     </div>
@@ -31,7 +26,5 @@
 
 
 </div>
-
-{% include "backend/components/tournament/competitor_modal.html" %}
 
 {% endblock %}

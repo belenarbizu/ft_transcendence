@@ -114,7 +114,8 @@ def list_messages(request):
 def tournament_view(request, tournament_id):
     tournament = get_object_or_404(Tournament, id = tournament_id)
     return render(request, "backend/tournament.html", {
-        "tournament": tournament
+        "tournament": tournament,
+        "competitor": Competitor.objects.of_tournament(tournament).of_user(request.user).first()
         })
 
 @require_http_methods(["POST"])
@@ -122,34 +123,51 @@ def tournament_remove_competitor(request, tournament_id):
     tournament = get_object_or_404(Tournament, id = tournament_id)
     competitor_id = request.POST.get("competitor", "")
     competitor = get_object_or_404(Competitor, id = competitor_id)
+
     if not tournament.is_created:
         return HttpResponse(_("Competitors can't be removed once the tournament is started"), status=409)
     competitor.delete()
     print ("Removed from tournament ", competitor)
-    return render(request, "backend/tournament.html", {
-        "tournament": tournament
-        })
+    return redirect(reverse("backend:tournament", kwargs={'tournament_id':tournament_id}))
 
 @require_http_methods(["POST"])
 def tournament_register_competitor(request, tournament_id):
     tournament = get_object_or_404(Tournament, id = tournament_id)
-    if not tournament.is_created:
-        return HttpResponse(_("Competitors can't be added once the tournament is started"), status=409)
-    competitor_alias = request.POST.get("alias", "")
-    user_id = request.POST.get("user_id", "")
-    user = None
-    if user_id:
-        user = CustomUser.objects.get(id = user_id)
-    if tournament.is_practice:
-        if competitor_alias == "":
-            return HttpResponse(_("You must choose an alias for this tournament"), status=409)
-        if competitor_alias in tournament.competitors.values_list('alias', flat = True):
-            return HttpResponse(_("The alias is already in use"), status=409)
-        competitor = Competitor.objects.create(
-            alias = competitor_alias,
-            user = request.user,
-            tournament = tournament)
-        competitor.save()
-    return render(request, "backend/tournament.html", {
-        "tournament": tournament
-    })
+    try:
+        Competitor.objects.register_competitor(
+            tournament,
+            request.user,
+            request.POST.get("alias", "")
+            )
+    except Exception as e:
+        return HttpResponse(str(e), status=409)
+    return redirect(reverse("backend:tournament", kwargs={'tournament_id':tournament_id}))
+
+@require_http_methods(["POST"])
+def tournament_start(request, tournament_id):
+    tournament = get_object_or_404(Tournament, id = tournament_id)
+    if tournament.is_created:
+        tournament.state = 'st'
+        Tournament.objects.generate_tournament_matches(tournament)
+        tournament.save()
+    return redirect(reverse("backend:tournament", kwargs={'tournament_id':tournament_id}))
+
+@require_http_methods(["POST"])
+def mock_match(request):
+    import random
+    match = get_object_or_404(Match, id = request.POST.get("match_id"))
+    match.winner = random.choice([match.home, match.guest])
+    match.home_score = random.randint(0, 4)
+    match.guest_score = random.randint(0, 4)
+    if match.winner == match.guest:
+        match.guest_score = 5
+        match.home.eliminated = True
+        match.home.save()
+    else:
+        match.home_score = 5
+        match.guest.eliminated = True
+        match.guest.save()
+    match.state = "fi"
+    match.save()
+    Tournament.objects.new_round(match.tournament)
+    return redirect(reverse("backend:tournament", kwargs={'tournament_id':match.tournament.id}))

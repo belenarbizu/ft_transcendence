@@ -64,11 +64,25 @@ class MatchQuerySet(models.QuerySet):
     
     def played_by(self, user):
         return self.as_home(user) | self.as_guest(user)
+    
+    def order_by_state(self):
+        return self.order_by('-state')
+    
+    def not_finished(self):
+        return self.exclude(state = "fi")
 
 
 class CompetitorQuerySet(models.QuerySet):
-    pass
-
+    
+    def of_user(self, user):
+        return self.filter(user = user)
+    
+    def of_tournament(self, tournament):
+        return self.filter(tournament = tournament)
+    
+    def not_eliminated(self):
+        return self.exclude(eliminated = True)
+    
 
 class TournamentQuerySet(models.QuerySet):
     
