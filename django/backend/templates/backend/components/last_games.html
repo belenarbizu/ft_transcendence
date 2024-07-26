@@ -6,11 +6,11 @@
         </h4>
         <div class="card-body table-responsive p-0">
             <table class="table table-borderless table-striped">
-                <thead class="">
-                    <td class="ps-3">{% translate "Opponent" %}</td>
-                    <td>{% translate "Game" %}</td>
-                    <td>{% translate "Date" %}</td>
-                    <td>{% translate "Result" %}</td>
+                <thead style="position: sticky; top: 0; background-color: white;">
+                    <th class="ps-3">{% translate "Opponent" %}</th>
+                    <th>{% translate "Game" %}</th>
+                    <th>{% translate "Date" %}</th>
+                    <th>{% translate "Result" %}</th>
                 </thead>
                 <tbody>
                     {% for game in games %}
