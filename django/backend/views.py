@@ -9,7 +9,8 @@ from django.db import models
 
 def index_view(request):
     if request.user.is_authenticated:
-        return redirect(reverse("backend:user", kwargs={'username':request.user.username}))
+        return redirect(reverse("backend:user",
+            kwargs={'username':request.user.username}))
     return 0
 
 def user_view(request, username):
@@ -115,7 +116,8 @@ def tournament_view(request, tournament_id):
     tournament = get_object_or_404(Tournament, id = tournament_id)
     return render(request, "backend/tournament.html", {
         "tournament": tournament,
-        "competitor": Competitor.objects.of_tournament(tournament).of_user(request.user).first()
+        "competitor": Competitor.objects.of_tournament(
+            tournament).of_user(request.user).first()
         })
 
 @require_http_methods(["POST"])
@@ -123,34 +125,34 @@ def tournament_remove_competitor(request, tournament_id):
     tournament = get_object_or_404(Tournament, id = tournament_id)
     competitor_id = request.POST.get("competitor", "")
     competitor = get_object_or_404(Competitor, id = competitor_id)
-
     if not tournament.is_created:
-        return HttpResponse(_("Competitors can't be removed once the tournament is started"), status=409)
+        return HttpResponse(
+            _("Competitors can't be removed once the tournament is started"),
+            status=409)
     competitor.delete()
     print ("Removed from tournament ", competitor)
-    return redirect(reverse("backend:tournament", kwargs={'tournament_id':tournament_id}))
+    return redirect(reverse("backend:tournament",
+        kwargs={'tournament_id':tournament_id}))
 
 @require_http_methods(["POST"])
 def tournament_register_competitor(request, tournament_id):
     tournament = get_object_or_404(Tournament, id = tournament_id)
     try:
         Competitor.objects.register_competitor(
-            tournament,
-            request.user,
-            request.POST.get("alias", "")
-            )
+            tournament, request.user, request.POST.get("alias", ""))
     except Exception as e:
         return HttpResponse(str(e), status=409)
-    return redirect(reverse("backend:tournament", kwargs={'tournament_id':tournament_id}))
+    return redirect(reverse("backend:tournament",
+        kwargs={'tournament_id':tournament_id}))
 
 @require_http_methods(["POST"])
 def tournament_start(request, tournament_id):
-    tournament = get_object_or_404(Tournament, id = tournament_id)
-    if tournament.is_created:
-        tournament.state = 'st'
-        Tournament.objects.generate_tournament_matches(tournament)
-        tournament.save()
-    return redirect(reverse("backend:tournament", kwargs={'tournament_id':tournament_id}))
+    try:
+        Tournament.objects.start_tournament(tournament_id)
+    except Exception as e:
+        return HttpResponse(str(e), status=409)
+    return redirect(reverse("backend:tournament",
+        kwargs={'tournament_id':tournament_id}))
 
 @require_http_methods(["POST"])
 def mock_match(request):
@@ -170,4 +172,5 @@ def mock_match(request):
     match.state = "fi"
     match.save()
     Tournament.objects.new_round(match.tournament)
-    return redirect(reverse("backend:tournament", kwargs={'tournament_id':match.tournament.id}))
+    return redirect(reverse("backend:tournament",
+        kwargs={'tournament_id':match.tournament.id}))

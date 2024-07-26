@@ -5,8 +5,8 @@ from django.templatetags.static import static
 from . import managers
 
 GAME_MODE_CHOICES = (
-    ("lo", _("Practice (local)")),
-    ("re", _("Competition (remote)"))
+    ("lo", _("Practice (private)")),
+    ("re", _("Competition (public)"))
 )
 
 GAME_STATE_CHOICES = (
