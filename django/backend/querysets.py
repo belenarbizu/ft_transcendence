@@ -97,4 +97,12 @@ class TournamentQuerySet(models.QuerySet):
     
     def owned_by(self, user):
         return self.filter(owner = user)
-
+    
+    def local(self):
+        return self.filter(tournament_mode = "lo")
+    
+    def remote(self):
+        return self.filter(tournament_mode = "re")
+    
+    def visible_to(self, user):
+        return (self.local() & self.owned_by(user)) | self.remote()

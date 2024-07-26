@@ -6,6 +6,7 @@ from django.utils.translation import gettext_lazy as _
 from django.http import HttpResponse
 from django.urls import reverse
 from django.db import models
+from django.contrib.auth.decorators import login_required
 
 def index_view(request):
     if request.user.is_authenticated:
@@ -111,6 +112,7 @@ def list_messages(request):
         }
     return render(request, "backend/components/chat/chat_messages.html", data)
 
+@login_required
 @require_http_methods(["GET"])
 def tournament_view(request, tournament_id):
     tournament = get_object_or_404(Tournament, id = tournament_id)
@@ -120,6 +122,7 @@ def tournament_view(request, tournament_id):
             tournament).of_user(request.user).first()
         })
 
+@login_required
 @require_http_methods(["POST"])
 def tournament_remove_competitor(request, tournament_id):
     tournament = get_object_or_404(Tournament, id = tournament_id)
@@ -134,6 +137,7 @@ def tournament_remove_competitor(request, tournament_id):
     return redirect(reverse("backend:tournament",
         kwargs={'tournament_id':tournament_id}))
 
+@login_required
 @require_http_methods(["POST"])
 def tournament_register_competitor(request, tournament_id):
     tournament = get_object_or_404(Tournament, id = tournament_id)
@@ -145,6 +149,7 @@ def tournament_register_competitor(request, tournament_id):
     return redirect(reverse("backend:tournament",
         kwargs={'tournament_id':tournament_id}))
 
+@login_required
 @require_http_methods(["POST"])
 def tournament_start(request, tournament_id):
     try:
@@ -153,6 +158,17 @@ def tournament_start(request, tournament_id):
         return HttpResponse(str(e), status=409)
     return redirect(reverse("backend:tournament",
         kwargs={'tournament_id':tournament_id}))
+
+@login_required
+@require_http_methods(["GET", "POST"])
+def tournament_list(request):
+    data = {
+        "tournaments": Tournament.objects.visible_to(request.user)
+    }
+    if (request.method == "GET"):
+        return render(request, "backend/tournament_list.html", data)
+    if (request.method == "POST"):
+        return render(request, "backend/tournament_list.html", data)
 
 @require_http_methods(["POST"])
 def mock_match(request):

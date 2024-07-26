@@ -9,7 +9,7 @@
             <tbody>
                 {% for match in tournament.matches.order_by_state %}
                 <tr>
-                    <td class="px-3 align-middle">
+                    <td class="px-3 align-middle col-1">
                         <img src="{{ match.home.get_profile_picture }}" class="avatar-sm rounded-circle" alt="">
                         {% if match.winner == match.guest %}
                         <span class="px-2 link-dark text-decoration-none text-capitalize">
@@ -19,9 +19,9 @@
                             {{ match.home.get_display_name }}</span>
                         {% endif %}
                     </td>
-                    <td class="px-3 align-middle text-center">
+                    <td class="px-3 align-middle text-center col-1">
                         {% if match.is_waiting %}
-                        <form spa action="{% url 'backend:match_mock' %}" method="POST" autocomplete="off">
+                        <form spa action="{% url 'backend:match_mock' %}" method="POST">
                             {% csrf_token %}
                             <input type="hidden" name="match_id" value="{{ match.id }}" class="form-control">
                             <div class="input-group">
@@ -36,7 +36,7 @@
                         <span class="badge rounded-pill bg-primary">{{ match.home_score }} - {{ match.guest_score }}</span>
                         {% endif %}
                     </td>
-                    <td class="px-3 align-middle text-end">
+                    <td class="px-3 align-middle text-end col-1">
                         {% if match.winner == match.home %}
                         <span class="px-2 link-dark text-decoration-none text-capitalize">
                             <del>{{ match.guest.get_display_name }}</del></span>
