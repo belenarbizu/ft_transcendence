@@ -13,7 +13,7 @@
                 </div>
                 <div class="row pb-3">
                     <div class="btn-toolbar">
-                        {% if tournament.is_created %}
+                        {% if tournament.is_created and user == tournament.owner %}
                         <form spa action="{% url 'backend:tournament_start' tournament.id %}" method="POST" autocomplete="off">
                             {% csrf_token %}
                             <div class="input-group mx-1">

@@ -148,7 +148,7 @@ def tournament_register_competitor(request, tournament_id):
 @require_http_methods(["POST"])
 def tournament_start(request, tournament_id):
     try:
-        Tournament.objects.start_tournament(tournament_id)
+        Tournament.objects.start_tournament(tournament_id, request.user)
     except Exception as e:
         return HttpResponse(str(e), status=409)
     return redirect(reverse("backend:tournament",
@@ -168,14 +168,14 @@ def tournament_list(request):
 @login_required
 @require_http_methods(["POST"])
 def tournament_create(request):
-    tournament = Tournament(
+    tournament = Tournament.objects.create(
         owner = request.user,
         name = request.POST["name"],
         description = request.POST["description"],
         game = request.POST["game"],
         tournament_mode = request.POST["tournament_mode"],
     )
-    tournament.save()
+    print(tournament)
     return redirect(reverse("backend:tournament",
                             kwargs = {"tournament_id": tournament.id}))
 

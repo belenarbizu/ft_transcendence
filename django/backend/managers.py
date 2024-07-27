@@ -39,11 +39,13 @@ class TournamentManager(
     models.Manager.from_queryset(querysets.TournamentQuerySet)):
         
     def create(self, *args, **kwargs):
-        super().create(*args, **kwargs)
         notify_update("#tournament_list_update")
+        return super().create(*args, **kwargs)
         
-    def start_tournament(self, tournament_id):
+    def start_tournament(self, tournament_id, user):
         tournament = self.get(id = tournament_id)
+        if user != tournament.owner:
+            raise Exception(_("You can't start the tournament"))
         if tournament.is_created:
             if len(tournament.competitors.all()) < 2:
                 raise Exception(_("You can't start the tournament with less than 2 competitors"))
