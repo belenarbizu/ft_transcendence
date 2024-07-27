@@ -106,3 +106,6 @@ class TournamentQuerySet(models.QuerySet):
     
     def visible_to(self, user):
         return (self.local() & self.owned_by(user)) | self.remote()
+    
+    def filtered(self, **kwargs):
+        return self.filter(state__in = kwargs.keys())

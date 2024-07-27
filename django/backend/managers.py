@@ -3,6 +3,7 @@ from . import querysets
 from django.contrib.auth.models import UserManager
 from channels.layers import get_channel_layer
 from django.utils.translation import gettext_lazy as _
+from .utils import notify_update
 from asgiref.sync import async_to_sync
 from django.apps import apps
 import random
@@ -36,13 +37,18 @@ class MatchManager(
 
 class TournamentManager(
     models.Manager.from_queryset(querysets.TournamentQuerySet)):
-
+        
+    def create(self, *args, **kwargs):
+        super().create(*args, **kwargs)
+        notify_update("#tournament_list_update")
+        
     def start_tournament(self, tournament_id):
         tournament = self.get(id = tournament_id)
         if tournament.is_created:
             if len(tournament.competitors.all()) < 2:
                 raise Exception(_("You can't start the tournament with less than 2 competitors"))
             tournament.state = 'st'
+            notify_update("#tournament_list_update")
             self.new_round(tournament)
             tournament.save()
     
@@ -68,6 +74,7 @@ class TournamentManager(
             tournament.state = "fi"
             tournament.winner = competitors.first()
             tournament.save()
+            notify_update("#tournament_list_update")
         if len(tournament.matches.not_finished()) == 0:
             self.generate_tournament_matches(tournament)
 

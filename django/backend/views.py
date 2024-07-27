@@ -155,30 +155,40 @@ def tournament_start(request, tournament_id):
         kwargs={'tournament_id':tournament_id}))
 
 @login_required
-@require_http_methods(["GET", "POST"])
+@require_http_methods(["GET"])
 def tournament_list(request):
     data = {
-        "tournaments": Tournament.objects.visible_to(request.user),
+        "tournaments": Tournament.objects.visible_to(request.user).filtered(cr = 'on'),
         "game_options": Tournament._meta.get_field("game").choices,
         "mode_options": Tournament._meta.get_field("tournament_mode").choices,
     }
     if (request.method == "GET"):
         return render(request, "backend/tournament_list.html", data)
-    if (request.method == "POST"):
-        return render(request, "backend/tournament_list.html", data)
 
 @login_required
 @require_http_methods(["POST"])
 def tournament_create(request):
-    Tournament.objects.create(
+    tournament = Tournament(
         owner = request.user,
         name = request.POST["name"],
         description = request.POST["description"],
         game = request.POST["game"],
         tournament_mode = request.POST["tournament_mode"],
     )
-    return redirect(reverse("backend:tournament_list"))
+    tournament.save()
+    return redirect(reverse("backend:tournament",
+                            kwargs = {"tournament_id": tournament.id}))
 
+@login_required
+@require_http_methods(["POST"])
+def tournament_list_update(request):
+    print(request.POST)
+    data = {
+        "tournaments": Tournament.objects.visible_to(request.user).filtered(**request.POST),
+    }
+    return render(request, "backend/components/tournament/tournament_list.html", data)
+
+# This view is for development purposes
 @require_http_methods(["POST"])
 def mock_match(request):
     import random
