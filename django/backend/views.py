@@ -158,12 +158,26 @@ def tournament_start(request, tournament_id):
 @require_http_methods(["GET", "POST"])
 def tournament_list(request):
     data = {
-        "tournaments": Tournament.objects.visible_to(request.user)
+        "tournaments": Tournament.objects.visible_to(request.user),
+        "game_options": Tournament._meta.get_field("game").choices,
+        "mode_options": Tournament._meta.get_field("tournament_mode").choices,
     }
     if (request.method == "GET"):
         return render(request, "backend/tournament_list.html", data)
     if (request.method == "POST"):
         return render(request, "backend/tournament_list.html", data)
+
+@login_required
+@require_http_methods(["POST"])
+def tournament_create(request):
+    Tournament.objects.create(
+        owner = request.user,
+        name = request.POST["name"],
+        description = request.POST["description"],
+        game = request.POST["game"],
+        tournament_mode = request.POST["tournament_mode"],
+    )
+    return redirect(reverse("backend:tournament_list"))
 
 @require_http_methods(["POST"])
 def mock_match(request):

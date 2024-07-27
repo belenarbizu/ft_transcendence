@@ -1,0 +1,64 @@
+{% load i18n %}
+{% load static %}
+
+<div class="modal fade" id="createTournamentModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content chat-modal">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5">{% translate 'Create tournament' %}</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body col-12">
+                <form spa method="POST" action="{% url 'backend:tournament_create' %}" hide autocomplete="off">
+                    {% csrf_token %}
+
+                    <div class="row mb-3">
+                    <label for="inputTournamentName" class="col-sm-4 col-form-label">{% translate 'Tournament name' %}</label>
+                    <div class="col-sm-8">
+                        <input name="name" type="text" class="form-control" id="inputTournamentName" required>
+                    </div>                  
+                    </div>
+
+                    <div class="row mb-3">
+                    <label for="inputTournamentDescription" class="col-sm-4 col-form-label">{% translate 'Tournament description' %}</label>
+                    <div class="col-sm-8">
+                        <input name="description" type="text" class="form-control" id="inputTournamentDescription" required>
+                    </div>
+                    </div>
+
+                    <div class="row mb-3">
+                    <label for="inputTournamentGame" class="col-sm-4 col-form-label">{% translate 'Game' %}</label>
+                    <div class="col-sm-8">
+                        <select name="game" class="form-select" id="inputTournamentGame">
+                            {% for option in game_options %}
+                            <option 
+                            {% if forloop.first %}
+                            selected
+                            {% endif %}
+                            value="{{ option.0 }}">{{ option.1 }}</option>
+                            {% endfor %}
+                          </select>
+                    </div>
+                    </div>
+
+                    <div class="row mb-3">
+                    <label for="inputTournamentMode" class="col-sm-4 col-form-label">{% translate 'Mode' %}</label>
+                    <div class="col-sm-8">
+                        <select name="tournament_mode" class="form-select" id="inputTournamentMode">
+                            {% for option in mode_options %}
+                            <option 
+                            {% if forloop.first %}
+                            selected
+                            {% endif %}
+                            value="{{ option.0 }}">{{ option.1 }}</option>
+                            {% endfor %}
+                          </select>
+                    </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100">{% translate 'Create' %}</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
