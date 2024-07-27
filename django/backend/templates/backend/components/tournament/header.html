@@ -4,17 +4,7 @@
 <div class="card" id="user_info">
     <div class="card-body pb-0">
         <div class="row align-items-center">
-            <div class="col-md-3 p-4">
-                <div class="text-center" style="min-height: 180px;">
-                    {% if user.picture %}
-                    <img src="{{ user.picture.url }}" class="img-fluid avatar-xxl rounded-circle"
-                        alt="">
-                    {% else %}
-                    <img src="{% static 'backend/images/profile.png' %}" class="img-fluid avatar-xxl rounded-circle"
-                        alt="">
-                    {% endif %}
-                </div>
-            </div><!-- end col -->
+
             <div class="col">
                 <div class="row">
                     <h3>{{ tournament.name }} - {{ tournament.get_game_display }}</h3>

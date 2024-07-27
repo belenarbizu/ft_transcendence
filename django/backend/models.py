@@ -338,13 +338,6 @@ class Tournament(models.Model):
         verbose_name = _("Description of the tournament"),
     )
 
-    image = models.ImageField(
-        null = True,
-        blank = True,
-        upload_to = "tournament_pictures",
-        verbose_name = _("Tournament picture"),
-    )
-
     owner = models.ForeignKey(
         "CustomUser",
         on_delete = models.CASCADE,
