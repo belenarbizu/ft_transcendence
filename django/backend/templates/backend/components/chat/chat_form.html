@@ -22,12 +22,12 @@
         {% csrf_token %}
         <input name="username" type="hidden" value="{{ user.username }}" />
     </form>
-    <form spa target=".chat-modal" class="form px-1 d-flex justify-content-between align-items-center"
-        action="{% url 'backend:send_message' %}" method="POST">
+    <form spa target=".chat-messages" class="form px-1 d-flex justify-content-between align-items-center"
+        action="{% url 'backend:send_message' %}" method="POST" reset>
         {% csrf_token %}
         <input name="username" type="hidden" value="{{ user.username }}" />
         <div class="input-group mb-3">
-            <input chat type="text" name="message" class="form-control" placeholder="{% translate 'message' %}"
+            <input chat type="text" id="message-input-id" name="message" class="form-control" placeholder="{% translate 'message' %}"
                 aria-label="{% translate 'message' %}" aria-describedby="button-addon2">
             <button type="submit" class="btn btn-primary" type="button" id="button-addon2">
                 {% translate 'Send' %}
