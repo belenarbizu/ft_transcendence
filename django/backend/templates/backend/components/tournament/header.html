@@ -1,0 +1,46 @@
+{% load i18n %}
+{% load static %}
+
+<div class="card" id="user_info">
+    <div class="card-body pb-0">
+        <div class="row align-items-center">
+
+            <div class="col">
+                <div class="row">
+                    <h3>{{ tournament.name }} - {{ tournament.get_game_display }}</h3>
+                    <p>{{ tournament.description }}</p>
+                    <p>{{ tournament.get_state_display }} - {{ tournament.get_tournament_mode_display }}</p>
+                </div>
+                <div class="row pb-3">
+                    <div class="btn-toolbar">
+                        {% if tournament.is_created and user == tournament.owner %}
+                        <form spa action="{% url 'backend:tournament_start' tournament.id %}" method="POST" autocomplete="off">
+                            {% csrf_token %}
+                            <div class="input-group mx-1">
+                                <button type="submit" class="btn btn-primary" type="button">
+                                    {% translate 'Start tournament' %}
+                                </button>
+                            </div>
+                        </form>
+                        {% endif %}
+                    </div>
+                </div>
+
+                {% if competitor and not tournament.is_practice %}
+
+                <div class="row">
+                    <p>{% translate 'You joined the tournament as' %} {{ competitor.alias }}</p>
+                </div>
+
+                {% endif %}
+                
+                {% if tournament.is_finished %}
+                <div class="alert alert-success text-center" role="alert">
+                    <h3>{{ tournament.winner.get_display_name }} {% translate 'won the tournament. Congratulations!' %}</h3>
+                    
+                  </div>
+                {% endif %}
+            </div>
+        </div><!-- end row -->
+    </div><!-- end card body -->
+</div>

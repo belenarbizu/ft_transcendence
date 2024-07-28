@@ -1,62 +1,3 @@
-export { show_notification, submit_form };
-import { connect_to_user_websocket } from "./chat.js";
-
-/**
- * Displays a Bootstrap toast notification with a specified message.
- *
- * This function targets a specific toast element and updates its message
- * content before displaying it. The toast element and its message container
- * are expected to have specific IDs.
- *
- * Elements:
- * - #liveToastInfo: The ID of the toast element to be shown.
- * - #liveToastInfoMessage: The ID of the element inside the toast where the
- *   message text will be set.
- */
-
-function show_notification(message) {
-    var toastLiveExample = document.getElementById('liveToastInfo');
-    var toastMessage = document.getElementById('liveToastInfoMessage');
-    if (toastLiveExample && toastMessage) {
-        var toastBootstrap = bootstrap.Toast.getOrCreateInstance(
-            toastLiveExample);
-        toastMessage.textContent = message;
-        toastBootstrap.show();
-    }
-}
-
-/**
- * Manages the initialization and disposal of Bootstrap tooltips,
- * and prepares single-page application (SPA) style link handling.
- * 
- * Functions:
- * - create_tooltips(): Initializes Bootstrap tooltips for elements
- *   with the attribute `data-bs-toggle="tooltip"`.
- * 
- * - dispose_tooltips(): Disposes of all initialized Bootstrap tooltips
- *   to free up resources.
- * 
- * Variables:
- * - tooltipList: An array holding references to all initialized
- *   Bootstrap tooltips.
- */
-
-var tooltipList;
-
-function create_tooltips() {
-    var tooltipTriggerList = document.querySelectorAll(
-        '[data-bs-toggle="tooltip"]');
-    tooltipList = [...tooltipTriggerList].map(
-        tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
-}
-
-function dispose_tooltips() {
-    tooltipList.forEach(tooltip => {
-        try {
-            tooltip.dispose();
-        } catch { }
-    });
-}
 
 /**
  * Retrieves action and target attributes from HTML elements.
@@ -103,7 +44,11 @@ function get_hide(element) {
 }
 
 function get_push(element) {
-    return element.hasAttribute("push-state");
+    return element.hasAttribute("push");
+}
+
+function get_reset(element) {
+    return element.hasAttribute("reset");
 }
 
 /**
@@ -121,17 +66,16 @@ function get_push(element) {
  *   - event: The Event object from the form submission event.
  */
 
-function follow_link(event) {
-    const element = event.target;
-    get_request(get_action(element), get_target(element), true);
+function follow_link(element) {
+    get_request(get_action(element), get_target(element), true, true);
 }
 
-function submit_form(form) {
-    if (form.nodeName != "form") {
-        form = form.closest("form");
+function submit_form(element) {
+    if (element.nodeName != "form") {
+        element = element.closest("form");
     }
     const data = new URLSearchParams();
-    for (const pair of new FormData(form)) {
+    for (const pair of new FormData(element)) {
         if (pair[0] == 'next') {
             data.append(pair[0], pair[1] + "?SPA=True");
         }
@@ -139,7 +83,11 @@ function submit_form(form) {
             data.append(pair[0], pair[1]);
         }
     }
-    post_request(get_action(form), data, get_target(form), get_push(form), get_hide(form));
+    post_request(get_action(element), data, get_target(element),
+        get_push(element), get_hide(element));
+    if (get_reset(element)){
+        element.reset();
+    }
 }
 
 /**
@@ -157,13 +105,14 @@ function submit_form(form) {
 
 function link_event_listener(event) {
     event.preventDefault();
-    follow_link(event);
+    var element = event.target;
+    follow_link(element);
 }
 
 function form_event_listener(event) {
     event.preventDefault();
-    var form = event.target;
-    submit_form(form);
+    var element = event.target;
+    submit_form(element);
 }
 
 function start_spa() {
@@ -177,7 +126,7 @@ function start_spa() {
         button.oninput = form_event_listener;
     });
     create_tooltips();
-    connect_to_user_websocket();
+    webSocketManager.update_sockets();
 }
 
 function end_spa(hide) {
@@ -185,14 +134,6 @@ function end_spa(hide) {
     if (hide) {
         hide_modals();
     }
-}
-
-function hide_modals() {
-    dispose_tooltips();
-    document.querySelectorAll('.modal').forEach(modal => {
-        console.log(modal); let currentModal = bootstrap.Modal.getInstance(modal)
-        if (currentModal) currentModal.hide()
-    });
 }
 
 /**
@@ -240,10 +181,11 @@ function handle_response(response, target, push, hide) {
     }
 }
 
-function get_request(action, target, push) {
-    fetch(
-        action + "?SPA=True"
-    ).then(response => { handle_response(response, target, push); });
+function get_request(action, target, push, hide) {
+    fetch(action + "?SPA=True")
+        .then(response => {
+            handle_response(response, target, push, hide);
+        });
 }
 
 function post_request(action, data, target, push, hide) {

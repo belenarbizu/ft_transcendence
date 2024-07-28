@@ -1,0 +1,19 @@
+{% load static %}
+{% load i18n %}
+
+{% for tournament in tournaments %}
+<tr>
+    <td class="px-3 align-middle col-1">
+        <h4>
+            <a class="link-dark text-decoration-none text-capitalize" href="{% url 'backend:tournament' tournament.id %}" spa data-bs-toggle="tooltip"
+            data-bs-title="{% translate 'View the tournament page' %}">{{ tournament.name }} - {{ tournament.get_game_display }}
+            </a>
+        </h4>
+        <p>{{ tournament.description }}</p>
+        <p>{{ tournament.get_state_display }} - {{ tournament.get_tournament_mode_display }}</p>
+        {% if competitor and not tournament.is_practice %}
+        <p>{% translate 'You joined the tournament as' %} {{ competitor.alias }}</p>
+        {% endif %}
+    </td>
+</tr>
+{% endfor %}

@@ -1,0 +1,32 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+<socket group="ws/live/tournament_{{ tournament.id }}" onmessage="live_handler"></socket>
+
+<div class="col">
+    <div class="row p-4">
+        <div class="col col-12">
+            {% include "backend/components/tournament/header.html" %}
+        </div>
+    </div>
+    {% if tournament.is_created %}
+    <div class="row px-4">
+        <div class="col col-12">
+            {% include "backend/components/tournament/competitors.html" %}
+        </div>
+    </div>
+    {% else %}
+    <div class="row px-4">
+        <div class="col-8">
+            {% include "backend/components/tournament/tournament_matches.html" %}
+        </div>
+        <div class="col-4">
+            {% include "backend/components/tournament/competitors.html" %}
+        </div>
+    </div>
+    {% endif %}
+
+
+</div>
+
+{% endblock %}

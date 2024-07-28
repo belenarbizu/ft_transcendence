@@ -8,6 +8,11 @@
                     <div class="nav-item pe-3">
                         {{ request.user.username }}
                     </div>
+                    <div class="nav-item pe-3">
+                        <a spa class="link-dark" href="{% url 'backend:tournament_list' %}">
+                            {% translate 'Tournaments' %}
+                        </a>
+                    </div>
                     <div class="nav-item">
                         {% if not request.user.is_authenticated %}
                         <form action="{% url 'login' %}" method="GET">

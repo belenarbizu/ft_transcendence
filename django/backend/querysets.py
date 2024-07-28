@@ -64,4 +64,48 @@ class MatchQuerySet(models.QuerySet):
     
     def played_by(self, user):
         return self.as_home(user) | self.as_guest(user)
+    
+    def order_by_state(self):
+        return self.order_by('-state')
+    
+    def not_finished(self):
+        return self.exclude(state = "fi")
 
+
+class CompetitorQuerySet(models.QuerySet):
+    
+    def of_user(self, user):
+        return self.filter(user = user)
+    
+    def of_tournament(self, tournament):
+        return self.filter(tournament = tournament)
+    
+    def not_eliminated(self):
+        return self.exclude(eliminated = True)
+    
+
+class TournamentQuerySet(models.QuerySet):
+    
+    def ended(self):
+        return self.filter(state = 'en')
+    
+    def started(self):
+        return self.filter(state = 'st')
+    
+    def created(self):
+        return self.filter(state = 'cr')
+    
+    def owned_by(self, user):
+        return self.filter(owner = user)
+    
+    def local(self):
+        return self.filter(tournament_mode = "lo")
+    
+    def remote(self):
+        return self.filter(tournament_mode = "re")
+    
+    def visible_to(self, user):
+        return (self.local() & self.owned_by(user)) | self.remote()
+    
+    def filtered(self, **kwargs):
+        return self.filter(state__in = kwargs.keys())
