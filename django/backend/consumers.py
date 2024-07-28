@@ -1,6 +1,7 @@
 import json
 from asgiref.sync import async_to_sync
 from channels.generic.websocket import WebsocketConsumer
+from channels.layers import get_channel_layer
 from django.utils.translation import gettext as _
 
 class LiveUpdateConsumer(WebsocketConsumer):
@@ -20,11 +21,18 @@ class LiveUpdateConsumer(WebsocketConsumer):
         )
         return super().disconnect(code)
 
-    def form_update(self, event):
-        self.send(text_data=json.dumps({
-                "type": "form_update",
-                "target": event["target"],
-            }))
+    def spa_update(self, event):
+        self.send(text_data=json.dumps(event))
+
+    @classmethod
+    def notify(cls, group, event):
+        layer = get_channel_layer()
+        print("NOTIFIED")
+        event["type"] = "spa_update"
+        async_to_sync(layer.group_send)(
+                group, event
+            )
+
 
 class UserConsumer(WebsocketConsumer):
 

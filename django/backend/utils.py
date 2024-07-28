@@ -6,7 +6,8 @@ def notify_update(group, target):
     async_to_sync(channel_layer.group_send)(
             group,
             {
-                "type": "form_update",
+                "type": "spa_update",
+                "action": "form_update",
                 "target": target,
             }
         )

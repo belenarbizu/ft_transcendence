@@ -5,6 +5,7 @@ from channels.layers import get_channel_layer
 from django.utils.translation import gettext_lazy as _
 from .utils import notify_update
 from asgiref.sync import async_to_sync
+from .consumers import LiveUpdateConsumer
 from django.apps import apps
 import random
 
@@ -37,9 +38,10 @@ class MatchManager(
 
 class TournamentManager(
     models.Manager.from_queryset(querysets.TournamentQuerySet)):
-        
+    
     def create(self, *args, **kwargs):
-        notify_update("tournament_list", "#tournament_list_update")
+        LiveUpdateConsumer.notify("tournament_list",
+            {"action": "form_update", "target": "#tournament_list_update"})
         return super().create(*args, **kwargs)
         
     def start_tournament(self, tournament_id, user):
@@ -50,7 +52,10 @@ class TournamentManager(
             if len(tournament.competitors.all()) < 2:
                 raise Exception(_("You can't start the tournament with less than 2 competitors"))
             tournament.state = 'st'
-            notify_update("tournament_list", "#tournament_list_update")
+            LiveUpdateConsumer.notify("tournament_list",
+                {"action": "form_update", "target": "#tournament_list_update"})
+            LiveUpdateConsumer.notify(f"tournament_{tournament.id}",
+                {"action": "page_reload"})
             self.new_round(tournament)
             tournament.save()
     
@@ -76,9 +81,12 @@ class TournamentManager(
             tournament.state = "fi"
             tournament.winner = competitors.first()
             tournament.save()
-            notify_update("tournament_list", "#tournament_list_update")
         if len(tournament.matches.not_finished()) == 0:
             self.generate_tournament_matches(tournament)
+        LiveUpdateConsumer.notify("tournament_list",
+            {"action": "form_update", "target": "#tournament_list_update"})
+        LiveUpdateConsumer.notify(f"tournament_{tournament.id}",
+            {"action": "page_reload"})
 
 
 class CompetitorManager(
@@ -114,11 +122,10 @@ class CompetitorManager(
                 user = user,
                 tournament = tournament)
             competitor.save()
-        notify_update(
-            f"tournament_{tournament.id}",
-            "#tournament-competitor-list-update")
+        LiveUpdateConsumer.notify(f"tournament_{tournament.id}",
+            {"action": "form_update",
+             "target": "#tournament-competitor-list-update"})
         
-
     def remove_competitor(self, competitor_id):
         try:
             competitor = self.get(id = competitor_id)
@@ -129,6 +136,6 @@ class CompetitorManager(
         tournament = competitor.tournament
         competitor.delete()
         if tournament:
-            notify_update(
-                f"tournament_{tournament.id}",
-                "#tournament-competitor-list-update")
+            LiveUpdateConsumer.notify(f"tournament_{tournament.id}",
+                {"action": "form_update",
+                "target": "#tournament-competitor-list-update"})
