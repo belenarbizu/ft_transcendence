@@ -64,6 +64,9 @@ class TournamentManager(
         tournament_competitors = list(tournament.competitors.not_eliminated())
         random.shuffle(tournament_competitors)
         match_count = len(tournament_competitors) // 2
+        if (match_count > 0):
+            tournament.round += 1
+            tournament.save()
         for i in range(match_count):
             home = tournament_competitors[i * 2]
             guest = tournament_competitors[i * 2 + 1]
@@ -73,6 +76,7 @@ class TournamentManager(
                 game = tournament.game,
                 mode = tournament.tournament_mode,
                 tournament = tournament,
+                tournament_round = tournament.round,
             )
     
     def new_round(self, tournament):

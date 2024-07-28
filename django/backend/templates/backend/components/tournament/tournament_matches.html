@@ -5,9 +5,17 @@
         <div class="p-2">{% translate "Matches" %}</div>
     </h4>
     <div class="card-body table-responsive p-0">
-        <table class="table table-borderless table-striped">
+        
+        <table class="table table-borderless table-striped m-0">
             <tbody>
+        {% for round in rounds %}
+        <tr>
+            <td></td>
+            <td><h5 class="text-center align-items-center pt-2">Round {{ round }}</h5></td>
+            <td></td>
+        </tr>
                 {% for match in tournament.matches.order_by_state %}
+                {% if match.tournament_round == round %}
                 <tr>
                     <td class="px-3 align-middle col-1">
                         <img src="{{ match.home.get_profile_picture }}" class="avatar-sm rounded-circle" alt="">
@@ -47,7 +55,9 @@
                         <img src="{{ match.guest.get_profile_picture }}" class="avatar-sm rounded-circle" alt="">
                     </td>
                 </tr>
+                {% endif %}
                 {% endfor %}
+        {% endfor %}
             </tbody>
         </table>
     </div>

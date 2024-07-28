@@ -118,6 +118,7 @@ def tournament_view(request, tournament_id):
     tournament = get_object_or_404(Tournament, id = tournament_id)
     return render(request, "backend/tournament.html", {
         "tournament": tournament,
+        "rounds": reversed(range(1, tournament.round+1)),
         "competitor": Competitor.objects.of_tournament(
             tournament).of_user(request.user).first()
         })

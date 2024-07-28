@@ -224,6 +224,11 @@ class Match(models.Model):
         on_delete = models.CASCADE,
     )
 
+    tournament_round = models.IntegerField(
+        default = 0,
+        verbose_name = _("Tournament round"),
+    )
+
     @property
     def is_practice(self):
         return self.tournament_mode == "pr"
@@ -357,6 +362,11 @@ class Tournament(models.Model):
         verbose_name = _("State of the tournament"),
         choices = TOURNAMENT_STATE_CHOICES,
         default = "cr",
+    )
+
+    round = models.IntegerField(
+        default = 0,
+        verbose_name = _("Round"),
     )
 
     game = models.CharField(
