@@ -39,7 +39,7 @@ class TournamentManager(
     models.Manager.from_queryset(querysets.TournamentQuerySet)):
         
     def create(self, *args, **kwargs):
-        notify_update("#tournament_list_update")
+        notify_update("tournament_list", "#tournament_list_update")
         return super().create(*args, **kwargs)
         
     def start_tournament(self, tournament_id, user):
@@ -50,7 +50,7 @@ class TournamentManager(
             if len(tournament.competitors.all()) < 2:
                 raise Exception(_("You can't start the tournament with less than 2 competitors"))
             tournament.state = 'st'
-            notify_update("#tournament_list_update")
+            notify_update("tournament_list", "#tournament_list_update")
             self.new_round(tournament)
             tournament.save()
     
@@ -76,7 +76,7 @@ class TournamentManager(
             tournament.state = "fi"
             tournament.winner = competitors.first()
             tournament.save()
-            notify_update("#tournament_list_update")
+            notify_update("tournament_list", "#tournament_list_update")
         if len(tournament.matches.not_finished()) == 0:
             self.generate_tournament_matches(tournament)
 
@@ -114,6 +114,10 @@ class CompetitorManager(
                 user = user,
                 tournament = tournament)
             competitor.save()
+        notify_update(
+            f"tournament_{tournament.id}",
+            "#tournament-competitor-list-update")
+        
 
     def remove_competitor(self, competitor_id):
         try:
@@ -122,4 +126,9 @@ class CompetitorManager(
             raise Exception(_("Competitor not found"))
         if not competitor.tournament.is_created:
             raise Exception(_("Competitors can't be removed once the tournament is started"))
+        tournament = competitor.tournament
         competitor.delete()
+        if tournament:
+            notify_update(
+                f"tournament_{tournament.id}",
+                "#tournament-competitor-list-update")

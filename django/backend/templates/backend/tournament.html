@@ -1,7 +1,7 @@
 {% extends "base_generic.html" %}
 
 {% block content %}
-<socket group="ws/live/tournament" onmessage="print_message"></socket>
+<socket group="ws/live/tournament_{{ tournament.id }}" onmessage="live_handler"></socket>
 
 <div class="col">
     <div class="row p-4">

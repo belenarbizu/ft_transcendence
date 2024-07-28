@@ -7,9 +7,24 @@ class LiveUpdateConsumer(WebsocketConsumer):
     
     def connect(self):
         self.group_name = self.scope['url_route']['kwargs']['group_name']
+        async_to_sync(self.channel_layer.group_add)(
+                self.group_name, self.channel_name
+            )
         self.accept()
         print (self.group_name, " connected ")
         self.send(text_data = self.group_name)
+
+    def disconnect(self, code):
+        async_to_sync(self.channel_layer.group_discard)(
+            self.group_name, self.channel_name
+        )
+        return super().disconnect(code)
+
+    def form_update(self, event):
+        self.send(text_data=json.dumps({
+                "type": "form_update",
+                "target": event["target"],
+            }))
 
 class UserConsumer(WebsocketConsumer):
 

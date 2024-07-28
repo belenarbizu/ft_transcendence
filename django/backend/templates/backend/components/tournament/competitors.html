@@ -44,35 +44,12 @@
 
     </h4>
     <div class="card-body table-responsive p-0">
+        <form id="tournament-competitor-list-update" spa method="POST" action="{% url 'backend:tournament_competitor_list' tournament.id %}" target="#tournament-competitor-list">
+            {% csrf_token %}
+        </form>
         <table class="table table-borderless table-striped">
-            <tbody>
-                {% for competitor in tournament.competitors.all %}
-                <tr>
-                    <td class="ps-3 align-middle w-75">
-                        <img src="{{ competitor.get_profile_picture }}" class="avatar-sm rounded-circle" alt="">
-                        {% if competitor.eliminated %}
-                        <span class="px-2 link-dark text-decoration-none text-capitalize">
-                            <del>{{ competitor.get_display_name }}</del></span>
-                        {% else %}
-                        <span class="px-2 link-dark text-decoration-none text-capitalize">
-                            {{ competitor.get_display_name }}</span>
-                        {% endif %}
-                    </td>
-                    <td>
-                        {% if tournament.owner == user and tournament.is_created and tournament.is_practice %}
-                        <form spa class="form px-1 d-flex justify-content-between align-items-center"
-                            action="{% url 'backend:tournament_remove_competitor' tournament.id %}" method="POST">
-                            {% csrf_token %}
-                            <input name="next" type="hidden" value="{{ request.path }}" />
-                            <input name="competitor" type="hidden" value="{{ competitor.id }}" />
-                            <button type="submit" spa class="btn btn-link m-0 p-0"><i
-                                    class="fs-5 text-danger bi bi-x-circle-fill" data-bs-toggle="tooltip"
-                                    data-bs-title="{% translate 'Remove competitor' %} {{ competitor.get_display_name }}"></i></button>
-                        </form>
-                        {% endif %}
-                    </td>
-                </tr>
-                {% endfor %}
+            <tbody id="tournament-competitor-list">
+                {% include 'backend/components/tournament/competitor_list.html' %}
             </tbody>
         </table>
     </div>
