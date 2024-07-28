@@ -3,6 +3,14 @@ from asgiref.sync import async_to_sync
 from channels.generic.websocket import WebsocketConsumer
 from django.utils.translation import gettext as _
 
+class LiveUpdateConsumer(WebsocketConsumer):
+    
+    def connect(self):
+        self.group_name = self.scope['url_route']['kwargs']['group_name']
+        self.accept()
+        print (self.group_name, " connected ")
+        self.send(text_data = self.group_name)
+
 class UserConsumer(WebsocketConsumer):
 
     def connect(self):

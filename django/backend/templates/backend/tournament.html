@@ -1,6 +1,8 @@
 {% extends "base_generic.html" %}
 
 {% block content %}
+<socket group="ws/live/tournament" onmessage="print_message"></socket>
+
 <div class="col">
     <div class="row p-4">
         <div class="col col-12">
