@@ -9,14 +9,14 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body col-12">
-                <form spa method="POST" action="{% url 'backend:tournament_create' %}" hide autocomplete="off">
+                <form spa method="POST" action="{% url 'backend:tournament_create' %}" hide autocomplete="off" push>
                     {% csrf_token %}
 
                     <div class="row mb-3">
                     <label for="inputTournamentName" class="col-sm-4 col-form-label">{% translate 'Tournament name' %}</label>
                     <div class="col-sm-8">
                         <input name="name" type="text" class="form-control" id="inputTournamentName" required>
-                    </div>                  
+                    </div>
                     </div>
 
                     <div class="row mb-3">
@@ -52,7 +52,7 @@
                             {% endif %}
                             value="{{ option.0 }}">{{ option.1 }}</option>
                             {% endfor %}
-                          </select>
+                        </select>
                     </div>
                     </div>
 
