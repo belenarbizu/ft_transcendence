@@ -215,6 +215,7 @@ def mock_match(request):
         match.guest.save()
     match.state = "fi"
     match.save()
+    Match.objects.update_ELO(match)
     Tournament.objects.new_round(match.tournament)
     return redirect(reverse("backend:tournament",
         kwargs={'tournament_id':match.tournament.id}))

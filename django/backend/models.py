@@ -86,6 +86,16 @@ class CustomUser(AbstractUser):
         symmetrical = False,
     )
 
+    pong_elo = models.IntegerField(
+        default = 0,
+        verbose_name = _("Pong ELO"),
+    )
+
+    pirates_elo = models.IntegerField(
+        default = 0,
+        verbose_name = _("Pirates Revenge ELO"),
+    )
+
     def create_invitation(self, invited):
         if self.username == invited:
             raise Exception(_("You cannot invite yourself"))
@@ -199,6 +209,11 @@ class Match(models.Model):
         verbose_name = _("Score of guest player"),
     )
 
+    elo = models.IntegerField(
+        default = 0,
+        verbose_name = "ELO",
+    )
+
     winner = models.ForeignKey(
         "Competitor",
         null = True,
@@ -231,7 +246,7 @@ class Match(models.Model):
 
     @property
     def is_practice(self):
-        return self.tournament_mode == "pr"
+        return self.mode == "pr"
     
     @property
     def is_single_game(self):
