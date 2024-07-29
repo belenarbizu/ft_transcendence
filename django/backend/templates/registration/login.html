@@ -17,27 +17,32 @@
   {% endif %}
   <div class="row justify-content-evenly mt-5">
     <div class="col-4">
-          <form method="post" action="{% url 'login' %}">
-            {% csrf_token %}
-            <table>
-              <tr>
-                <td class="text-white">{{ form.username.label_tag }}</td>
-                <td>{{ form.username }}</td>
-              </tr>
-              <tr>
-                <td class="text-white">{{ form.password.label_tag }}</td>
-                <td>{{ form.password }}</td>
-              </tr>
-            </table>
-            <input type="hidden" name="next" value="{% url 'backend:index' %}">
-            <div class="d-flex justify-content-center">
-              <button spa class="btn bg-primary mt-3 w-50" type="submit" value="login">{% translate 'login' %}</button>
-            </div>
-          </form>
-          {# Assumes you set up the password_reset view in your URLconf #}
-          <div class="d-flex justify-content-center">
-            <p class="mt-2"><a href="{% url 'password_reset' %}">Lost password?</a></p>
-          </div>
+      <form method="post" action="{% url 'login' %}">
+        {% csrf_token %}
+        <table>
+          <tr>
+            <td class="text-white">{{ form.username.label_tag }}</td>
+            <td>{{ form.username }}</td>
+          </tr>
+          <tr>
+            <td class="text-white">{{ form.password.label_tag }}</td>
+            <td>{{ form.password }}</td>
+          </tr>
+        </table>
+        <input type="hidden" name="next" value="{% url 'backend:index' %}">
+        <div class="d-flex justify-content-center">
+          <button spa class="btn btn-primary mt-3 w-50" type="submit" value="login">{% translate 'Login' %}</button>
+        </div>
+      </form>
+      {# Assumes you set up the password_reset view in your URLconf #}
+      <div class="d-flex justify-content-center">
+        <p class="mt-2"><a href="{% url 'password_reset' %}">Lost password?</a></p>
+      </div>
+      <div class="row align-items-center mt-5">
+        <button class="btn btn-primary">{% translate 'Login' %}</button>
+        <button class="btn btn-primary mt-3">{% translate 'Login with 42' %}</button>
+        <button class="btn btn-primary mt-3">{% translate 'Sign up' %}</button>
+      </div>
     </div>
   </div>
 
