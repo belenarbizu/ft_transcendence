@@ -1,6 +1,7 @@
 #!/bin/bash
 
 rm -rf ./backend/migrations
+rm ./db.sqlite3
 python manage.py makemigrations
 python manage.py makemigrations backend
 python manage.py migrate
