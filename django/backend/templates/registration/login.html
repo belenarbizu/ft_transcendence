@@ -16,35 +16,36 @@
     {% endif %}
   {% endif %}
   <div class="row justify-content-evenly mt-5">
-    <div class="col-4">
+
+
+    <div class="col-4"></div>
+    <div class="col-12 col-lg-4">
       <form method="post" action="{% url 'login' %}">
-        {% csrf_token %}
-        <table>
-          <tr>
-            <td class="text-white">{{ form.username.label_tag }}</td>
-            <td>{{ form.username }}</td>
-          </tr>
-          <tr>
-            <td class="text-white">{{ form.password.label_tag }}</td>
-            <td>{{ form.password }}</td>
-          </tr>
-        </table>
-        <input type="hidden" name="next" value="{% url 'backend:index' %}">
-        <div class="d-flex justify-content-center">
-          <button spa class="btn btn-primary mt-3 w-50" type="submit" value="login">{% translate 'Login' %}</button>
-        </div>
+          {% csrf_token %}
+
+          <div class="row mb-3">
+          <div class="text-white col-sm-4 col-form-label">{{ form.username.label_tag }}</div>
+          <div class="col-sm-8">
+            <input type="text" class="w-100" name="username" autofocus="" autocapitalize="none" autocomplete="username" maxlength="150" required="" id="id_username">
+          </div>
+          </div>
+
+          <div class="row mb-3">
+          <div class="text-white col-sm-4 col-form-label">{{ form.password.label_tag }}</div>
+          <div class="col-sm-8">
+            <input type="password" class="w-100" name="password" autocomplete="current-password" required="" id="id_password">
+          </div>
+          </div>
+          <input type="hidden" name="next" value="{% url 'backend:index' %}">
+          <div class="d-flex justify-content-center">
+            <button spa class="btn btn-primary mt-3 w-75" type="submit" value="login">{% translate 'Login' %}</button>
+          </div>
+
       </form>
-      {# Assumes you set up the password_reset view in your URLconf #}
-      <div class="d-flex justify-content-center">
-        <p class="mt-2"><a href="{% url 'password_reset' %}">Lost password?</a></p>
-      </div>
-      <div class="row align-items-center mt-5">
-        <button class="btn btn-primary">{% translate 'Login' %}</button>
-        <button class="btn btn-primary mt-3">{% translate 'Login with 42' %}</button>
-        <button class="btn btn-primary mt-3">{% translate 'Sign up' %}</button>
-      </div>
-    </div>
   </div>
+  <div class="col-4"></div>
+  </div>
+  
 
 
 {% endblock %}

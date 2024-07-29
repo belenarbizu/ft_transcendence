@@ -15,7 +15,7 @@
                     </div>
                     <div class="nav-item">
                         {% if not request.user.is_authenticated %}
-                        <form action="{% url 'login' %}" method="GET">
+                        <form spa push action="{% url 'backend:login_options' %}" method="GET">
                             <button class="btn btn-dark" type="submit">{% translate 'Login' %}</button>
                         </form>
                         {% endif %}

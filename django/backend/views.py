@@ -4,7 +4,7 @@ from django.shortcuts import get_object_or_404, redirect
 from django.views.decorators.http import require_http_methods
 from django.utils.translation import gettext_lazy as _
 from django.http import HttpResponse
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 from django.db import models
 from django.contrib.auth.decorators import login_required
 
@@ -112,7 +112,7 @@ def list_messages(request):
         }
     return render(request, "backend/components/chat/chat_messages.html", data)
 
-@login_required
+@login_required(login_url=reverse_lazy("backend:login_options"))
 @require_http_methods(["GET"])
 def tournament_view(request, tournament_id):
     tournament = get_object_or_404(Tournament, id = tournament_id)
@@ -123,7 +123,8 @@ def tournament_view(request, tournament_id):
             tournament).of_user(request.user).first()
         })
 
-@login_required
+
+@login_required(login_url=reverse_lazy("backend:login_options"))
 @require_http_methods(["POST"])
 def tournament_competitors(request, tournament_id):
     tournament = get_object_or_404(Tournament, id = tournament_id)
@@ -131,7 +132,7 @@ def tournament_competitors(request, tournament_id):
         "tournament": tournament,
     })
 
-@login_required
+@login_required(login_url=reverse_lazy("backend:login_options"))
 @require_http_methods(["POST"])
 def tournament_remove_competitor(request, tournament_id):
     try:
@@ -141,7 +142,7 @@ def tournament_remove_competitor(request, tournament_id):
     return redirect(reverse("backend:tournament",
         kwargs={'tournament_id':tournament_id}))
 
-@login_required
+@login_required(login_url=reverse_lazy("backend:login_options"))
 @require_http_methods(["POST"])
 def tournament_register_competitor(request, tournament_id):
     tournament = get_object_or_404(Tournament, id = tournament_id)
@@ -153,7 +154,7 @@ def tournament_register_competitor(request, tournament_id):
     return redirect(reverse("backend:tournament",
         kwargs={'tournament_id':tournament_id}))
 
-@login_required
+@login_required(login_url=reverse_lazy("backend:login_options"))
 @require_http_methods(["POST"])
 def tournament_start(request, tournament_id):
     try:
@@ -163,7 +164,7 @@ def tournament_start(request, tournament_id):
     return redirect(reverse("backend:tournament",
         kwargs={'tournament_id':tournament_id}))
 
-@login_required
+@login_required(login_url=reverse_lazy("backend:login_options"))
 @require_http_methods(["GET"])
 def tournament_list(request):
     data = {
@@ -174,7 +175,7 @@ def tournament_list(request):
     if (request.method == "GET"):
         return render(request, "backend/tournament_list.html", data)
 
-@login_required
+@login_required(login_url=reverse_lazy("backend:login_options"))
 @require_http_methods(["POST"])
 def tournament_create(request):
     tournament = Tournament.objects.create(
@@ -188,10 +189,9 @@ def tournament_create(request):
     return redirect(reverse("backend:tournament",
                             kwargs = {"tournament_id": tournament.id}))
 
-@login_required
+@login_required(login_url=reverse_lazy("backend:login_options"))
 @require_http_methods(["POST"])
 def tournament_list_update(request):
-    print(request.POST)
     data = {
         "tournaments": Tournament.objects.visible_to(request.user).filtered(**request.POST),
     }
@@ -222,3 +222,7 @@ def mock_match(request):
 
 def logout(request):
     return redirect(reverse("login"))
+
+def login_options(request):
+    data = {}
+    return render(request, "backend/login_options.html", data)

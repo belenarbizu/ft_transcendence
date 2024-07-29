@@ -1,0 +1,17 @@
+{% extends "base_generic.html" %}
+{% load i18n %}
+
+{% block content %}
+
+<div class="row justify-content-evenly mt-5">
+    <div class="col-4">
+        <div class="row align-items-center mt-5">
+            {% csrf_token %}
+            <a class="btn btn-primary" href="{% url 'login' %}">{% translate 'Login' %}</a>
+            <button class="btn btn-primary mt-3">{% translate 'Login with 42' %}</button>
+            <button class="btn btn-primary mt-3">{% translate 'Sign up' %}</button>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
