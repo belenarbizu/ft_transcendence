@@ -6,7 +6,6 @@ function chat_handler(event){
         try {
             const refresh_form = document.querySelector('#chat-refresh');
             submit_form(refresh_form);
-            document.getElementById('message-input-id').value = '';
         } catch { }
     }
 }
