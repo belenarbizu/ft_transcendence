@@ -15,8 +15,7 @@
         </div>
     </div>
 </div>
-<div class="modal-body col-12">
-
+<div class="modal-body col-12 pb-0">
     <form spa target=".chat-messages" id="chat-refresh" class="form px-1 d-flex justify-content-between align-items-center"
         action="{% url 'backend:list_messages' %}" method="POST">
         {% csrf_token %}
