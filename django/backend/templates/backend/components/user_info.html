@@ -39,7 +39,7 @@
                         {% if request.user.username == user.username %}
                         <button class="btn btn-primary mx-1" data-bs-toggle="modal" data-bs-target="#profileModal">{% translate 'Edit profile' %}</button>
                             {% if request.user.is_authenticated %}
-                            <form action="{% url 'logout' %}" method="POST">
+                            <form spa push action="{% url 'backend:logout' %}" method="POST">
                                 {% csrf_token %}
                                 <input type="hidden" name="next" value="{{ request.url }}" />
                                 <button class="btn btn-outline-primary mx-1" type="submit">{% translate 'Logout' %}</button>

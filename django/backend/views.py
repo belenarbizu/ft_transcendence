@@ -219,3 +219,6 @@ def mock_match(request):
     Tournament.objects.new_round(match.tournament)
     return redirect(reverse("backend:tournament",
         kwargs={'tournament_id':match.tournament.id}))
+
+def logout(request):
+    return redirect(reverse("login"))
