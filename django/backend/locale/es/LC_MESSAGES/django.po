@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-07-13 02:39+0200\n"
+"POT-Creation-Date: 2024-07-29 22:09+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,125 +19,540 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=n == 1 ? 0 : n != 0 && n % 1000000 == 0 ? "
 "1 : 2;\n"
 
-#: .\backend\templates\backend\components\chat_modal.html:7
-msgid "Chat with"
-msgstr "Conversación con"
+#: backend/consumers.py:65
+#, fuzzy
+#| msgid "new messages"
+msgid "sent you a message"
+msgstr "te envió un mensaje"
 
-#: .\backend\templates\backend\components\chat_modal.html:59
-msgid "message"
-msgstr "mensaje"
+#: backend/managers.py:74
+msgid "You can't start the tournament"
+msgstr ""
 
-#: .\backend\templates\backend\components\chat_modal.html:61
-msgid "Send"
-msgstr "Enviar"
+#: backend/managers.py:77
+msgid "You can't start the tournament with less than 2 competitors"
+msgstr ""
 
-#: .\backend\templates\backend\components\friends.html:5
-msgid "Friends"
-msgstr "Amigos"
+#: backend/managers.py:127
+msgid "Competitors can't be added once the tournament is started"
+msgstr ""
 
-#: .\backend\templates\backend\components\friends.html:7
-msgid "username"
-msgstr "nombre de usuario"
+#: backend/managers.py:130
+msgid "You must choose an alias for this tournament"
+msgstr ""
 
-#: .\backend\templates\backend\components\friends.html:9
-msgid "A user with the specified name was not found"
-msgstr "No se encontró ningun usuario con el nombre especificado"
+#: backend/managers.py:132
+msgid "The alias is already in use"
+msgstr ""
 
-#: .\backend\templates\backend\components\friends.html:9
-msgid "Invite"
-msgstr "Invitar"
+#: backend/managers.py:140
+msgid "You already joined the tournament"
+msgstr ""
 
-#: .\backend\templates\backend\components\friends.html:19
-#: .\backend\templates\backend\components\friends.html:33
-#: .\backend\templates\backend\components\friends.html:45
-#: .\backend\templates\backend\components\last_games.html:20
-msgid "View the profile of"
-msgstr "Ver el perfil de"
+#: backend/managers.py:161
+msgid "Competitor not found"
+msgstr ""
 
-#: .\backend\templates\backend\components\friends.html:19
-msgid "invited you"
-msgstr "te invitó"
+#: backend/managers.py:163
+msgid "Competitors can't be removed once the tournament is started"
+msgstr ""
 
-#: .\backend\templates\backend\components\friends.html:23
-msgid "Accept invitation from"
-msgstr "Aceptar invitación de"
+#: backend/models.py:8
+msgid "Practice (private)"
+msgstr ""
 
-#: .\backend\templates\backend\components\friends.html:23
-msgid "You have a new friend"
-msgstr "Tienes un nuevo amigo"
+#: backend/models.py:9
+msgid "Competition (public)"
+msgstr ""
 
-#: .\backend\templates\backend\components\friends.html:25
-msgid "Dismiss invitation from"
-msgstr "Rechazar invitación de"
+#: backend/models.py:13
+msgid "Waiting"
+msgstr ""
 
-#: .\backend\templates\backend\components\friends.html:25
-msgid "You dismissed an invitation"
-msgstr "Rechazaste una invitación"
+#: backend/models.py:14
+msgid "Started"
+msgstr ""
 
-#: .\backend\templates\backend\components\friends.html:33
-msgid "received your invitation"
-msgstr "recibió tu invitación"
+#: backend/models.py:15
+msgid "Finished"
+msgstr ""
 
-#: .\backend\templates\backend\components\friends.html:37
-msgid "Cancel invitation for"
-msgstr "Cancelar invitación para"
+#: backend/models.py:19
+msgid "Open to new competitors"
+msgstr ""
 
-#: .\backend\templates\backend\components\friends.html:37
-msgid "You cancelled an invitation"
-msgstr "Cancelaste una invitación"
+#: backend/models.py:20
+msgid "The tournament is being played"
+msgstr ""
 
-#: .\backend\templates\backend\components\friends.html:49
-#: .\backend\templates\backend\components\friends.html:51
-msgid "Open chat with"
-msgstr "Abrir conversación con"
+#: backend/models.py:21
+msgid "The tournamen ended"
+msgstr ""
 
-#: .\backend\templates\backend\components\friends.html:51
-msgid "new messages"
+#: backend/models.py:25
+msgid "Pong"
+msgstr ""
+
+#: backend/models.py:26
+msgid "Pirates Revenge"
+msgstr ""
+
+#: backend/models.py:30
+#: backend/templates/backend/components/profile_modal.html:16
+msgid "Spanish"
+msgstr ""
+
+#: backend/models.py:31
+#: backend/templates/backend/components/profile_modal.html:15
+msgid "English"
+msgstr ""
+
+#: backend/models.py:47
+#: backend/templates/backend/components/profile_modal.html:24
+msgid "Profile picture"
+msgstr ""
+
+#: backend/models.py:55
+#: backend/templates/backend/components/profile_modal.html:13
+msgid "Preferred language"
+msgstr ""
+
+#: backend/models.py:62
+msgid "Blocked users"
+msgstr ""
+
+#: backend/models.py:70
+msgid "Invitations"
+msgstr ""
+
+#: backend/models.py:76
+msgid "Is friend of"
+msgstr ""
+
+#: backend/models.py:83
+#, fuzzy
+#| msgid "new messages"
+msgid "Sent messages"
 msgstr "mensajes nuevos"
 
-#: .\backend\templates\backend\components\friends.html:56
-msgid "Play with"
-msgstr "Jugar con"
+#: backend/models.py:91
+msgid "Pong ELO"
+msgstr ""
 
-#: .\backend\templates\backend\components\last_games.html:5
-msgid "Last games"
-msgstr "Últimas partidas"
+#: backend/models.py:96
+msgid "Pirates Revenge ELO"
+msgstr ""
 
-#: .\backend\templates\backend\components\last_games.html:11
-msgid "Opponent"
-msgstr "Oponente"
+#: backend/models.py:101
+msgid "You cannot invite yourself"
+msgstr ""
 
-#: .\backend\templates\backend\components\last_games.html:12
-msgid "Game"
-msgstr "Juego"
+#: backend/models.py:103
+msgid "The user is already invited"
+msgstr ""
 
-#: .\backend\templates\backend\components\last_games.html:13
+#: backend/models.py:105
+#, fuzzy
+#| msgid "You cancelled an invitation"
+msgid "The user already sent you an invitation"
+msgstr "Cancelaste una invitación"
+
+#: backend/models.py:108 backend/models.py:117 backend/models.py:124
+#: backend/models.py:132
+msgid "The user doesn't exist"
+msgstr ""
+
+#: backend/models.py:110
+msgid "The user is already your friend"
+msgstr ""
+
+#: backend/models.py:151
+#, fuzzy
+#| msgid "Send"
+msgid "Sender"
+msgstr "Enviar"
+
+#: backend/models.py:158
+msgid "Recipient"
+msgstr ""
+
+#: backend/models.py:163
+#, fuzzy
+#| msgid "message"
+msgid "Message"
+msgstr "mensaje"
+
+#: backend/models.py:168
+#: backend/templates/backend/components/last_games.html:12
 msgid "Date"
 msgstr "Fecha"
 
-#: .\backend\templates\backend\components\last_games.html:14
+#: backend/models.py:179
+#, fuzzy
+#| msgid "Games won"
+msgid "Game mode"
+msgstr "Partidas ganadas"
+
+#: backend/models.py:186
+#, fuzzy
+#| msgid "Games played"
+msgid "Home player"
+msgstr "Partidas jugadas"
+
+#: backend/models.py:193
+#, fuzzy
+#| msgid "Games played"
+msgid "Guest player"
+msgstr "Partidas jugadas"
+
+#: backend/models.py:198
+#, fuzzy
+#| msgid "Games played"
+msgid "Game type"
+msgstr "Partidas jugadas"
+
+#: backend/models.py:204
+msgid "Score of home player"
+msgstr ""
+
+#: backend/models.py:209
+msgid "Score of guest player"
+msgstr ""
+
+#: backend/models.py:222
+msgid "Winner of the match"
+msgstr ""
+
+#: backend/models.py:230
+msgid "Match state"
+msgstr ""
+
+#: backend/models.py:237 backend/models.py:321
+#, fuzzy
+#| msgid "username"
+msgid "Tournament"
+msgstr "nombre de usuario"
+
+#: backend/models.py:244
+msgid "Tournament round"
+msgstr ""
+
+#: backend/models.py:272
+#, fuzzy
+#| msgid "new messages"
+msgid "Unread messages"
+msgstr "mensajes nuevos"
+
+#: backend/models.py:279
+msgid "user friend of"
+msgstr ""
+
+#: backend/models.py:286
+msgid "fiend of"
+msgstr ""
+
+#: backend/models.py:300
+msgid "Competitor"
+msgstr ""
+
+#: backend/models.py:307
+msgid "Alias"
+msgstr ""
+
+#: backend/models.py:312
+msgid "The competitor was eliminated"
+msgstr ""
+
+#: backend/models.py:353
+msgid "Name of the tournament"
+msgstr ""
+
+#: backend/models.py:358
+msgid "Description of the tournament"
+msgstr ""
+
+#: backend/models.py:365
+msgid "Owner of the tournament"
+msgstr ""
+
+#: backend/models.py:370
+msgid "Mode of the tournament"
+msgstr ""
+
+#: backend/models.py:377
+msgid "State of the tournament"
+msgstr ""
+
+#: backend/models.py:384
+msgid "Round"
+msgstr ""
+
+#: backend/models.py:389
+#: backend/templates/backend/components/last_games.html:11
+#: backend/templates/backend/components/tournament/create_modal.html:30
+msgid "Game"
+msgstr "Juego"
+
+#: backend/models.py:398
+#: backend/templates/backend/components/tournament/competitors.html:5
+msgid "Competitors"
+msgstr ""
+
+#: backend/templates/backend/components/chat/chat_form.html:4
+msgid "Chat with"
+msgstr "Conversación con"
+
+#: backend/templates/backend/components/chat/chat_form.html:29
+#: backend/templates/backend/components/chat/chat_form.html:30
+#: backend/templates/backend/components/tournament/competitors.html:12
+#: backend/templates/backend/components/tournament/competitors.html:36
+msgid "message"
+msgstr "mensaje"
+
+#: backend/templates/backend/components/chat/chat_form.html:32
+msgid "Send"
+msgstr "Enviar"
+
+#: backend/templates/backend/components/chat/chat_form.html:40
+#: backend/templates/backend/components/friends/friends.html:97
+#, fuzzy
+#| msgid "View the profile of"
+msgid "View profile of"
+msgstr "Ver el perfil de"
+
+#: backend/templates/backend/components/chat/chat_form.html:42
+#: backend/templates/backend/components/friends/friends.html:114
+msgid "Play with"
+msgstr "Jugar con"
+
+#: backend/templates/backend/components/chat/chat_form.html:44
+#: backend/templates/backend/components/user_info.html:52
+msgid "Block"
+msgstr ""
+
+#: backend/templates/backend/components/friends/friends.html:12
+msgid "Friends"
+msgstr "Amigos"
+
+#: backend/templates/backend/components/friends/friends.html:16
+#, fuzzy
+#| msgid "Invite"
+msgid "Invite friend"
+msgstr "Invitar"
+
+#: backend/templates/backend/components/friends/friends.html:34
+#: backend/templates/backend/components/friends/friends.html:71
+#: backend/templates/backend/components/last_games.html:19
+#: backend/templates/backend/components/last_games.html:30
+msgid "View the profile of"
+msgstr "Ver el perfil de"
+
+#: backend/templates/backend/components/friends/friends.html:35
+msgid "invited you"
+msgstr "te invitó"
+
+#: backend/templates/backend/components/friends/friends.html:46
+msgid "Accept invitation from"
+msgstr "Aceptar invitación de"
+
+#: backend/templates/backend/components/friends/friends.html:56
+msgid "Dismiss invitation from"
+msgstr "Rechazar invitación de"
+
+#: backend/templates/backend/components/friends/friends.html:72
+msgid "received your invitation"
+msgstr "recibió tu invitación"
+
+#: backend/templates/backend/components/friends/friends.html:82
+msgid "Cancel invitation for"
+msgstr "Cancelar invitación para"
+
+#: backend/templates/backend/components/friends/friends.html:108
+msgid "Open chat with"
+msgstr "Abrir conversación con"
+
+#: backend/templates/backend/components/friends/invite_list.html:21
+#: backend/templates/backend/components/friends/invite_modal.html:15
+#: backend/templates/backend/components/friends/invite_modal.html:16
+msgid "username"
+msgstr "nombre de usuario"
+
+#: backend/templates/backend/components/friends/invite_list.html:24
+#: backend/templates/backend/components/user_info.html:49
+msgid "Invite"
+msgstr "Invitar"
+
+#: backend/templates/backend/components/friends/invite_modal.html:8
+#, fuzzy
+#| msgid "Invite"
+msgid "Invite frirend"
+msgstr "Invitar"
+
+#: backend/templates/backend/components/last_games.html:5
+msgid "Last games"
+msgstr "Últimas partidas"
+
+#: backend/templates/backend/components/last_games.html:10
+msgid "Opponent"
+msgstr "Oponente"
+
+#: backend/templates/backend/components/last_games.html:13
 msgid "Result"
 msgstr "Resultado"
 
-#: .\backend\templates\backend\components\navbar.html:10
+#: backend/templates/backend/components/local_modal.html:8
+#: backend/templates/backend/components/profile_modal.html:8
+#: backend/templates/backend/components/user_info.html:40
+#, fuzzy
+#| msgid "View the profile of"
+msgid "Edit profile"
+msgstr "Ver el perfil de"
+
+#: backend/templates/backend/components/navbar.html:13
+#: backend/templates/backend/tournament_list.html:15
+#, fuzzy
+#| msgid "username"
+msgid "Tournaments"
+msgstr "nombre de usuario"
+
+#: backend/templates/backend/components/navbar.html:19
+#: backend/templates/backend/login_options.html:10
+#: backend/templates/registration/login.html:41
+msgid "Login"
+msgstr ""
+
+#: backend/templates/backend/components/profile_modal.html:20
+msgid "Bio"
+msgstr ""
+
+#: backend/templates/backend/components/profile_modal.html:28
+msgid "Update"
+msgstr ""
+
+#: backend/templates/backend/components/tournament/competitor_list.html:24
+msgid "Remove competitor"
+msgstr ""
+
+#: backend/templates/backend/components/tournament/competitors.html:11
+#: backend/templates/backend/components/tournament/competitors.html:35
+msgid "alias"
+msgstr ""
+
+#: backend/templates/backend/components/tournament/competitors.html:14
+msgid "Add new competitor"
+msgstr ""
+
+#: backend/templates/backend/components/tournament/competitors.html:28
+msgid "Leave this tournament"
+msgstr ""
+
+#: backend/templates/backend/components/tournament/competitors.html:38
+msgid "Join this tournament!"
+msgstr ""
+
+#: backend/templates/backend/components/tournament/create_modal.html:8
+#: backend/templates/backend/tournament_list.html:20
+msgid "Create tournament"
+msgstr ""
+
+#: backend/templates/backend/components/tournament/create_modal.html:16
+msgid "Tournament name"
+msgstr ""
+
+#: backend/templates/backend/components/tournament/create_modal.html:23
+msgid "Tournament description"
+msgstr ""
+
+#: backend/templates/backend/components/tournament/create_modal.html:45
+msgid "Mode"
+msgstr ""
+
+#: backend/templates/backend/components/tournament/create_modal.html:59
+msgid "Create"
+msgstr ""
+
+#: backend/templates/backend/components/tournament/header.html:21
+msgid "Start tournament"
+msgstr ""
+
+#: backend/templates/backend/components/tournament/header.html:32
+#: backend/templates/backend/components/tournament/tournament_list.html:15
+msgid "You joined the tournament as"
+msgstr ""
+
+#: backend/templates/backend/components/tournament/header.html:39
+msgid "won the tournament. Congratulations!"
+msgstr ""
+
+#: backend/templates/backend/components/tournament/tournament_list.html:9
+msgid "View the tournament page"
+msgstr ""
+
+#: backend/templates/backend/components/tournament/tournament_matches.html:5
+msgid "Matches"
+msgstr ""
+
+#: backend/templates/backend/components/tournament/tournament_matches.html:37
+msgid "waiting for players"
+msgstr ""
+
+#: backend/templates/backend/components/tournament/tournament_matches.html:42
+msgid "playing"
+msgstr ""
+
+#: backend/templates/backend/components/user_info.html:45
 msgid "Logout"
 msgstr "Cerrar sesión"
 
-#: .\backend\templates\backend\components\user_info.html:19
-#: .\backend\templates\backend\components\user_info.html:30
-msgid "Games played"
-msgstr "Partidas jugadas"
+#: backend/templates/backend/components/user_info.html:50
+#, fuzzy
+#| msgid "Play with"
+msgid "Play"
+msgstr "Jugar con"
 
-#: .\backend\templates\backend\components\user_info.html:20
-#: .\backend\templates\backend\components\user_info.html:31
-msgid "Games won"
-msgstr "Partidas ganadas"
+#: backend/templates/backend/components/user_info.html:51
+#, fuzzy
+#| msgid "Chat with"
+msgid "Chat"
+msgstr "Conversación con"
 
-#: .\backend\templates\backend\components\user_info.html:21
-#: .\backend\templates\backend\components\user_info.html:32
-msgid "Games lost"
-msgstr "Partidas perdidas"
+#: backend/templates/backend/components/user_info.html:53
+msgid "Unblock"
+msgstr ""
 
-#: .\backend\views.py:42
-msgid "today"
-msgstr "hoy"
+#: backend/templates/backend/login_options.html:11
+msgid "Login with 42"
+msgstr ""
+
+#: backend/templates/backend/login_options.html:12
+msgid "Sign up"
+msgstr ""
+
+#: backend/templates/backend/tournament_list.html:31
+msgid "Open"
+msgstr ""
+
+#: backend/templates/backend/tournament_list.html:35
+#, fuzzy
+#| msgid "Play with"
+msgid "Playing"
+msgstr "Jugar con"
+
+#: backend/templates/backend/tournament_list.html:39
+msgid "Ended"
+msgstr ""
+
+#~ msgid "A user with the specified name was not found"
+#~ msgstr "No se encontró ningun usuario con el nombre especificado"
+
+#~ msgid "You have a new friend"
+#~ msgstr "Tienes un nuevo amigo"
+
+#~ msgid "You dismissed an invitation"
+#~ msgstr "Rechazaste una invitación"
+
+#~ msgid "Games lost"
+#~ msgstr "Partidas perdidas"
+
+#~ msgid "today"
+#~ msgstr "hoy"

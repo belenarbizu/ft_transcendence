@@ -8,4 +8,10 @@ function chat_handler(event){
             submit_form(refresh_form);
         } catch { }
     }
+    if (data["type"] == "online_status") {
+        try {
+            const refresh_form = document.querySelector('#chat-refresh');
+            submit_form(refresh_form);
+        } catch { }
+    }
 }

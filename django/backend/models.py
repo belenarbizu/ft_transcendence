@@ -35,6 +35,11 @@ class CustomUser(AbstractUser):
 
     objects = managers.CustomUserManager()
 
+    online = models.BooleanField(
+        default = False,
+        verbose_name = _("Online status")
+    )
+
     bio = models.CharField(
         max_length = 500,
         verbose_name = "Bio",

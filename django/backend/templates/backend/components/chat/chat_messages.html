@@ -48,3 +48,17 @@
     {% endif %}
 </li>
 {% endfor %}
+
+{% if user.online %}
+<li class="d-flex justify-content-center mb-2">
+    <p class="my-0" style="color:green">
+        {% translate 'Online' %}
+    </p>
+</li>
+{% else %}
+<li class="d-flex justify-content-center mb-2">
+    <p class="my-0" style="color:red">
+        {% translate 'Offline' %}
+    </p>
+</li>
+{% endif %}
