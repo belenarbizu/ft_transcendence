@@ -9,7 +9,7 @@
             {% csrf_token %}
             <a class="btn btn-primary" href="{% url 'login' %}">{% translate 'Login' %}</a>
             <button class="btn btn-primary mt-3">{% translate 'Login with 42' %}</button>
-            <button class="btn btn-primary mt-3">{% translate 'Sign up' %}</button>
+            <a class="btn btn-primary mt-3" href="{% url 'backend:signup' %}">{% translate 'Sign up' %}</a>
         </div>
     </div>
 </div>

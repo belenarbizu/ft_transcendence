@@ -15,7 +15,7 @@
                     {% endif %}
                 </div>
             </div><!-- end col -->
-            <div class="col-5">
+            <div class="col-7">
                 <div class="row">
                     <h3>{{ user.username }}</h3>
                     <p>{{ user.bio }}</p>
@@ -24,17 +24,17 @@
                         <div class="d-flex justify-content-center">
                             <p class="ms-2 fw-bold">5</p><i class="bi bi-trophy-fill ms-2" style="color:green"></i>
                             <p class="ms-2 fw-bold">5</p><i class="bi bi-hand-thumbs-down-fill ms-2" style="color:red"></i>
-                            <p class="ms-2 fw-bold">{{ user.pong_elo }}</p><i class="bi bi-hand-thumbs-down-fill ms-2" style="color:red"></i>
+                            <p class="ms-2 fw-bold">{{ user.pong_elo }}</p><i class="bi bi-award-fill ms-2" style="color:blue"></i>
                         </div>
                         <p class="ms-5">PIRATES REVENGE</p>
                         <div class="d-flex justify-content-center">
                             <p class="ms-2 fw-bold">5</p><i class="bi bi-trophy-fill ms-2" style="color:green"></i>
                             <p class="ms-2 fw-bold">5</p><i class="bi bi-hand-thumbs-down-fill ms-2" style="color:red"></i>
-                            <p class="ms-2 fw-bold">{{ user.pirates_elo }}</p><i class="bi bi-hand-thumbs-down-fill ms-2" style="color:red"></i>
+                            <p class="ms-2 fw-bold">{{ user.pirates_elo }}</p><i class="bi bi-award-fill ms-2" style="color:blue"></i>
                         </div>
                     </div>
                 </div>
-                <div class="row">
+                <div class="row mt-2">
                     <div class="btn-toolbar" role="toolbar">
                         {% if request.user.username == user.username %}
                         <button class="btn btn-primary mx-1" data-bs-toggle="modal" data-bs-target="#profileModal">{% translate 'Edit profile' %}</button>

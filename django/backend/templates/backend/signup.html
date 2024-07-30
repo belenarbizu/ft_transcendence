@@ -1,0 +1,70 @@
+{% extends "base_generic.html" %}
+{% load i18n %}
+
+{% block content %}
+
+<form action="{% url 'backend:register' %}" method="POST">
+
+{% if form.errors %}
+    <p>Your username and password didn't match. Please try again.</p>
+  {% endif %}
+
+  {% if next %}
+    {% if user.is_authenticated %}
+      <p>Your account doesn't have access to this page. To proceed,
+      please login with an account that has access.</p>
+    {% else %}
+      <p>Please login to see this page.</p>
+    {% endif %}
+  {% endif %}
+
+{% if error %}
+{{ error }}
+{% endif %} 
+
+  <div class="row justify-content-evenly mt-5">
+    <div class="col-4"></div>
+    <div class="col-12 col-lg-4">
+          {% csrf_token %}
+
+          <div class="row justify-content-center">
+          <div class="col-sm-8 mb-3">
+            <input type="text" class="w-100 form-control" placeholder="{% translate 'Username' %}" name="username" value="{{ username }}" autofocus="" autocapitalize="none" autocomplete="username" maxlength="150" required="" id="id_username">
+          </div>
+          </div>
+
+          <div class="row justify-content-center">
+          <div class="col-sm-8 mb-3">
+            <input type="password" class="w-100 form-control" placeholder="{% translate 'Password' %}" name="password" autocomplete="current-password" required="" id="id_password">
+          </div>
+          </div>
+
+          <div class="row justify-content-center">
+            <div class="col-sm-8 mb-3">
+              <input type="password" class="w-100 form-control" placeholder="{% translate 'Repeat password' %}" name="password" autocomplete="current-password" required="" id="id_password">
+            </div>
+          </div>
+          
+          <div class="row justify-content-center">
+          <div class="col-sm-8 mb-3">
+            <label for="signupInput" class="form-label text-white">{% translate 'Preferred language' %}</label>
+            <select name="language" class="form-select form-select">
+                <option value="en">{% translate 'English' %}</option>
+                <option value="es">{% translate 'Spanish' %}</option>
+              </select>
+          </div>
+          </div>
+
+          <input type="hidden" name="next" value="{% url 'backend:index' %}">
+          <button type="submit"> submit </button>
+          <div class="d-flex justify-content-center">
+            <a spa class="btn btn-primary mt-3 w-50" href="{% url 'login' %}">{% translate 'Sign up' %}</a>
+          </div>
+
+  </div>
+  <div class="col-4"></div>
+  </div>
+  
+</form>
+
+{% endblock %}

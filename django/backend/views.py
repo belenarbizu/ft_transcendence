@@ -7,6 +7,8 @@ from django.http import HttpResponse
 from django.urls import reverse, reverse_lazy
 from django.db import models
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.csrf import csrf_exempt
+from django.http import JsonResponse
 
 def index_view(request):
     if request.user.is_authenticated:
@@ -223,6 +225,57 @@ def mock_match(request):
 def logout(request):
     return redirect(reverse("login"))
 
+#borrar csrf!!!
+@csrf_exempt
 def login_options(request):
     data = {}
     return render(request, "backend/login_options.html", data)
+
+def signup_view(request):
+    data = {}
+    return render(request, "backend/signup.html", data)
+
+@require_http_methods(["GET", "POST"])
+def signup(request):
+
+    if request.method == "GET":
+
+        # Aqui tenemos que renderizar el formulario vacio
+        pass
+
+    elif request.method == "POST":
+
+        # Como sabemos que el metodo es pos, entonces podemos acceder a los parametros
+        # del formulario:
+
+        print(request.POST)
+
+        data = {
+            'username': "yo",
+            "password": "mi pass",
+            "next": request.POST.get("next"),
+            "language": "en",
+            "error": "Me pareces muy feo"
+        }
+
+        return render(request, "backend/signup.html", data)
+
+        # Aqui hay dos opciones. 
+        # Validas los datos y todo ha ido bien:
+        #return redirect(...) # la url del login
+
+        # Si algo ha fallado, tienes que renderizar la plantilla, con los datos que 
+        # has recibido por post, y un mensaje indicando el error.
+
+
+
+
+    data = {}
+    username = request.POST.get('username')
+    passwd = request.POST.get('password')
+    try:
+        user = CustomUser.objects.register_user(username, passwd)
+        user.save()
+        return render(request, "backend/signup.html", data)
+    except Exception as e:
+        return JsonResponse({"Error": str(e)}, status=400)

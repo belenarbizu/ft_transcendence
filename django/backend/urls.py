@@ -23,4 +23,6 @@ urlpatterns = [
     path('match/mock/', views.mock_match, name="match_mock"),
     path('logout/', views.logout, name="logout"),
     path('login/options/', views.login_options, name="login_options"),
+    path('signup/', views.signup_view, name="signup"),
+    path('login/', views.signup, name="register"),
 ]
