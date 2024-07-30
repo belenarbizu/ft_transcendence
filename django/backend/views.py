@@ -241,7 +241,6 @@ def signup(request):
 	if request.method == "GET":
 		data = {}
 		return render(request, "backend/signup.html", data)
-
 	elif request.method == "POST":
 
 		# Como sabemos que el metodo es pos, entonces podemos acceder a los parametros
