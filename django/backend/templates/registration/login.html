@@ -23,16 +23,12 @@
       <form method="post" action="{% url 'login' %}">
           {% csrf_token %}
 
-          <!--<div class="row mb-3">
-          <div class="text-white col-sm-4 col-form-label">{{ form.username.label_tag }}</div>-->
           <div class="row justify-content-center">
           <div class="col-sm-8 mb-3">
             <input type="text" class="w-100 form-control" placeholder="{% translate 'Username' %}" name="username" autofocus="" autocapitalize="none" autocomplete="username" maxlength="150" required="" id="id_username">
           </div>
           </div>
 
-          <!--<div class="row mb-3">
-          <div class="text-white col-sm-4 col-form-label">{{ form.password.label_tag }}</div>-->
           <div class="row justify-content-center">
           <div class="col-sm-8 mb-3">
             <input type="password" class="w-100 form-control" placeholder="{% translate 'Password' %}" name="password" autocomplete="current-password" required="" id="id_password">
