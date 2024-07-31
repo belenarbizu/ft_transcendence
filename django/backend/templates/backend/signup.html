@@ -5,23 +5,6 @@
 
 <form action="{% url 'backend:register' %}" method="POST">
 
-{% if form.errors %}
-    <p>Your username and password didn't match. Please try again.</p>
-  {% endif %}
-
-  {% if next %}
-    {% if user.is_authenticated %}
-      <p>Your account doesn't have access to this page. To proceed,
-      please login with an account that has access.</p>
-    {% else %}
-      <p>Please login to see this page.</p>
-    {% endif %}
-  {% endif %}
-
-{% if error %}
-{{ error }}
-{% endif %} 
-
   <div class="row justify-content-evenly mt-5">
     <div class="col-4"></div>
     <div class="col-12 col-lg-4">

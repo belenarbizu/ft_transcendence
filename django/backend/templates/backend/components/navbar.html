@@ -6,7 +6,7 @@
             <a class="navbar-brand link-dark" href="#">Transcendence</a>
                 <div class="d-flex align-items-center">
                     <div class="nav-item pe-3">
-                        {{ request.user.username }}
+                        <a class="link-dark text-decoration-none" href="{% if request.user.is_authenticated %}{% url 'backend:user' request.user.username %}{% endif %}">{{ request.user.username }}</a>
                     </div>
                     <div class="nav-item pe-3">
                         <a spa class="link-dark" href="{% url 'backend:tournament_list' %}">

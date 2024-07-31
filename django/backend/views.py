@@ -4,9 +4,10 @@ from django.shortcuts import get_object_or_404, redirect
 from django.views.decorators.http import require_http_methods
 from django.utils.translation import gettext_lazy as _
 from django.http import HttpResponse
-from django.urls import reverse, reverse_lazy
+from django.urls import reverse, reverse_lazy, translate_url
 from django.db import models
 from django.contrib.auth.decorators import login_required
+from django.contrib import auth
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 from .managers import CustomUserManager
@@ -17,6 +18,7 @@ def index_view(request):
 			kwargs={'username':request.user.username}))
 	return 0
 
+@login_required(login_url=reverse_lazy("backend:login_options"))
 def user_view(request, username):
 	user = get_object_or_404(CustomUser, username=username)
 	data = {
@@ -31,6 +33,7 @@ def user_view(request, username):
 	return render(request, "backend/index.html", data)
 
 @require_http_methods(["POST"])
+@login_required(login_url=reverse_lazy("backend:login_options"))
 def create_invitation(request):
 	invited_username = request.POST.get("username", "")
 	next = request.POST.get("next", "/")
@@ -42,6 +45,7 @@ def create_invitation(request):
 	return redirect(next)
 
 @require_http_methods(["POST"])
+@login_required(login_url=reverse_lazy("backend:login_options"))
 def dismiss_invitation(request):
 	invited_username = request.POST.get("username", "")
 	next = request.POST.get("next", "/")
@@ -52,6 +56,7 @@ def dismiss_invitation(request):
 	return redirect(next)
 
 @require_http_methods(["POST"])
+@login_required(login_url=reverse_lazy("backend:login_options"))
 def accept_invitation(request):
 	invited_username = request.POST.get("username", "")
 	next = request.POST.get("next", "/")
@@ -62,6 +67,7 @@ def accept_invitation(request):
 	return redirect(next)
 
 @require_http_methods(["POST"])
+@login_required(login_url=reverse_lazy("backend:login_options"))
 def cancel_invitation(request):
 	invited_username = request.POST.get("username", "")
 	next = request.POST.get("next", "/")
@@ -72,6 +78,7 @@ def cancel_invitation(request):
 	return redirect(next)
 
 @require_http_methods(["POST"])
+@login_required(login_url=reverse_lazy("backend:login_options"))
 def uninvited_users(request):
 	username = request.POST.get('username', '')
 	users = CustomUser.objects.uninvited_users(request.user, username)
@@ -79,6 +86,7 @@ def uninvited_users(request):
 	return render(request, "backend/components/friends/invite_list.html", data)
 
 @require_http_methods(["POST"])
+@login_required(login_url=reverse_lazy("backend:login_options"))
 def chat_messages_form(request):
 	username = request.POST.get('username', '')
 	user = CustomUser.objects.get(username = username)
@@ -89,6 +97,7 @@ def chat_messages_form(request):
 	return render(request, "backend/components/chat/chat_form.html", data)
 
 @require_http_methods(["POST"])
+@login_required(login_url=reverse_lazy("backend:login_options"))
 def send_message(request):
 	user = CustomUser.objects.get(
 		username = request.POST.get('username', '')
@@ -105,6 +114,7 @@ def send_message(request):
 	return render(request, "backend/components/chat/chat_messages.html", data)
 
 @require_http_methods(["POST"])
+@login_required(login_url=reverse_lazy("backend:login_options"))
 def list_messages(request):
 	user = CustomUser.objects.get(
 		username = request.POST.get('username', '')
@@ -223,18 +233,34 @@ def mock_match(request):
 	return redirect(reverse("backend:tournament",
 		kwargs={'tournament_id':match.tournament.id}))
 
+@login_required(login_url=reverse_lazy("backend:login_options"))
 def logout(request):
-	return redirect(reverse("login"))
+	auth.logout(request)
+	return redirect(reverse("backend:login_options"))
+
+@require_http_methods(["GET", "POST"])
+def login(request):
+	if request.method == "POST":
+		username = request.POST.get("username", "")
+		password = request.POST.get("password", "")
+		user = auth.authenticate(request, username=username, password=password)
+		if user is not None:
+			auth.login(request, user)
+			language = user.preferred_language
+			if not language:
+				language = "es"
+			return redirect(translate_url(reverse("backend:user", kwargs={"username": user.username}), language))
+		else:
+			return render(request, "backend/login.html", {
+				"error": _("Authentication failed"),
+			})
+	if request.method == "GET":
+		return render(request, "backend/login.html", {})
 
 #borrar csrf!!!
 @csrf_exempt
 def login_options(request):
-	data = {}
-	return render(request, "backend/login_options.html", data)
-
-def signup_view(request):
-	data = {}
-	return render(request, "backend/signup.html", data)
+	return render(request, "backend/login_options.html", {})
 
 @require_http_methods(["GET", "POST"])
 def signup(request):
