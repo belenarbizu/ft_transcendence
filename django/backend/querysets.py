@@ -36,6 +36,8 @@ class CustomUserQuerySet(models.QuerySet):
         return self.exclude(
             id = user.id
         )
+    def find_name(self, username):
+        return self.filter(username=username)
 
       
 class ChatMessageQuerySet(models.QuerySet):

@@ -9,6 +9,7 @@ from django.db import models
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
+from .managers import CustomUserManager
 
 def index_view(request):
 	if request.user.is_authenticated:
@@ -241,23 +242,48 @@ def signup(request):
 	if request.method == "GET":
 		data = {}
 		return render(request, "backend/signup.html", data)
-
 	elif request.method == "POST":
-
 		# Como sabemos que el metodo es pos, entonces podemos acceder a los parametros
 		# del formulario:
+		username = request.POST.get("username")
+		password = request.POST.get("password")
 
-		print(request.POST)
-
-		data = {
-			'username': "yo",
-			"password": "mi pass",
+		#Si el campo de usuario está vacío entra aquí
+		if username.length() == 0:
+			data = {
+				'username': None,
+				"password": None,
+				"next": request.POST.get("next"),
+				"language": "en",
+				"error": "Invalid Username!"
+			}
+			return render(request, "backend/signup.html", data)
+		
+		#Si el usuario ya está creado entra aquí
+		if CustomUser.objects.find_name(username).exists(): #En el caso de que encontremos un usuario ya creado
+			data = {
+			'username': username,
+			"password": None,
 			"next": request.POST.get("next"),
 			"language": "en",
-			"error": "Me pareces muy feo"
-		}
-
-		return render(request, "backend/signup.html", data)
+			"error": "This user already exists"
+			}
+			return render(request, "backend/signup.html", data)
+		
+		#Si la contraseña está vacía entra aquí
+		if password.length() == 0:
+			data = {
+				'username': username,
+				"password": None,
+				"next": request.POST.get("next"),
+				"language": "en",
+				"error": "Empty password field!"
+			}
+			return render(request, "backend/signup.html", data)
+		#Todo bien
+		user = CustomUser.objects.register_user(username, password)
+		user.save()
+		return render(request, "backend/signin.html", data)
 
 		# Aqui hay dos opciones. 
 		# Validas los datos y todo ha ido bien:
@@ -265,16 +291,3 @@ def signup(request):
 
 		# Si algo ha fallado, tienes que renderizar la plantilla, con los datos que 
 		# has recibido por post, y un mensaje indicando el error.
-
-
-
-
-	data = {}
-	username = request.POST.get('username')
-	passwd = request.POST.get('password')
-	try:
-		user = CustomUser.objects.register_user(username, passwd)
-		user.save()
-		return render(request, "backend/signup.html", data)
-	except Exception as e:
-		return JsonResponse({"Error": str(e)}, status=400)
