@@ -17,7 +17,16 @@
             </div><!-- end col -->
             <div class="col-7">
                 <div class="row">
-                    <h3>{{ user.username }}</h3>
+                    <div class="d-flex">
+                        <h3>{{ user.username }}</h3>
+                        {% if not request.user.username == user.username %}
+                        {% if user.online %}
+                        <i class="fs-6 bi bi-circle-fill ms-2" style="color:green"></i>
+                        {% else %}
+                        <i class="fs-6 bi bi-circle-fill ms-2" style="color:red"></i>
+                        {% endif %}
+                        {% endif %}
+                    </div>
                     <p>{{ user.bio }}</p>
                     <div class="d-flex">
                         <p>HYPERPONG</p>
@@ -38,16 +47,8 @@
                     <div class="btn-toolbar" role="toolbar">
                         {% if request.user.username == user.username %}
                         <button class="btn btn-primary mx-1" data-bs-toggle="modal" data-bs-target="#profileModal">{% translate 'Edit profile' %}</button>
-                            {% if request.user.is_authenticated %}
-                            <form spa push action="{% url 'backend:logout' %}" method="POST">
-                                {% csrf_token %}
-                                <input type="hidden" name="next" value="{{ request.url }}" />
-                                <button class="btn btn-outline-primary mx-1" type="submit">{% translate 'Logout' %}</button>
-                            </form>
-                            {% endif %}
                         {% else %}
                         <button class="btn btn-primary mx-1">{% translate 'Invite' %}</button>
-                        <button class="btn btn-primary mx-1" data-bs-toggle="modal" data-bs-target="#localModal">{% translate 'Play' %}</button>
                         <button class="btn btn-primary mx-1" data-bs-toggle="modal" data-bs-target="#chatModal">{% translate 'Chat' %}</button>
                         <button class="btn btn-primary mx-1">{% translate 'Block' %}</button>
                         <button class="btn btn-primary mx-1">{% translate 'Unblock' %}</button>

@@ -2,32 +2,34 @@
 {% load i18n %}
 
 {% block content %}
+<div class="row justify-content-evenly mt-5">
+  <div class="col-4"></div>
+  <div class="col-12 col-lg-4">
+    <form method="post" action="{% url 'backend:login' %}">
+        {% csrf_token %}
 
+        {% if error %}
+        <p class="text-white">{{ error }}</p>
+        {% endif %}
 
-      <form method="post" action="{% url 'backend:login' %}">
-          {% csrf_token %}
+        <div class="row justify-content-center">
+        <div class="col-sm-8 mb-3">
+          <input type="text" class="w-100 form-control" placeholder="{% translate 'Username' %}" name="username" autofocus="" autocapitalize="none" autocomplete="username" maxlength="150" required="" id="id_username">
+        </div>
+        </div>
 
-          {% if error %}
-          <p class="text-white">{{ error }}</p>
-          {% endif %}
+        <div class="row justify-content-center">
+        <div class="col-sm-8 mb-3">
+          <input type="password" class="w-100 form-control" placeholder="{% translate 'Password' %}" name="password" autocomplete="current-password" required="" id="id_password">
+        </div>
+        </div>
+        <input type="hidden" name="next" value="{% url 'backend:index' %}">
+        <div class="d-flex justify-content-center">
+          <button spa class="btn btn-primary mt-3 w-50" type="submit" value="login">{% translate 'Login' %}</button>
+        </div>
 
-          <div class="row justify-content-center">
-          <div class="col-sm-8 mb-3">
-            <input type="text" class="w-100 form-control" placeholder="{% translate 'Username' %}" name="username" autofocus="" autocapitalize="none" autocomplete="username" maxlength="150" required="" id="id_username">
-          </div>
-          </div>
-
-          <div class="row justify-content-center">
-          <div class="col-sm-8 mb-3">
-            <input type="password" class="w-100 form-control" placeholder="{% translate 'Password' %}" name="password" autocomplete="current-password" required="" id="id_password">
-          </div>
-          </div>
-          <input type="hidden" name="next" value="{% url 'backend:index' %}">
-          <div class="d-flex justify-content-center">
-            <button spa class="btn btn-primary mt-3 w-50" type="submit" value="login">{% translate 'Login' %}</button>
-          </div>
-
-      </form>
-
-
+    </form>
+  </div>
+  <div class="col-4"></div> 
+</div>
 {% endblock %}
