@@ -36,8 +36,8 @@
 </div>
 <div class="modal-body col-12 mb-2">
     <div class="d-flex justify-content-center">
-        <i class="fs-3 bi bi-person-fill text-primary" data-bs-toggle="tooltip"
-            data-bs-title="{% translate 'View profile of' %} {{ user.username }}"></i>
+        <a spa hide class="fs-3 bi bi-person-fill text-primary" href="{% url 'backend:user' user.username %}" data-bs-toggle="tooltip"
+            data-bs-title="{% translate 'View profile of' %} {{ user.username }}"></a>
         <i class="fs-3 bi bi-controller ms-5 text-primary" data-bs-toggle="tooltip"
             data-bs-title="{% translate 'Play with' %} {{ user.username }}"></i>
         <i class="fs-3 bi bi-person-x-fill ms-5 text-primary" data-bs-toggle="tooltip"

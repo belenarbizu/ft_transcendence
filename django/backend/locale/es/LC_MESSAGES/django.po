@@ -385,7 +385,7 @@ msgstr "Invitar"
 #: backend/templates/backend/components/friends/invite_modal.html:8
 #, fuzzy
 #| msgid "Invite"
-msgid "Invite frirend"
+msgid "Invite friend"
 msgstr "Invitar"
 
 #: backend/templates/backend/components/last_games.html:5
