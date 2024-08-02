@@ -11,6 +11,7 @@ from django.contrib import auth
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 from .managers import CustomUserManager
+from .forms import RegistrationForm
 
 def index_view(request):
 	if request.user.is_authenticated:
@@ -257,63 +258,16 @@ def login(request):
 	if request.method == "GET":
 		return render(request, "backend/login.html", {})
 
-#borrar csrf!!!
-@csrf_exempt
+@require_http_methods(["GET"])
 def login_options(request):
 	return render(request, "backend/login_options.html", {})
 
-@require_http_methods(["GET", "POST"])
-def signup(request):
-
-	if request.method == "GET":
-		data = {}
-		return render(request, "backend/signup.html", data)
-	elif request.method == "POST":
-		# Como sabemos que el metodo es pos, entonces podemos acceder a los parametros
-		# del formulario:
-		username = request.POST.get("username")
-		password = request.POST.get("password")
-
-		#Si el campo de usuario está vacío entra aquí
-		if username.length() == 0:
-			data = {
-				'username': None,
-				"password": None,
-				"next": request.POST.get("next"),
-				"language": "en",
-				"error": "Invalid Username!"
-			}
-			return render(request, "backend/signup.html", data)
-		
-		#Si el usuario ya está creado entra aquí
-		if CustomUser.objects.find_name(username).exists(): #En el caso de que encontremos un usuario ya creado
-			data = {
-			'username': username,
-			"password": None,
-			"next": request.POST.get("next"),
-			"language": "en",
-			"error": "This user already exists"
-			}
-			return render(request, "backend/signup.html", data)
-		
-		#Si la contraseña está vacía entra aquí
-		if password.length() == 0:
-			data = {
-				'username': username,
-				"password": None,
-				"next": request.POST.get("next"),
-				"language": "en",
-				"error": "Empty password field!"
-			}
-			return render(request, "backend/signup.html", data)
-		#Todo bien
-		user = CustomUser.objects.register_user(username, password)
-		user.save()
-		return render(request, "backend/signin.html", data)
-
-		# Aqui hay dos opciones. 
-		# Validas los datos y todo ha ido bien:
-		#return redirect(...) # la url del login
-
-		# Si algo ha fallado, tienes que renderizar la plantilla, con los datos que 
-		# has recibido por post, y un mensaje indicando el error.
+@require_http_methods(["POST", "GET"])
+def register_view(request):
+	form = RegistrationForm()
+	if request.method == 'POST':
+		form = RegistrationForm(request.POST)
+		if form.is_valid():
+			form.save()
+			return redirect(reverse('backend:login_options'))
+	return render(request, 'backend/signup.html', {"form": form})

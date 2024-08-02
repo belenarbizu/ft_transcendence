@@ -3,7 +3,7 @@
 
 {% block content %}
 
-<form action="{% url 'backend:register' %}" method="POST">
+<form spa action="{% url 'backend:register' %}" method="POST" autocomplete="off">
 
   <div class="row justify-content-evenly mt-5">
     <div class="col-4"></div>
@@ -11,20 +11,39 @@
           {% csrf_token %}
 
           <div class="row justify-content-center">
+          
           <div class="col-sm-8 mb-3">
-            <input type="text" class="w-100 form-control" placeholder="{% translate 'Username' %}" name="username" value="{{ username }}" autofocus="" autocapitalize="none" autocomplete="username" maxlength="150" required="" id="id_username">
+            <label for="id_email" class="form-label text-white">{% translate 'Email' %}</label>
+            <span class="text-danger"> {{ form.email.errors }} </span>
+            <input type="email" class="w-100 form-control" name="email" value="{{ form.email.value | default_if_none:'' }}" autofocus="" autocapitalize="none" required="" id="id_email">
           </div>
           </div>
 
           <div class="row justify-content-center">
+          
           <div class="col-sm-8 mb-3">
-            <input type="password" class="w-100 form-control" placeholder="{% translate 'Password' %}" name="password" autocomplete="current-password" required="" id="id_password">
+            <label for="id_username" class="form-label text-white">{% translate 'Username' %}</label>
+            <span class="text-danger"> {{ form.username.errors }} </span>
+            <input type="text" class="w-100 form-control" name="username" value="{{ form.username.value | default_if_none:'' }}" autofocus="" autocapitalize="none" maxlength="150" required="" id="id_username">
           </div>
           </div>
 
           <div class="row justify-content-center">
+          
+          <div class="col-sm-8 mb-3">
+            <label for="id_password1" class="form-label text-white">{% translate 'Password' %}</label>
+            <span class="text-danger"> {{ form.password1.errors }} </span>
+            <input type="password" class="w-100 form-control" name="password1" required="" id="id_password1">
+          </div>
+          </div>
+
+          <div class="row justify-content-center">
+            
             <div class="col-sm-8 mb-3">
-              <input type="password" class="w-100 form-control" placeholder="{% translate 'Repeat password' %}" name="password" autocomplete="current-password" required="" id="id_password">
+              <label for="id_password2" class="form-label text-white">{% translate 'Repeat password' %}</label>
+              <span class="text-danger"> {{ form.password2.errors }} </span>
+          
+              <input type="password" class="w-100 form-control" name="password2" required="" id="id_password2">
             </div>
           </div>
           
@@ -38,7 +57,6 @@
           </div>
           </div>
 
-          <input type="hidden" name="next" value="{% url 'backend:index' %}">
           <div class="d-flex justify-content-center">
             <button spa class="btn btn-primary mt-3 w-50" type="submit">{% translate 'Sign up' %}</button>
           </div>
