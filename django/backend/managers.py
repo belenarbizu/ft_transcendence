@@ -3,14 +3,37 @@ from . import querysets
 from django.contrib.auth.models import UserManager
 from channels.layers import get_channel_layer
 from django.utils.translation import gettext_lazy as _
-from .utils import notify_update
+from django.templatetags.static import static
 from asgiref.sync import async_to_sync
 from .consumers import LiveUpdateConsumer
 from django.apps import apps
 import random
 
+def default_profile_photo():
+	photos = [
+		'profile_defaults/cat.jpg',
+		'profile_defaults/lion.jpg',
+		'profile_defaults/panda.jpg',
+		'profile_defaults/pig.jpg',
+		'profile_defaults/rabbit.jpg',
+		'profile_defaults/rat.jpg',
+	]
+	return random.choice(photos)
+
 class CustomUserManager(UserManager.from_queryset(querysets.CustomUserQuerySet)):
-	
+
+	def create_user(self, *args, **kwargs):
+		user = super().create_user(*args, **kwargs)
+		user.picture = default_profile_photo()
+		user.save()
+		return user
+
+	def create(self, *args, **kwargs):
+		user = super().create(*args, **kwargs)
+		user.picture = default_profile_photo()
+		user.save()
+		return user
+
 	def register_user(self, username, password=None, **extra_fields):
 		if not username:
 			raise ValueError("Please enter a username")
@@ -129,6 +152,12 @@ class TournamentManager(
 
 class CompetitorManager(
 	models.Manager.from_queryset(querysets.CompetitorQuerySet)):
+
+	def create(self, *args, **kwargs):
+		competitor = super().create(*args, **kwargs)
+		competitor.picture = default_profile_photo()
+		competitor.save()
+		return competitor
 	
 	def register_competitor(self, tournament, user, alias):
 		tournament_aliases = tournament.competitors.values_list('alias', flat = True)

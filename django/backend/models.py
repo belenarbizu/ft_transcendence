@@ -312,6 +312,13 @@ class Competitor(models.Model):
         verbose_name = _("Alias"),
     )
 
+    picture = models.ImageField(
+        null = True,
+        blank = True,
+        upload_to = "profile_pictures",
+        verbose_name = _("Profile picture"),
+    )
+
     eliminated = models.BooleanField(
         default = False,
         verbose_name = _("The competitor was eliminated"),
@@ -332,7 +339,7 @@ class Competitor(models.Model):
     
     @property
     def is_practice(self):
-        return self.user == None
+        return self.tournament.is_practice
     
     @property
     def get_display_name(self):
@@ -344,9 +351,10 @@ class Competitor(models.Model):
     
     @property
     def get_profile_picture(self):
-        if self.user and self.user.picture:
+        if self.is_practice:
+            return self.picture.url
+        elif self.user and self.user.picture:
             return self.user.picture.url
-        return static('backend/images/profile.png')
 
 
 class Tournament(models.Model):
