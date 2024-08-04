@@ -22,17 +22,50 @@ class LiveUpdateConsumer(WebsocketConsumer):
 
     def spa_update(self, event):
         self.send(text_data=json.dumps(event))
+        
+    @classmethod
+    def update_forms(cls, groups, targets):
+        if isinstance(groups, str):
+            groups = [groups]
+        if isinstance(targets, str):
+            targets = [targets]
+        layer = get_channel_layer()
+        event = {
+            "type": "spa_update",
+            "action": "form_update",
+        }
+        for group in groups:
+            for target in targets:
+                event["target"] = target
+                async_to_sync(layer.group_send)(group, event)
+        
+    @classmethod
+    def send_notification(cls, groups, message):
+        if isinstance(groups, str):
+            groups = [groups]
+        layer = get_channel_layer()
+        event = {
+            "type": "spa_update",
+            "action": "notification",
+        }
+        for group in groups:
+            event["message"] = message
+            async_to_sync(layer.group_send)(group, event)
 
     @classmethod
-    def notify(cls, group, event):
+    def reload_page(cls, groups):
+        if isinstance(groups, str):
+            groups = [groups]
         layer = get_channel_layer()
-        event["type"] = "spa_update"
-        async_to_sync(layer.group_send)(
-                group, event
-            )
+        event = {
+            "type": "spa_update",
+            "action": "page_reload",
+        }
+        for group in groups:
+            async_to_sync(layer.group_send)(group, event)
 
 
-class UserConsumer(WebsocketConsumer):
+class UserConsumer(LiveUpdateConsumer):
 
     def connect(self):
         self.user_id = self.scope['url_route']['kwargs']['user_id']
@@ -54,26 +87,12 @@ class UserConsumer(WebsocketConsumer):
         self._set_online_status(False)
         return super().disconnect(code)
 
-    def chat_message(self, event):
-        sender = event["sender"].username
-        message = f'{sender} ' + "sent you a message"
-        self.send(text_data=json.dumps({
-                "type": "chat_message",
-                "message": message,
-                "sender": sender
-            }))
-        
-    def online_status(self, event):
-        self.send(text_data = json.dumps({
-            "type": "online_status",
-        }))
-
     def _notify_online_status(self):
-        layer = get_channel_layer()
-        for friend in self.request_user.friends.all().iterator():
-            async_to_sync(layer.group_send)(
-                    f"user_{friend.id}", {"type": "online_status"}
-                )
+        LiveUpdateConsumer.update_forms(
+            [f"user_{friend.id}" 
+            for friend in self.request_user.friends.all().iterator()],
+            ["#chat-refresh"]
+        )
 
     def _set_online_status(self, status):
         CustomUser = apps.get_model("backend", "CustomUser")

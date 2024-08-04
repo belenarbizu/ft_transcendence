@@ -45,12 +45,15 @@ class ChatMessageQuerySet(models.QuerySet):
     def to_user(self, user):
         return self.filter(recipient = user.id)
     
+    def not_blocked(self):
+        return self.exclude(blocked = True)
+
     def from_user(self, user):
         return self.filter(sender = user.id)
     
     def between(self, user_a, user_b):
         return self.to_user(user_a).from_user(user_b) \
-            | self.to_user(user_b).from_user(user_a)
+            | self.to_user(user_b).from_user(user_a).not_blocked()
     
     def ordered(self):
         return self.order_by('date')

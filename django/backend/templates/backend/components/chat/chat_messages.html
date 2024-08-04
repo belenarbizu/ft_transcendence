@@ -49,16 +49,20 @@
 </li>
 {% endfor %}
 
-{% if user.online %}
 <li class="d-flex justify-content-center mb-2">
+{% if online_status %}
     <p class="my-0" style="color:green">
         {% translate 'Online' %}
+        {% if user in request.user.blocked_users.all %}
+        {% translate 'This user is blocked' %}
+        {% endif %}
     </p>
-</li>
 {% else %}
-<li class="d-flex justify-content-center mb-2">
     <p class="my-0" style="color:red">
         {% translate 'Offline' %}
+        {% if user in request.user.blocked_users.all %}
+        {% translate 'This user is blocked' %}
+        {% endif %}
     </p>
-</li>
 {% endif %}
+</li>

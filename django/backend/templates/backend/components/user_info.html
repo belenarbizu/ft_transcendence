@@ -20,7 +20,7 @@
                     <div class="d-flex">
                         <h3>{{ user.username }}</h3>
                         {% if not request.user.username == user.username %}
-                        {% if user.online %}
+                        {% if online_status %}
                         <i class="fs-6 bi bi-circle-fill ms-2" style="color:green"></i>
                         {% else %}
                         <i class="fs-6 bi bi-circle-fill ms-2" style="color:red"></i>
@@ -75,8 +75,16 @@
                         </form>
                         {% endif %}
                         <button class="btn btn-primary mx-1" data-bs-toggle="modal" data-bs-target="#chatModal">{% translate 'Chat' %}</button>
-                        <button class="btn btn-primary mx-1">{% translate 'Block' %}</button>
-                        <button class="btn btn-primary mx-1">{% translate 'Unblock' %}</button>
+                        <form spa action="{% url 'backend:block_user' %}" method="POST">
+                            {% csrf_token %}
+                            <input name="next" type="hidden" value="{{ request.path }}" />
+                            <input name="username" type="hidden" value="{{ user.username }}" />
+                        {% if is_blocked %}
+                            <button type="submit" class="btn btn-primary mx-1">{% translate 'Unblock' %}</button>
+                        {% else %}
+                            <button type="submit" class="btn btn-primary mx-1">{% translate 'Block' %}</button>
+                        {% endif %}
+                        </form>
                         {% endif %}
                     </div>
                 </div>
