@@ -107,8 +107,8 @@ class TournamentManager(
         if user != tournament.owner:
             raise Exception(_("You can't start the tournament"))
         if tournament.is_created:
-            if len(tournament.competitors.all()) < 2:
-                raise Exception(_("You can't start the tournament with less than 2 competitors"))
+            if len(tournament.competitors.all()) < 3:
+                raise Exception(_("You can't start the tournament with less than 3 competitors"))
             tournament.state = 'st'
             LiveUpdateConsumer.notify("tournament_list",
                 {"action": "form_update", "target": "#tournament_list_update"})
