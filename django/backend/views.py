@@ -224,10 +224,8 @@ def tournament_remove(request, tournament_id):
 		if not request.user == tournament.owner:
 			raise Exception ("Only the owner can remove tournaments.")
 		tournament.delete()
-		LiveUpdateConsumer.notify("tournament_list",
-                {"action": "form_update", "target": "#tournament_list_update"})
-		LiveUpdateConsumer.notify(f"tournament_{tournament_id}",
-                {"action": "page_reload"})
+		LiveUpdateConsumer.update_forms("tournament_list", "#tournament_list_update")
+		LiveUpdateConsumer.reload_page(f"tournament_{tournament_id}")
 	except Exception as e:
 		return HttpResponse(str(e), status=409)
 	return redirect(reverse("backend:tournament",
