@@ -48,7 +48,32 @@
                         {% if request.user.username == user.username %}
                         <button class="btn btn-primary mx-1" data-bs-toggle="modal" data-bs-target="#profileModal">{% translate 'Edit profile' %}</button>
                         {% else %}
-                        <button class="btn btn-primary mx-1">{% translate 'Invite' %}</button>
+                        {% if can_invite %}
+                        <form spa action="{% url 'backend:invitation_create' %}" method="POST">
+                                    {% csrf_token %}
+                                    <input name="next" type="hidden" value="{{ request.path }}" />
+                                    <input type="hidden" name="username" value="{{ user.username }}" class="form-control"
+                                        placeholder="{% translate 'username' %}" aria-label="{% translate 'username' %}"
+                                        aria-describedby="button-addon2">
+                                    <button class="btn btn-primary mx-1" type="submit">{% translate 'Invite' %}</button>
+                        </form>
+                        {% endif %}
+                        {% if received_invitation %}
+                        <form spa action="{% url 'backend:invitation_dismiss' %}" method="POST">
+                                {% csrf_token %}
+                                <input name="next" type="hidden" value="{{ request.path }}" />
+                                <input name="username" type="hidden" value="{{ user.username }}" />
+                                <button class="btn btn-primary mx-1" type="submit">{% translate 'Dismiss invitation' %}</button>
+                            </form>
+                        {% endif %}
+                        {% if sent_invitation %}
+                        <form spa action="{% url 'backend:invitation_cancel' %}" method="POST">
+                            {% csrf_token %}
+                            <input name="next" type="hidden" value="{{ request.path }}" />
+                            <input name="username" type="hidden" value="{{ user.username }}" />
+                            <button class="btn btn-primary mx-1" type="submit">{% translate 'Cancel invitation' %}</button>
+                        </form>
+                        {% endif %}
                         <button class="btn btn-primary mx-1" data-bs-toggle="modal" data-bs-target="#chatModal">{% translate 'Chat' %}</button>
                         <button class="btn btn-primary mx-1">{% translate 'Block' %}</button>
                         <button class="btn btn-primary mx-1">{% translate 'Unblock' %}</button>

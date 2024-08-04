@@ -30,6 +30,9 @@ def user_view(request, username):
 			"accepted": CustomUser.objects.friend_of(user),
 		},
 		"games": [],
+		"can_invite": user in CustomUser.objects.uninvited_users(request.user, user.username),
+		"sent_invitation": user in request.user.invited_by.all(),
+		"received_invitation": user in request.user.invited_users.all(),
 	}
 	return render(request, "backend/index.html", data)
 
