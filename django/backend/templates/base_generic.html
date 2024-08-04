@@ -33,7 +33,7 @@
         </div>
 
         {% if request.user.is_authenticated %}
-        <socket group="ws/user/{{ request.user.id }}" onmessage="chat_handler"></socket>
+        <socket group="ws/user/{{ request.user.id }}" onmessage="live_handler"></socket>
         {% endif %}
 
         {% if not request.GET.SPA %}

@@ -12,6 +12,15 @@ from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 from .managers import CustomUserManager
 from .forms import RegistrationForm
+from .consumers import *
+
+def notify_errors(view):
+	def decorated_view(*args, **kwargs):
+		try:
+			return view(*args, **kwargs)
+		except Exception as e:
+			return HttpResponse(str(e), status=409)
+	return decorated_view
 
 def index_view(request):
 	if request.user.is_authenticated:
@@ -31,6 +40,7 @@ def user_view(request, username):
 		},
 		"games": [],
 		"is_blocked": user in request.user.blocked_users.all(),
+		"online_status": user.see_online_status_as(request.user),
 	}
 	return render(request, "backend/index.html", data)
 
@@ -47,20 +57,11 @@ def create_invitation(request):
 
 @require_http_methods(["POST"])
 @login_required(login_url=reverse_lazy("backend:login_options"))
+@notify_errors
 def block_user(request):
-	blocked_username = request.POST.get("username", "")
-	print (blocked_username)
-	blocked_user = CustomUser.objects.get(username = blocked_username)
-	next = request.POST.get("next", "/")
-	try:
-		if blocked_user in request.user.blocked_users.all():
-			request.user.blocked_users.remove(blocked_user)
-		else:
-			request.user.blocked_users.add(blocked_user)
-	except Exception as e:
-		print ("EXCEPTION:", str(e))
-		return HttpResponse(str(e), status=409)
-	return redirect(next)
+	blocked_user = CustomUser.objects.get(
+		username = request.POST.get("username", ""))
+	request.user.block(blocked_user)
 
 @require_http_methods(["POST"])
 @login_required(login_url=reverse_lazy("backend:login_options"))
@@ -110,7 +111,8 @@ def chat_messages_form(request):
 	user = CustomUser.objects.get(username = username)
 	data = {
 		'messages': ChatMessage.objects.between(user, request.user).ordered(),
-		'user': user
+		'user': user,
+		"online_status": user.see_online_status_as(request.user),
 		}
 	return render(request, "backend/components/chat/chat_form.html", data)
 
@@ -127,7 +129,8 @@ def send_message(request):
 		)
 	data = {
 		'messages': ChatMessage.objects.between(user, request.user).ordered(),
-		'user': user
+		'user': user,
+		"online_status": user.see_online_status_as(request.user),
 		}
 	return render(request, "backend/components/chat/chat_messages.html", data)
 
@@ -139,7 +142,8 @@ def list_messages(request):
 		)
 	data = {
 		'messages': ChatMessage.objects.between(user, request.user).ordered(),
-		'user': user
+		'user': user,
+		"online_status": user.see_online_status_as(request.user),
 		}
 	return render(request, "backend/components/chat/chat_messages.html", data)
 

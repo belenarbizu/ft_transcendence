@@ -34,13 +34,18 @@
         </div>
     </form>
 </div>
+
 <div class="modal-body col-12 mb-2">
     <div class="d-flex justify-content-center">
         <a spa hide class="fs-3 bi bi-person-fill text-primary" href="{% url 'backend:user' user.username %}" data-bs-toggle="tooltip"
             data-bs-title="{% translate 'View profile of' %} {{ user.username }}"></a>
         <i class="fs-3 bi bi-controller ms-5 text-primary" data-bs-toggle="tooltip"
             data-bs-title="{% translate 'Play with' %} {{ user.username }}"></i>
-        <i class="fs-3 bi bi-person-x-fill ms-5 text-primary" data-bs-toggle="tooltip"
-        data-bs-title="{% translate 'Block' %} {{ user.username }}"></i>
+        <form spa action="{% url 'backend:block_user' %}" method="POST">
+            {% csrf_token %}
+            <input name="username" type="hidden" value="{{ user.username }}" />
+            <button type="submit" class="btn btn-link m-0 p-0"><i class="fs-3 bi bi-person-x-fill ms-5 text-primary" data-bs-toggle="tooltip"
+                data-bs-title="{% translate 'Block/Unblock' %} {{ user.username }}"></i></button>
+        </form>
     </div>
 </div>

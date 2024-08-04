@@ -3,6 +3,7 @@ from django.contrib.auth.models import AbstractUser
 from django.utils.translation import gettext_lazy as _
 from django.templatetags.static import static
 from . import managers
+from .consumers import *
 
 GAME_MODE_CHOICES = (
     ("lo", _("Practice (private)")),
@@ -138,6 +139,24 @@ class CustomUser(AbstractUser):
         self.invited_by.remove(invited_user)
         self.save()
 
+    def see_online_status_as(self, user):
+        return self.online and not user in self.blocked_users.all()
+
+    def block(self, user):
+        if user in self.blocked_users.all():
+            self.blocked_users.remove(user)
+            blocked = False
+        else:
+            self.blocked_users.add(user)
+            blocked = True
+        LiveUpdateConsumer.update_forms(
+            [f"user_{self.id}", f"user_{user.id}"],
+            [f"#chat-refresh"]
+                )
+        if blocked:
+            raise Exception(_("You blocked ") + user.username)
+        raise Exception(_("You unblocked ") + user.username)
+
     @property
     def get_profile_picture(self):
         if self.user.picture:
@@ -171,6 +190,11 @@ class ChatMessage(models.Model):
     date = models.DateTimeField(
         auto_now = True,
         verbose_name = _("Date"),
+    )
+
+    blocked = models.BooleanField(
+        default = False,
+        verbose_name = _("Blocked message")
     )
 
 

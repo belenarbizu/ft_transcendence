@@ -20,7 +20,7 @@
                     <div class="d-flex">
                         <h3>{{ user.username }}</h3>
                         {% if not request.user.username == user.username %}
-                        {% if user.online %}
+                        {% if online_status %}
                         <i class="fs-6 bi bi-circle-fill ms-2" style="color:green"></i>
                         {% else %}
                         <i class="fs-6 bi bi-circle-fill ms-2" style="color:red"></i>

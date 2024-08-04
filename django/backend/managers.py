@@ -46,22 +46,25 @@ class CustomUserManager(UserManager.from_queryset(querysets.CustomUserQuerySet))
 		return self.get_queryset().find_name(username)
 	
 
-
 class ChatMessageManager(
 	models.Manager.from_queryset(querysets.ChatMessageQuerySet)):
 	
 	def send_message(self, **kwargs):
-		if (kwargs['message']):
+		if kwargs['message']:
+			kwargs['blocked'] = False
+			if kwargs['sender'] in kwargs['recipient'].blocked_users.all() \
+				or kwargs['recipient'] in kwargs['sender'].blocked_users.all():
+				kwargs['blocked'] = True
 			self.create(**kwargs).save()
-			channel_layer = get_channel_layer()
-			async_to_sync(channel_layer.group_send)(
-				f'user_{kwargs["recipient"].id}',
-				{
-					"type": "chat_message",
-					'sender': kwargs['sender'],
-					'message': kwargs['message'],
-				}
-			)
+			if not kwargs['blocked']:
+				LiveUpdateConsumer.update_forms(
+					[f"user_{kwargs['recipient'].id}"],
+					["#chat-refresh"]
+				)
+				LiveUpdateConsumer.send_notification(
+					[f"user_{kwargs['recipient'].id}"],
+					[kwargs['recipient'].username + " " + _("sent you a message")]
+				)
 
 
 class MatchManager(
@@ -97,8 +100,10 @@ class TournamentManager(
 	models.Manager.from_queryset(querysets.TournamentQuerySet)):
 	
 	def create(self, *args, **kwargs):
-		LiveUpdateConsumer.notify("tournament_list",
-			{"action": "form_update", "target": "#tournament_list_update"})
+		LiveUpdateConsumer.update_forms(
+			"tournament_list",
+			"#tournament_list_update"
+		)
 		return super().create(*args, **kwargs)
 		
 	def start_tournament(self, tournament_id, user):
@@ -109,10 +114,11 @@ class TournamentManager(
 			if len(tournament.competitors.all()) < 2:
 				raise Exception(_("You can't start the tournament with less than 2 competitors"))
 			tournament.state = 'st'
-			LiveUpdateConsumer.notify("tournament_list",
-				{"action": "form_update", "target": "#tournament_list_update"})
-			LiveUpdateConsumer.notify(f"tournament_{tournament.id}",
-				{"action": "page_reload"})
+			LiveUpdateConsumer.reload_page(f"tournament_{tournament.id}")
+			LiveUpdateConsumer.update_forms(
+				"tournament_list",
+				"#tournament_list_update"
+			)
 			self.new_round(tournament)
 			tournament.save()
 	
@@ -144,10 +150,11 @@ class TournamentManager(
 			tournament.save()
 		if len(tournament.matches.not_finished()) == 0:
 			self.generate_tournament_matches(tournament)
-		LiveUpdateConsumer.notify("tournament_list",
-			{"action": "form_update", "target": "#tournament_list_update"})
-		LiveUpdateConsumer.notify(f"tournament_{tournament.id}",
-			{"action": "page_reload"})
+		LiveUpdateConsumer.update_forms(
+			"tournament_list",
+			"#tournament_list_update"
+		)
+		LiveUpdateConsumer.reload_page(f"tournament_{tournament.id}")
 
 
 class CompetitorManager(
@@ -189,9 +196,10 @@ class CompetitorManager(
 				user = user,
 				tournament = tournament)
 			competitor.save()
-		LiveUpdateConsumer.notify(f"tournament_{tournament.id}",
-			{"action": "form_update",
-			 "target": "#tournament-competitor-list-update"})
+		LiveUpdateConsumer.update_forms(
+			f"tournament_{tournament.id}",
+			"#tournament-competitor-list-update"
+		)
 		
 	def remove_competitor(self, competitor_id):
 		try:
@@ -203,6 +211,7 @@ class CompetitorManager(
 		tournament = competitor.tournament
 		competitor.delete()
 		if tournament:
-			LiveUpdateConsumer.notify(f"tournament_{tournament.id}",
-				{"action": "form_update",
-				"target": "#tournament-competitor-list-update"})
+			LiveUpdateConsumer.update_forms(
+				f"tournament_{tournament.id}",
+				"#tournament-competitor-list-update"
+			)

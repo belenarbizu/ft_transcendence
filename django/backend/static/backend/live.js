@@ -10,4 +10,8 @@ function live_handler(event){
     if (data["action"] == "page_reload") {
         get_request(window.location.href, "#wrapper", true, true);
     }
+    if (data["action"] == "notification") {
+        console.log("NOTIFICATION");
+        show_notification(data["message"] + '\n');
+    }
 }
