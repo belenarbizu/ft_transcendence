@@ -110,8 +110,10 @@
                                     </i>
                                 </button>
                             </form>
-                            <i class="fs-4 text-primary bi bi-controller ms-3" data-bs-toggle="tooltip"
-                                data-bs-title="{% translate 'Play with' %} {{ friend.username }}"></i>
+                            <button type="submit" class="btn btn-link m-0 p-0" data-bs-toggle="modal" data-bs-target="#localModal">
+                                <i class="fs-4 text-primary bi bi-controller ms-3" data-bs-toggle="tooltip"
+                                    data-bs-title="{% translate 'Play with' %} {{ friend.username }}"></i>
+                            </button>
                         </div>
                     </td>
                 </tr>
