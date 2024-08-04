@@ -25,3 +25,7 @@ html, body {
   display: flex;
   flex-direction: column-reverse;
 }
+
+.mt-neg {
+  margin-top: -0.25rem !important;
+}
