@@ -38,7 +38,6 @@ ALLOWED_HOSTS = ["localhost", "0.0.0.0", "127.0.0.1", 'asgiserver']
 INSTALLED_APPS = [
     'daphne',
     'channels',
-    'polls.apps.PollsConfig',
     'backend.apps.BackendConfig',
     'django.contrib.admin',
     'django.contrib.auth',
