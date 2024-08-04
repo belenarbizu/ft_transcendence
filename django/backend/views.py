@@ -30,6 +30,7 @@ def user_view(request, username):
 			"accepted": CustomUser.objects.friend_of(user),
 		},
 		"games": [],
+		"is_blocked": user in request.user.blocked_users.all(),
 	}
 	return render(request, "backend/index.html", data)
 
@@ -38,10 +39,26 @@ def user_view(request, username):
 def create_invitation(request):
 	invited_username = request.POST.get("username", "")
 	next = request.POST.get("next", "/")
-	print(next)
 	try:
 		request.user.create_invitation(invited_username)
 	except Exception as e:
+		return HttpResponse(str(e), status=409)
+	return redirect(next)
+
+@require_http_methods(["POST"])
+@login_required(login_url=reverse_lazy("backend:login_options"))
+def block_user(request):
+	blocked_username = request.POST.get("username", "")
+	print (blocked_username)
+	blocked_user = CustomUser.objects.get(username = blocked_username)
+	next = request.POST.get("next", "/")
+	try:
+		if blocked_user in request.user.blocked_users.all():
+			request.user.blocked_users.remove(blocked_user)
+		else:
+			request.user.blocked_users.add(blocked_user)
+	except Exception as e:
+		print ("EXCEPTION:", str(e))
 		return HttpResponse(str(e), status=409)
 	return redirect(next)
 
