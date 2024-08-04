@@ -10,41 +10,41 @@ from django.apps import apps
 import random
 
 def default_profile_photo():
-	photos = [
-		'profile_defaults/cat.jpg',
-		'profile_defaults/lion.jpg',
-		'profile_defaults/panda.jpg',
-		'profile_defaults/pig.jpg',
-		'profile_defaults/rabbit.jpg',
-		'profile_defaults/rat.jpg',
-	]
-	return random.choice(photos)
+    photos = [
+        'profile_defaults/cat.jpg',
+        'profile_defaults/lion.jpg',
+        'profile_defaults/panda.jpg',
+        'profile_defaults/pig.jpg',
+        'profile_defaults/rabbit.jpg',
+        'profile_defaults/rat.jpg',
+    ]
+    return random.choice(photos)
 
 class CustomUserManager(UserManager.from_queryset(querysets.CustomUserQuerySet)):
 
-	def create_user(self, *args, **kwargs):
-		user = super().create_user(*args, **kwargs)
-		user.picture = default_profile_photo()
-		user.save()
-		return user
+    def create_user(self, *args, **kwargs):
+        user = super().create_user(*args, **kwargs)
+        user.picture = default_profile_photo()
+        user.save()
+        return user
 
-	def create(self, *args, **kwargs):
-		user = super().create(*args, **kwargs)
-		user.picture = default_profile_photo()
-		user.save()
-		return user
+    def create(self, *args, **kwargs):
+        user = super().create(*args, **kwargs)
+        user.picture = default_profile_photo()
+        user.save()
+        return user
 
-	def register_user(self, username, password=None, **extra_fields):
-		if not username:
-			raise ValueError("Please enter a username")
-		user = self.model(username=username, **extra_fields)
-		user.set_password(password)
-		user.save(using=self._db)
-		return user
-	
-	def find_name(self, username):
-		return self.get_queryset().find_name(username)
-	
+    def register_user(self, username, password=None, **extra_fields):
+        if not username:
+            raise ValueError("Please enter a username")
+        user = self.model(username=username, **extra_fields)
+        user.set_password(password)
+        user.save(using=self._db)
+        return user
+    
+    def find_name(self, username):
+        return self.get_queryset().find_name(username)
+    
 
 class ChatMessageManager(
 	models.Manager.from_queryset(querysets.ChatMessageQuerySet)):
@@ -68,33 +68,34 @@ class ChatMessageManager(
 
 
 class MatchManager(
-	models.Manager.from_queryset(querysets.MatchQuerySet)):
-	
-	def update_ELO(self, match):
+    models.Manager.from_queryset(querysets.MatchQuerySet)):
+    
 
-		def elo(a, b, k, result):
-			winner_elo = a if result else b
-			loser_elo = b if result else a
-			elo = int(k / (1 + 10 ** ((winner_elo - loser_elo) / 400)))
-			print (elo)
-			return elo
-		
-		def updated_elo(prev_elo, elo, result):
-			return (prev_elo + elo) if result else max(0, prev_elo - elo)
+    def update_ELO(self, match):
 
-		if (not match.is_practice and match.is_finished):
-			if (match.game == 'po'):
-				match.elo = elo(match.home.user.pong_elo, match.guest.user.pong_elo, 20, match.winner == match.home)
-				match.home.user.pong_elo = updated_elo(match.home.user.pong_elo, match.elo, match.winner == match.home)
-				match.guest.user.pong_elo = updated_elo(match.guest.user.pong_elo, match.elo, match.winner == match.guest)
-			else:
-				match.elo = elo(match.home.user.pirates_elo, match.guest.user.pirates_elo, 20, match.winner == match.home)
-				match.home.user.pong_elo = updated_elo(match.home.user.pirates_elo, match.elo, match.winner == match.home)
-				match.guest.user.pong_elo = updated_elo(match.guest.user.pirates_elo, match.elo, match.winner == match.guest)
-			match.save()
-			match.home.user.save()
-			match.guest.user.save()
-		
+        def elo(a, b, k, result):
+            winner_elo = a if result else b
+            loser_elo = b if result else a
+            elo = int(k / (1 + 10 ** ((winner_elo - loser_elo) / 400)))
+            print (elo)
+            return elo
+        
+        def updated_elo(prev_elo, elo, result):
+            return (prev_elo + elo) if result else max(0, prev_elo - elo)
+
+        if (not match.is_practice and match.is_finished):
+            if (match.game == 'po'):
+                match.elo = elo(match.home.user.pong_elo, match.guest.user.pong_elo, 20, match.winner == match.home)
+                match.home.user.pong_elo = updated_elo(match.home.user.pong_elo, match.elo, match.winner == match.home)
+                match.guest.user.pong_elo = updated_elo(match.guest.user.pong_elo, match.elo, match.winner == match.guest)
+            else:
+                match.elo = elo(match.home.user.pirates_elo, match.guest.user.pirates_elo, 20, match.winner == match.home)
+                match.home.user.pong_elo = updated_elo(match.home.user.pirates_elo, match.elo, match.winner == match.home)
+                match.guest.user.pong_elo = updated_elo(match.guest.user.pirates_elo, match.elo, match.winner == match.guest)
+            match.save()
+            match.home.user.save()
+            match.guest.user.save()
+        
 
 class TournamentManager(
 	models.Manager.from_queryset(querysets.TournamentQuerySet)):
@@ -111,8 +112,8 @@ class TournamentManager(
 		if user != tournament.owner:
 			raise Exception(_("You can't start the tournament"))
 		if tournament.is_created:
-			if len(tournament.competitors.all()) < 2:
-				raise Exception(_("You can't start the tournament with less than 2 competitors"))
+			if len(tournament.competitors.all()) < 3:
+				raise Exception(_("You can't start the tournament with less than 3 competitors"))
 			tournament.state = 'st'
 			LiveUpdateConsumer.reload_page(f"tournament_{tournament.id}")
 			LiveUpdateConsumer.update_forms(

@@ -25,3 +25,20 @@ html, body {
   display: flex;
   flex-direction: column-reverse;
 }
+
+.mt-neg {
+  margin-top: -0.25rem !important;
+}
+
+#backgroundImage {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  image-orientation: from-image;
+  background-repeat: no-repeat;
+  background-position: left;
+  background-size: cover;
+  z-index: -1;
+}

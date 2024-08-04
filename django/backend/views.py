@@ -41,6 +41,9 @@ def user_view(request, username):
 		"games": [],
 		"is_blocked": user in request.user.blocked_users.all(),
 		"online_status": user.see_online_status_as(request.user),
+		"can_invite": user in CustomUser.objects.uninvited_users(request.user, user.username),
+		"sent_invitation": user in request.user.invited_by.all(),
+		"received_invitation": user in request.user.invited_users.all(),
 	}
 	return render(request, "backend/index.html", data)
 
@@ -150,7 +153,10 @@ def list_messages(request):
 @login_required(login_url=reverse_lazy("backend:login_options"))
 @require_http_methods(["GET"])
 def tournament_view(request, tournament_id):
-	tournament = get_object_or_404(Tournament, id = tournament_id)
+	try:
+		tournament = Tournament.objects.get(id = tournament_id)
+	except Exception as e:
+		return redirect(reverse("backend:tournament_list", kwargs={}))
 	return render(request, "backend/tournament.html", {
 		"tournament": tournament,
 		"rounds": reversed(range(1, tournament.round+1)),
@@ -179,6 +185,17 @@ def tournament_remove_competitor(request, tournament_id):
 
 @login_required(login_url=reverse_lazy("backend:login_options"))
 @require_http_methods(["POST"])
+def tournament_disqualify_competitor(request, tournament_id):
+	try:
+		comp = Competitor.objects.get(id = request.POST.get("competitor", ""))
+		comp.disqualify()
+	except Exception as e:
+		return HttpResponse(str(e), status=409)
+	return redirect(reverse("backend:tournament",
+		kwargs={'tournament_id':tournament_id}))
+
+@login_required(login_url=reverse_lazy("backend:login_options"))
+@require_http_methods(["POST"])
 def tournament_register_competitor(request, tournament_id):
 	tournament = get_object_or_404(Tournament, id = tournament_id)
 	try:
@@ -194,6 +211,23 @@ def tournament_register_competitor(request, tournament_id):
 def tournament_start(request, tournament_id):
 	try:
 		Tournament.objects.start_tournament(tournament_id, request.user)
+	except Exception as e:
+		return HttpResponse(str(e), status=409)
+	return redirect(reverse("backend:tournament",
+		kwargs={'tournament_id':tournament_id}))
+
+@login_required(login_url=reverse_lazy("backend:login_options"))
+@require_http_methods(["POST"])
+def tournament_remove(request, tournament_id):
+	try:
+		tournament = Tournament.objects.get(id = tournament_id)
+		if not request.user == tournament.owner:
+			raise Exception ("Only the owner can remove tournaments.")
+		tournament.delete()
+		LiveUpdateConsumer.notify("tournament_list",
+                {"action": "form_update", "target": "#tournament_list_update"})
+		LiveUpdateConsumer.notify(f"tournament_{tournament_id}",
+                {"action": "page_reload"})
 	except Exception as e:
 		return HttpResponse(str(e), status=409)
 	return redirect(reverse("backend:tournament",

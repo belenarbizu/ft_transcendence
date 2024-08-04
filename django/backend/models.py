@@ -4,6 +4,7 @@ from django.utils.translation import gettext_lazy as _
 from django.templatetags.static import static
 from . import managers
 from .consumers import *
+import random
 
 GAME_MODE_CHOICES = (
     ("lo", _("Practice (private)")),
@@ -292,6 +293,19 @@ class Match(models.Model):
     @property
     def is_finished(self):
         return self.state == "fi"
+    
+    def win(self, competitor):
+        self.winner = competitor
+        self.state = "fi"
+        self.save()
+
+    def lose(self, competitor):
+        if self.home == competitor:
+            self.winner = self.guest
+        else:
+            self.winner = self.home
+        self.state = "fi"
+        self.save()
 
 
 class Friend(models.Model):
@@ -379,6 +393,14 @@ class Competitor(models.Model):
             return self.picture.url
         elif self.user and self.user.picture:
             return self.user.picture.url
+        
+    def disqualify(self):
+        for match in Match.objects.played_by(self).not_finished():
+            match.lose(self)
+        self.eliminated = True
+        self.save()
+        if self.tournament:
+            Tournament.objects.new_round(self.tournament)
 
 
 class Tournament(models.Model):

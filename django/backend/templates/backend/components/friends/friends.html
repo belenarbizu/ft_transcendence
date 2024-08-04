@@ -96,7 +96,9 @@
                         <a class="px-2 link-dark text-decoration-none text-capitalize" href="{% url 'backend:user' friend.username %}" spa data-bs-toggle="tooltip"
                             data-bs-title="{% translate 'View profile of' %} {{ friend.friend_of.username }}">
                             {{friend.username }}</a>
+                        
                     </td>
+                    {% if friend in request.user.friends.all %}
                     <td>
                         <div class="d-flex">
                             <form spa target=".chat-modal" class="form px-1 iconMsg text-decoration-none"
@@ -111,11 +113,14 @@
                                 </button>
                             </form>
                             <button type="submit" class="btn btn-link m-0 p-0" data-bs-toggle="modal" data-bs-target="#localModal">
-                                <i class="fs-4 text-primary bi bi-controller ms-3" data-bs-toggle="tooltip"
+                                <i class="fs-4 text-primary bi bi-controller ms-3 mt-neg" data-bs-toggle="tooltip"
                                     data-bs-title="{% translate 'Play with' %} {{ friend.username }}"></i>
                             </button>
                         </div>
                     </td>
+                    {% else %}
+                    <td></td>
+                    {% endif %}
                 </tr>
                 {% endfor %}
             </tbody>
