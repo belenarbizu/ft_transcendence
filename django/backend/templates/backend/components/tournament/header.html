@@ -22,6 +22,14 @@
                                 </button>
                             </div>
                         </form>
+                        <form spa action="{% url 'backend:tournament_remove' tournament.id %}" method="POST" autocomplete="off">
+                            {% csrf_token %}
+                            <div class="input-group mx-1">
+                                <button type="submit" class="btn btn-primary" type="button">
+                                    {% translate 'Remove tournament' %}
+                                </button>
+                            </div>
+                        </form>
                         {% endif %}
                     </div>
                 </div>
