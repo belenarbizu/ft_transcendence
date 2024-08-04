@@ -24,6 +24,17 @@
                     data-bs-title="{% translate 'Remove competitor' %} {{ competitor.get_display_name }}"></i></button>
         </form>
         {% endif %}
+        {% if tournament.owner == user and tournament.is_started and not competitor.eliminated %}
+        <form spa class="form px-1 d-flex justify-content-between align-items-center"
+            action="{% url 'backend:tournament_disqualify_competitor' tournament.id %}" method="POST">
+            {% csrf_token %}
+            <input name="next" type="hidden" value="{{ request.path }}" />
+            <input name="competitor" type="hidden" value="{{ competitor.id }}" />
+            <button type="submit" spa class="btn btn-link m-0 p-0"><i class="fs-5 text-danger bi bi-x-circle-fill"
+                    data-bs-toggle="tooltip"
+                    data-bs-title="{% translate 'Disqualify competitor' %} {{ competitor.get_display_name }}"></i></button>
+        </form>
+        {% endif %}
     </td>
 </tr>
 {% endfor %}

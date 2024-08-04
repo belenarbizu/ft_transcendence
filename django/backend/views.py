@@ -161,6 +161,17 @@ def tournament_remove_competitor(request, tournament_id):
 
 @login_required(login_url=reverse_lazy("backend:login_options"))
 @require_http_methods(["POST"])
+def tournament_disqualify_competitor(request, tournament_id):
+	try:
+		comp = Competitor.objects.get(id = request.POST.get("competitor", ""))
+		comp.disqualify()
+	except Exception as e:
+		return HttpResponse(str(e), status=409)
+	return redirect(reverse("backend:tournament",
+		kwargs={'tournament_id':tournament_id}))
+
+@login_required(login_url=reverse_lazy("backend:login_options"))
+@require_http_methods(["POST"])
 def tournament_register_competitor(request, tournament_id):
 	tournament = get_object_or_404(Tournament, id = tournament_id)
 	try:

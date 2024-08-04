@@ -14,6 +14,7 @@ urlpatterns = [
     path('messages/list/', views.list_messages, name="list_messages"),
     path('tournament/<int:tournament_id>/', views.tournament_view, name="tournament"),
     path('tournament/<int:tournament_id>/remove_competitor/', views.tournament_remove_competitor, name="tournament_remove_competitor"),
+    path('tournament/<int:tournament_id>/disqualify_competitor/', views.tournament_disqualify_competitor, name="tournament_disqualify_competitor"),
     path('tournament/<int:tournament_id>/add_competitor/', views.tournament_register_competitor, name="tournament_add_competitor"),
     path('tournament/<int:tournament_id>/start/', views.tournament_start, name="tournament_start"),
     path('tournament/<int:tournament_id>/competitor_list/', views.tournament_competitors, name="tournament_competitor_list"),
