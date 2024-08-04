@@ -29,3 +29,17 @@ html, body {
 .mt-neg {
   margin-top: -0.25rem !important;
 }
+
+#backgroundImage {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  image-orientation: from-image;
+  background-image: url('/static/backend/images/background.webp');
+  background-repeat: no-repeat;
+  background-position: left;
+  background-size: cover;
+  z-index: -1;
+}
