@@ -327,3 +327,14 @@ def register_view(request):
 
 def three_demo(request):
 	return render(request, 'backend/three.html', {})
+
+@require_http_methods(["POST"])
+def edit_profile(request):
+	language = request.POST.get("language", "")
+	print(language)
+	bio = request.POST.get("bio", "")
+	print(bio)
+	picture = request.POST.get("picture", "")
+	print(picture)
+	next = request.POST.get("next", "/")
+	return redirect(next)
