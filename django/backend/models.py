@@ -117,6 +117,14 @@ class CustomUser(AbstractUser):
             raise Exception(_("The user is already your friend"))
         self.invited_by.add(invited_user)
         self.save()
+        LiveUpdateConsumer.update_forms(
+            f"user_{invited_user.id}",
+            ["#user-friends-refresh", "#user-info-refresh"]
+        )
+        LiveUpdateConsumer.send_notification(
+            f"user_{invited_user.id}",
+            self.username + " " + _("sent you a friend request")
+        )
 
     def dismiss_invitation(self, invited):
         invited_user = CustomUser.objects.filter(username = invited).first()
