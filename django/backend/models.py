@@ -176,7 +176,7 @@ class CustomUser(AbstractUser):
             blocked = True
         LiveUpdateConsumer.update_forms(
             [f"user_{self.id}", f"user_{user.id}"],
-            [f"#chat-refresh"]
+            [f"#chat-refresh", "#user-friends-refresh", "#user-info-refresh"]
                 )
         if blocked:
             raise Exception(_("You blocked ") + user.username)
