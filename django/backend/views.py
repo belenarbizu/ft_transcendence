@@ -324,3 +324,6 @@ def register_view(request):
 			form.save()
 			return redirect(reverse('backend:login_options'))
 	return render(request, 'backend/signup.html', {"form": form})
+
+def three_demo(request):
+	return render(request, 'backend/three.html', {})
