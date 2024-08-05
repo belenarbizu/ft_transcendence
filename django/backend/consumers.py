@@ -91,7 +91,7 @@ class UserConsumer(LiveUpdateConsumer):
         LiveUpdateConsumer.update_forms(
             [f"user_{friend.id}" 
             for friend in self.request_user.friends.all().iterator()],
-            ["#chat-refresh"]
+            ["#chat-refresh", "#user-friends-refresh", "#user-info-refresh"]
         )
 
     def _set_online_status(self, status):
