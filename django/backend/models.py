@@ -132,6 +132,10 @@ class CustomUser(AbstractUser):
             raise Exception(_("The user doesn't exist"))
         self.invited_users.remove(invited_user)
         self.save()
+        LiveUpdateConsumer.update_forms(
+            f"user_{invited_user.id}",
+            ["#user-friends-refresh", "#user-info-refresh"]
+        )
 
     def accept_invitation(self, invited):
         invited_user = CustomUser.objects.filter(username = invited).first()
@@ -155,6 +159,10 @@ class CustomUser(AbstractUser):
             raise Exception(_("The user doesn't exist"))
         self.invited_by.remove(invited_user)
         self.save()
+        LiveUpdateConsumer.update_forms(
+            f"user_{invited_user.id}",
+            ["#user-friends-refresh", "#user-info-refresh"]
+        )
 
     def see_online_status_as(self, user):
         return self.online and not user in self.blocked_users.all()
