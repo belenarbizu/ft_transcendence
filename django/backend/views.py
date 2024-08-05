@@ -47,6 +47,34 @@ def user_view(request, username):
 	}
 	return render(request, "backend/index.html", data)
 
+@login_required(login_url=reverse_lazy("backend:login_options"))
+@require_http_methods(["POST"])
+def user_view_friends(request, username):
+	user = get_object_or_404(CustomUser, username=username)
+	data = {
+		"user": user,
+		"friends": {
+			"pending": user.invited_by.all(),
+			"invitations": user.invited_users.all(),
+			"accepted": CustomUser.objects.friend_of(user),
+		},
+	}
+	return render(request, "backend/components/friends/friends.html", data)
+
+@login_required(login_url=reverse_lazy("backend:login_options"))
+@require_http_methods(["POST"])
+def user_view_info(request, username):
+	user = get_object_or_404(CustomUser, username=username)
+	data = {
+		"user": user,
+		"is_blocked": user in request.user.blocked_users.all(),
+		"online_status": user.see_online_status_as(request.user),
+		"can_invite": user in CustomUser.objects.uninvited_users(request.user, user.username),
+		"sent_invitation": user in request.user.invited_by.all(),
+		"received_invitation": user in request.user.invited_users.all(),
+	}
+	return render(request, "backend/components/user_info.html", data)
+
 @require_http_methods(["POST"])
 @login_required(login_url=reverse_lazy("backend:login_options"))
 def create_invitation(request):

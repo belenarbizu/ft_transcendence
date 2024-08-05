@@ -1,6 +1,10 @@
 {% load i18n %}
 {% load static %}
 
+<form spa action="{% url 'backend:user_friends' user.username %}" method="POST" target="#user-view-friends" id="user-friends-refresh">
+    {% csrf_token %}
+</form>
+
 <div class="card card-height-sm">
 
     {% if request.user.username == user.username %}
