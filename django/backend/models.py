@@ -140,6 +140,14 @@ class CustomUser(AbstractUser):
         self.invited_users.remove(invited_user)
         self.friends.add(invited_user)
         self.save()
+        LiveUpdateConsumer.update_forms(
+            f"user_{invited_user.id}",
+            ["#user-friends-refresh", "#user-info-refresh"]
+        )
+        LiveUpdateConsumer.send_notification(
+            f"user_{invited_user.id}",
+            self.username + " " + _("accepted your friend request")
+        )
 
     def cancel_invitation(self, invited):
         invited_user = CustomUser.objects.filter(username = invited).first()
