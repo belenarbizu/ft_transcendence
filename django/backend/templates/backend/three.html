@@ -1,5 +1,5 @@
 {% extends 'base_generic.html' %}
-
+{% load static %}
 {% block content %}
 
 <div class="col mb-4">
@@ -16,61 +16,14 @@
     </div>
 </div>
 
-<script type="module">
-
-    import * as THREE from 'three';
-
-    let camera, scene, renderer;
-    let mesh;
-
-    const container = document.getElementById("threejs-container");
-
-    init();
-    animate();
-
-    function init() {
-
-        var positionInfo = container.getBoundingClientRect();
-        camera = new THREE.PerspectiveCamera( 70, positionInfo.width / positionInfo.height, 1, 1000 );
-        camera.position.z = 400;
-
-        scene = new THREE.Scene();
-
-        const geometry = new THREE.BoxGeometry( 200, 200, 200 );
-        const material = new THREE.MeshBasicMaterial( { color: "red" } );
-
-
-        mesh = new THREE.Mesh( geometry, material );
-        scene.add( mesh );
-
-        renderer = new THREE.WebGLRenderer( { antialias: true } );
-        renderer.setPixelRatio( window.devicePixelRatio );
-        renderer.setSize( positionInfo.width, positionInfo.height );
-        container.appendChild( renderer.domElement );
-
-        window.addEventListener( 'resize', onWindowResize );
-
+<script type="importmap">
+    {
+      "imports": {
+        "three": "/static/threejs/three.module.js",
+        "three/addons/": "/static/threejs/examples/jsm/"
+      }
     }
-
-    function onWindowResize() {
-
-        var positionInfo = container.getBoundingClientRect();
-        camera.aspect = positionInfo.width / positionInfo.height;
-        camera.updateProjectionMatrix();
-        renderer.setSize( positionInfo.width, positionInfo.height );
-
-    }
-
-    function animate() {
-
-        requestAnimationFrame( animate );
-
-        mesh.rotation.x += 0.005;
-        mesh.rotation.y += 0.01;
-
-        renderer.render( scene, camera );
-
-    }
-
 </script>
+
+<script type="module" src="{% static 'backend/pirates/main.js' %}"></script>
 {% endblock %}
