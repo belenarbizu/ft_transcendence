@@ -6,7 +6,7 @@
 /*   By: plopez-b <plopez-b@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 02:35:23 by plopez-b          #+#    #+#             */
-/*   Updated: 2024/06/10 02:35:23 by plopez-b         ###   ########.fr       */
+/*   Updated: 2024/08/06 03:07:34 by plopez-b         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@ export class Mouse extends EventDispatcher
     constructor(view)
     {
         super();
+        this.container = document.getElementById('threejs-container');
         this.view = view;
         this.selected_cell = null;
         document.addEventListener(
@@ -30,9 +31,10 @@ export class Mouse extends EventDispatcher
 
     on_mouse_move(event)
     {
+        var positionInfo = this.container.getBoundingClientRect();
         let mouse3D = new Vector3(
-            (event.clientX / window.innerWidth) * 2 - 1,   
-            -(event.clientY / window.innerHeight) * 2 + 1,  
+            ((event.clientX - positionInfo.left) / positionInfo.width)  * 2 - 1,   
+            -((event.clientY - positionInfo.top) / positionInfo.height) * 2 + 1,  
             0.5 );
         let raycaster = new Raycaster();                                        
         raycaster.setFromCamera(mouse3D, this.view.camera);
