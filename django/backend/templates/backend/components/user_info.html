@@ -55,7 +55,7 @@
                         {% if can_invite %}
                         <form spa action="{% url 'backend:invitation_create' %}" method="POST">
                                     {% csrf_token %}
-                                    <input name="next" type="hidden" value="{{ request.path }}" />
+                                    <input name="next" type="hidden" value="{% url 'backend:user' user.username %}" />
                                     <input type="hidden" name="username" value="{{ user.username }}" class="form-control"
                                         placeholder="{% translate 'username' %}" aria-label="{% translate 'username' %}"
                                         aria-describedby="button-addon2">
@@ -63,25 +63,32 @@
                         </form>
                         {% endif %}
                         {% if received_invitation %}
-                        <form spa action="{% url 'backend:invitation_dismiss' %}" method="POST">
+                        <form spa action="{% url 'backend:invitation_accept' %}" method="POST">
                                 {% csrf_token %}
-                                <input name="next" type="hidden" value="{{ request.path }}" />
+                                <input name="next" type="hidden" value="{% url 'backend:user' user.username %}" />
                                 <input name="username" type="hidden" value="{{ user.username }}" />
-                                <button class="btn btn-primary mx-1" type="submit">{% translate 'Dismiss invitation' %}</button>
+                                <button class="btn btn-primary mx-1" type="submit">{% translate 'Accept invitation' %}</button>
                             </form>
+                            <form spa action="{% url 'backend:invitation_dismiss' %}" method="POST">
+                                    {% csrf_token %}
+                                    <input name="next" type="hidden" value="{% url 'backend:user' user.username %}" />
+                                    <input name="username" type="hidden" value="{{ user.username }}" />
+                                    <button class="btn btn-primary mx-1" type="submit">{% translate 'Dismiss invitation' %}</button>
+                                </form>
                         {% endif %}
                         {% if sent_invitation %}
                         <form spa action="{% url 'backend:invitation_cancel' %}" method="POST">
                             {% csrf_token %}
-                            <input name="next" type="hidden" value="{{ request.path }}" />
+                            <input name="next" type="hidden" value="{% url 'backend:user' user.username %}" />
                             <input name="username" type="hidden" value="{{ user.username }}" />
                             <button class="btn btn-primary mx-1" type="submit">{% translate 'Cancel invitation' %}</button>
                         </form>
                         {% endif %}
+                        {% if user in request.user.friends.all %}
                         <button class="btn btn-primary mx-1" data-bs-toggle="modal" data-bs-target="#chatModal">{% translate 'Chat' %}</button>
                         <form spa action="{% url 'backend:block_user' %}" method="POST">
                             {% csrf_token %}
-                            <input name="next" type="hidden" value="{{ request.path }}" />
+                            <input name="next" type="hidden" value="{% url 'backend:user' user.username %}" />
                             <input name="username" type="hidden" value="{{ user.username }}" />
                         {% if is_blocked %}
                             <button type="submit" class="btn btn-primary mx-1">{% translate 'Unblock' %}</button>
@@ -89,6 +96,7 @@
                             <button type="submit" class="btn btn-primary mx-1">{% translate 'Block' %}</button>
                         {% endif %}
                         </form>
+                        {% endif %}
                         {% endif %}
                     </div>
                 </div>
