@@ -6,7 +6,7 @@
 /*   By: plopez-b <plopez-b@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 00:44:48 by plopez-b          #+#    #+#             */
-/*   Updated: 2024/06/10 00:44:48 by plopez-b         ###   ########.fr       */
+/*   Updated: 2024/08/06 02:56:34 by plopez-b         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,11 +74,20 @@ export class GameView extends THREE.EventDispatcher
 
     _listeners()
     {
-        // window.addEventListener('resize', onWindowResize);
+        window.addEventListener('resize', (o) => this.on_window_resize(o));
         document.addEventListener('wheel', (o) => this.on_mouse_wheel(o));
         this.model.addEventListener('home_grid', (o) => this.on_home_grid(o));
         this.model.addEventListener('guest_grid', (o) => this.on_guest_grid(o));
         this.model.addEventListener('player_change', (o) => this.on_player_change(o));
+    }
+
+    on_window_resize(event)
+    {
+        var positionInfo = this.container.getBoundingClientRect();
+        this.camera.aspect = positionInfo.width / positionInfo.height;
+        this.camera.updateProjectionMatrix();
+        this.renderer.setPixelRatio( window.devicePixelRatio );
+        this.renderer.setSize( positionInfo.width, positionInfo.height );
     }
 
     on_home_grid(event)
