@@ -27,6 +27,7 @@ urlpatterns = [
     path('tournament/create/', views.tournament_create, name="tournament_create"),
     path('match/mock/', views.mock_match, name="match_mock"),
     path('three/', views.three_demo, name="three"),
+    path('pong/', views.pong_demo, name="pong"),
     
     path('logout/', views.logout, name="logout"),
     path('login/options/', views.login_options, name="login_options"),

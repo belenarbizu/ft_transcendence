@@ -355,3 +355,6 @@ def register_view(request):
 
 def three_demo(request):
 	return render(request, 'backend/three.html', {})
+
+def pong_demo(request):
+	return render(request, 'backend/pong.html', {})
