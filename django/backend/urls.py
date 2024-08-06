@@ -3,6 +3,8 @@ from . import views
 
 urlpatterns = [
     path('user/<username>/', views.user_view, name="user"),
+    path('user/<username>/friends', views.user_view_friends, name="user_friends"),
+    path('user/<username>/info', views.user_view_info, name="user_info"),
     path('block/', views.block_user, name="block_user"),
     path('', views.index_view, name="index"),
     path('invitation/create/', views.create_invitation, name="invitation_create"),

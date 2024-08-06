@@ -117,6 +117,14 @@ class CustomUser(AbstractUser):
             raise Exception(_("The user is already your friend"))
         self.invited_by.add(invited_user)
         self.save()
+        LiveUpdateConsumer.update_forms(
+            f"user_{invited_user.id}",
+            ["#user-friends-refresh", "#user-info-refresh"]
+        )
+        LiveUpdateConsumer.send_notification(
+            f"user_{invited_user.id}",
+            self.username + " " + _("sent you a friend request")
+        )
 
     def dismiss_invitation(self, invited):
         invited_user = CustomUser.objects.filter(username = invited).first()
@@ -124,6 +132,10 @@ class CustomUser(AbstractUser):
             raise Exception(_("The user doesn't exist"))
         self.invited_users.remove(invited_user)
         self.save()
+        LiveUpdateConsumer.update_forms(
+            f"user_{invited_user.id}",
+            ["#user-friends-refresh", "#user-info-refresh"]
+        )
 
     def accept_invitation(self, invited):
         invited_user = CustomUser.objects.filter(username = invited).first()
@@ -132,6 +144,14 @@ class CustomUser(AbstractUser):
         self.invited_users.remove(invited_user)
         self.friends.add(invited_user)
         self.save()
+        LiveUpdateConsumer.update_forms(
+            f"user_{invited_user.id}",
+            ["#user-friends-refresh", "#user-info-refresh"]
+        )
+        LiveUpdateConsumer.send_notification(
+            f"user_{invited_user.id}",
+            self.username + " " + _("accepted your friend request")
+        )
 
     def cancel_invitation(self, invited):
         invited_user = CustomUser.objects.filter(username = invited).first()
@@ -139,6 +159,10 @@ class CustomUser(AbstractUser):
             raise Exception(_("The user doesn't exist"))
         self.invited_by.remove(invited_user)
         self.save()
+        LiveUpdateConsumer.update_forms(
+            f"user_{invited_user.id}",
+            ["#user-friends-refresh", "#user-info-refresh"]
+        )
 
     def see_online_status_as(self, user):
         return self.online and not user in self.blocked_users.all()
@@ -152,7 +176,7 @@ class CustomUser(AbstractUser):
             blocked = True
         LiveUpdateConsumer.update_forms(
             [f"user_{self.id}", f"user_{user.id}"],
-            [f"#chat-refresh"]
+            [f"#chat-refresh", "#user-friends-refresh", "#user-info-refresh"]
                 )
         if blocked:
             raise Exception(_("You blocked ") + user.username)

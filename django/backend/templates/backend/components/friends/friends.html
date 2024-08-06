@@ -1,6 +1,10 @@
 {% load i18n %}
 {% load static %}
 
+<form spa action="{% url 'backend:user_friends' user.username %}" method="POST" target="#user-view-friends" id="user-friends-refresh">
+    {% csrf_token %}
+</form>
+
 <div class="card card-height-sm">
 
     {% if request.user.username == user.username %}
@@ -39,7 +43,7 @@
                             <form spa class="form px-1 d-flex justify-content-between align-items-center"
                                 action="{% url 'backend:invitation_accept' %}" method="POST">
                                 {% csrf_token %}
-                                <input name="next" type="hidden" value="{{ request.path }}" />
+                                <input name="next" type="hidden" value="{% url 'backend:user' user.username %}" />
                                 <input name="username" type="hidden" value="{{ friend.username }}" />
                                 <button type="submit" spa class="btn btn-link m-0 p-0">
                                     <i class="fs-5 text-success bi bi-check-circle-fill" data-bs-toggle="tooltip"
@@ -49,7 +53,7 @@
                             <form spa class="form px-1 d-flex justify-content-between align-items-center"
                                 action="{% url 'backend:invitation_dismiss' %}" method="POST">
                                 {% csrf_token %}
-                                <input name="next" type="hidden" value="{{ request.path }}" />
+                                <input name="next" type="hidden" value="{% url 'backend:user' user.username %}" />
                                 <input name="username" type="hidden" value="{{ friend.username }}" />
                                 <button type="submit" spa class="btn btn-link m-0 p-0"><i
                                         class="fs-5 text-danger bi bi-x-circle-fill" data-bs-toggle="tooltip"
@@ -75,7 +79,7 @@
                         <form spa class="form px-1 d-flex justify-content-between align-items-center"
                             action="{% url 'backend:invitation_cancel' %}" method="POST">
                             {% csrf_token %}
-                            <input name="next" type="hidden" value="{{ request.path }}" />
+                            <input name="next" type="hidden" value="{% url 'backend:user' user.username %}" />
                             <input name="username" type="hidden" value="{{ friend.username }}" />
                             <button type="submit" spa class="btn btn-link m-0 p-0"><i
                                     class="fs-5 text-danger bi bi-x-circle-fill" data-bs-toggle="tooltip"

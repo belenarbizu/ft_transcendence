@@ -1,6 +1,10 @@
 {% load i18n %}
 {% load static %}
 
+<form spa action="{% url 'backend:user_info' user.username %}" method="POST" target="#user-view-info" id="user-info-refresh">
+    {% csrf_token %}
+</form>
+
 <div class="card" id="user_info">
     <div class="card-body pb-0">
         <div class="row align-items-center">
