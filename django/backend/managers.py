@@ -63,7 +63,7 @@ class ChatMessageManager(
 				)
 				LiveUpdateConsumer.send_notification(
 					[f"user_{kwargs['recipient'].id}"],
-					[kwargs['recipient'].username + " " + _("sent you a message")]
+					[kwargs['sender'].username + " " + _("sent you a message")]
 				)
 
 
