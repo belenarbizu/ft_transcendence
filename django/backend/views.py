@@ -11,7 +11,7 @@ from django.contrib import auth
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 from .managers import CustomUserManager
-from .forms import RegistrationForm
+from .forms import RegistrationForm, EditProfileForm
 from .consumers import *
 
 def notify_errors(view):
@@ -44,6 +44,7 @@ def user_view(request, username):
 		"can_invite": user in CustomUser.objects.uninvited_users(request.user, user.username),
 		"sent_invitation": user in request.user.invited_by.all(),
 		"received_invitation": user in request.user.invited_users.all(),
+		"form": EditProfileForm(request.POST, instance=request.user),
 	}
 	return render(request, "backend/index.html", data)
 
@@ -330,11 +331,11 @@ def three_demo(request):
 
 @require_http_methods(["POST"])
 def edit_profile(request):
-	language = request.POST.get("language", "")
-	print(language)
-	bio = request.POST.get("bio", "")
-	print(bio)
-	picture = request.POST.get("picture", "")
-	print(picture)
+	print(request.POST)
+	print(request.FILES)
 	next = request.POST.get("next", "/")
-	return redirect(next)
+	form = EditProfileForm(request.POST, request.FILES, instance=request.user)
+	if form.is_valid():
+		form.save()
+		return redirect(next)
+	return render(request, 'backend/profile_modal.html', {"form": form})

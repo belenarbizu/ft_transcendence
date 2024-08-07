@@ -12,3 +12,9 @@ class RegistrationForm(UserCreationForm):
         model = CustomUser
         fields = ["username", "email", "password1", "password2",
                   "preferred_language"]
+
+class EditProfileForm(forms.ModelForm):
+
+    class Meta:
+        model = CustomUser
+        fields = ["bio", "preferred_language", "picture"]

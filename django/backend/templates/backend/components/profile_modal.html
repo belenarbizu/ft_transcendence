@@ -9,28 +9,16 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body col-12">
+              <form spa hide enctype="multipart/form-data" method="POST" action="{% url 'backend:edit_profile' %}">
+                {% csrf_token %}
                 <div class="mb-3">
-                  <form action="{% url 'backend:edit_profile' %}" method="POST">
-                    {% csrf_token %}
-                      <label for="exampleFormControlInput1" class="form-label">{% translate 'Preferred language' %}</label>
-                      <select class="form-select form-select mb-3" name="language">
-                          <option value="en">{% translate 'English' %}</option>
-                          <option value="es">{% translate 'Spanish' %}</option>
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                      <label for="exampleFormControlTextarea1" class="form-label">{% translate 'Bio' %}</label>
-                      <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" name="bio"></textarea>
-                    </div>
-                    <div class="mb-3">
-                      <label for="inputGroupFile02" class="form-label">{% translate 'Profile picture' %}</label>
-                      <input type="file" class="form-control" id="inputGroupFile02" name="picture">
-                    </div>
-                    <div class="d-flex justify-content-center mt-4 mb-2">
-                        <input name="next" type="hidden" value="{% url 'backend:user' request.user.username %}" />
-                        <button type="submit" class="btn btn-primary w-50">{% translate 'Update' %}</button>
-                    </div>
-                  </form>
+                  {{ form.as_p }}
+                </div>
+                <div class="d-flex justify-content-center mt-4 mb-2">
+                  <input name="next" type="hidden" value="{% url 'backend:user' request.user.username %}" />
+                  <button type="submit" class="btn btn-primary w-50">{% translate 'Update' %}</button>
+                </div>
+              </form>
             </div>
         </div>
     </div>
