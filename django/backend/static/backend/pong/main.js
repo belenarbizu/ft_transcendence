@@ -11,10 +11,10 @@ let model = new Model(
 );
 let controller = new Controller(model);
 let view = new View(model, controller);
-//let home = new Human(controller, "home", "o", "l");
-//let guest = new Human(controller, "guest", "w", "s");
-let home = new CPU(controller, "home");
-let guest = new CPU(controller, "guest");
+let home = new Human(controller, "home", "o", "l");
+let guest = new Human(controller, "guest", "w", "s");
+//let home = new CPU(controller, "home");
+//let guest = new CPU(controller, "guest");
 
 function    loop(time)
 {

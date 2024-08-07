@@ -12,7 +12,18 @@ export class Controller
             "guest": null
         };
         this.item = [];
-        this.interface = this.receiver;
+        this.webSocket = new WebSocket('ws://' + window.location.host + '/ws/pong/');
+
+        var th = this;
+
+        this.webSocket.onmessage = function (msg) {
+            var data = JSON.parse(msg.data);
+            th.receiver(data);
+        };
+        this.interface = function (data) {
+            var msg = JSON.stringify(data);
+            this.webSocket.send(msg);
+        };
     }
 
     receiver(message)

@@ -100,3 +100,19 @@ class UserConsumer(LiveUpdateConsumer):
         user.online = status
         user.save()
         self._notify_online_status()
+
+class GameConsumer(WebsocketConsumer):
+    def connect(self):
+        self.group_name = "pong"
+        async_to_sync(self.channel_layer.group_add)(self.group_name, self.channel_name)
+        self.accept()
+    
+    def disconnect(self, code):
+        async_to_sync(self.channel_layer.group_discard)(self.group_name, self.channel_name)
+        return super().disconnect(code)
+
+    def receive(self, text_data):
+        async_to_sync(self.channel_layer.group_send)(self.group_name, {'type':'forward', 'data': text_data})
+
+    def forward(self, event):
+        self.send(event['data'])
