@@ -3,27 +3,62 @@
 export class View
 {
 
-    constructor(model)
+    constructor(model, controller)
     {
         this.model = model;
+        this.controller = controller;
+        this.start = document.getElementById("start");
+        this.start.onclick = (o) => {this.controller.on_start();};
 
-        this.home_pad = document.getElementById("home-pad");
-        this.guest_pad = document.getElementById("guest-pad");
-        this.ball_x = document.getElementById("ball-x");
-        this.ball_y = document.getElementById("ball-y");
-        this.last_hit = document.getElementById("last-hit");
-        this.slope = document.getElementById("slope");
-        this.ball_movement = document.getElementById("ball-movement");
+        this.ball = document.getElementById("ball");
+        this.guest_pad_t = document.getElementById("guest-pad-t");
+        this.guest_pad_c = document.getElementById("guest-pad-c");
+        this.guest_pad_b = document.getElementById("guest-pad-b");
+        this.home_pad_t = document.getElementById("home-pad-t");
+        this.home_pad_c = document.getElementById("home-pad-c");
+        this.home_pad_b = document.getElementById("home-pad-b");
+        this.map = document.getElementById("map");
     }
 
     draw(current_time)
     {
-        this.home_pad.value = this.model.get_pad_position("home", current_time);
-        this.guest_pad.value = this.model.get_pad_position("guest", current_time);
-        this.ball_x.value = this.model.get_ball_x(current_time);
-        this.ball_y.value = this.model.get_ball_y(this.model.get_ball_x(current_time));
-        this.last_hit.value = this.model.ball["last_height"];
-        this.slope.value = this.model.ball["slope"];
-        this.ball_movement.value = this.model.ball["movement"];
+
+
+        var positionInfo = this.map.getBoundingClientRect();
+        var ballposInfo = this.ball.getBoundingClientRect();
+        this.ball.style.left = this.model.get_ball_x(current_time)
+            * positionInfo.width - ballposInfo.width / 2 + 'px';
+        this.ball.style.top = (1 - this.model.get_ball_y(
+            this.model.get_ball_position(current_time))) * positionInfo.height
+            - ballposInfo.height / 2 + 'px';
+
+        
+        this.guest_pad_t.style.left = - ballposInfo.width / 2 + "px";
+        this.guest_pad_c.style.left = - ballposInfo.width / 2 + 'px';
+        this.guest_pad_b.style.left = - ballposInfo.width / 2 + 'px';
+            
+        this.guest_pad_t.style.top = (1 - this.model.get_pad_y(
+            "guest", current_time) + this.model.pad_height / 2) * positionInfo.height
+            - ballposInfo.height / 2 + 'px';
+        this.guest_pad_c.style.top = (1 - this.model.get_pad_y(
+            "guest", current_time)) * positionInfo.height
+            - ballposInfo.height / 2 + 'px';
+        this.guest_pad_b.style.top = (1 - this.model.get_pad_y(
+            "guest", current_time) - this.model.pad_height / 2) * positionInfo.height
+            - ballposInfo.height / 2 + 'px';
+            
+        this.home_pad_t.style.left = positionInfo.width - ballposInfo.width / 2 + "px";
+        this.home_pad_c.style.left = positionInfo.width - ballposInfo.width / 2 + 'px';
+        this.home_pad_b.style.left = positionInfo.width - ballposInfo.width / 2 + 'px';
+        
+        this.home_pad_t.style.top = (1 - this.model.get_pad_y(
+            "home", current_time) + this.model.pad_height / 2) * positionInfo.height
+            - ballposInfo.height / 2 + 'px';
+        this.home_pad_c.style.top = (1 - this.model.get_pad_y(
+            "home", current_time)) * positionInfo.height
+            - ballposInfo.height / 2 + 'px';
+        this.home_pad_b.style.top = (1 - this.model.get_pad_y(
+            "home", current_time) - this.model.pad_height / 2) * positionInfo.height
+            - ballposInfo.height / 2 + 'px';
     }
 }

@@ -8,36 +8,23 @@
         <div class="col col-8">
             <div class="card">
                 <div class="card-body p-2">
-                    <table>
-                        <tr>
-                            <td>Guest pad</td>
-                            <td><input type="text" id="guest-pad"></td>
-                        </tr>
-                        <tr>
-                            <td>Home pad</td>
-                            <td><input type="text" id="home-pad"></td>
-                        </tr>
-                        <tr>
-                            <td>Ball x</td>
-                            <td><input type="text" id="ball-x"></td>
-                        </tr>
-                        <tr>
-                            <td>Ball y</td>
-                            <td><input type="text" id="ball-y"></td>
-                        </tr>
-                        <tr>
-                            <td>Last hit</td>
-                            <td><input type="text" id="last-hit"></td>
-                        </tr>
-                        <tr>
-                            <td>Slope</td>
-                            <td><input type="text" id="slope"></td>
-                        </tr>
-                        <tr>
-                            <td>Ball movement</td>
-                            <td><input type="text" id="ball-movement"></td>
-                        </tr>
-                    </table>
+                    <div class="row">
+                        <div class="col">
+                    <div class="card" id="map">
+                        <div class="card-body m-0 p-0" style="min-height: 500px;">
+                            <span class="h1 p-0 m-0" style="color:green; position:absolute;" id="ball">·</span>
+                            <span class="h1 p-0 m-0" style="color:red; position:absolute; left:0px;" id="guest-pad-t">·</span>
+                            <span class="h1 p-0 m-0" style="color:black; position:absolute; left:0px;" id="guest-pad-c">·</span>
+                            <span class="h1 p-0 m-0" style="color:red; position:absolute; left:0px;" id="guest-pad-b">·</span>
+                            <span class="h1 p-0 m-0" style="color:red; position:absolute; left:0px;" id="home-pad-t">·</span>
+                            <span class="h1 p-0 m-0" style="color:black; position:absolute; left:0px;" id="home-pad-c">·</span>
+                            <span class="h1 p-0 m-0" style="color:red; position:absolute; left:0px;" id="home-pad-b">·</span>
+                        </div>
+                      </div>
+                        <button id="start">Start game</button>
+
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
