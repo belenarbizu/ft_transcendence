@@ -330,12 +330,17 @@ def three_demo(request):
 	return render(request, 'backend/three.html', {})
 
 @require_http_methods(["POST"])
+@notify_errors
 def edit_profile(request):
-	print(request.POST)
-	print(request.FILES)
 	next = request.POST.get("next", "/")
-	form = EditProfileForm(request.POST, request.FILES, instance=request.user)
+	form = EditProfileForm(request.POST, request.FILES)
 	if form.is_valid():
-		form.save()
-		return redirect(next)
-	return render(request, 'backend/profile_modal.html', {"form": form})
+		if form.cleaned_data["bio"] != None:
+			request.user.bio = form.cleaned_data["bio"]
+		if form.cleaned_data["preferred_language"] != None:
+			request.user.preferred_language = form.cleaned_data["preferred_language"]
+		if form.cleaned_data["picture"] != None:
+			request.user.picture = form.cleaned_data["picture"]
+		request.user.save()
+		return redirect(reverse('backend:user', kwargs={"username":request.user.username}))
+	raise Exception(_("Bad form"))
