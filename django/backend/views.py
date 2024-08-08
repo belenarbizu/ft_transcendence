@@ -356,5 +356,6 @@ def register_view(request):
 def three_demo(request):
 	return render(request, 'backend/three.html', {})
 
-def pong_demo(request):
-	return render(request, 'backend/pong.html', {})
+def game_view(request, game_id):
+	game = Match.objects.get(id = int(game_id))
+	return render(request, 'backend/game.html', {"game": game})

@@ -16,7 +16,7 @@ export class Model
                 "last_position": 0.5,
                 "last_change": Date.now()
             }
-        }
+        };
         this.ball = {
             "movement": 1,
             "last_position": 0.5,
@@ -24,8 +24,11 @@ export class Model
             "last_height": 0.5,
             "slope": 2,
             "velocity": 0,
-        }
-
+        };
+        this.scores = {
+            "home": 0,
+            "guest": 0,
+        };
         this.pad_velocity = pad_velocity;
         this.pad_height = pad_height;
         this.ball_initial_velocity = ball_velocity;
@@ -110,8 +113,19 @@ export class Model
         {
             this.controller.on_goal();
             this.goal = false;
+            this.hit = true;
         }
         return (position);
+    }
+
+    get_new_slope()
+    {
+        return ((Math.random() - 0.5) * 2);
+    }
+
+    score(player)
+    {
+        this.scores[player] += 1;
     }
 
     get_ball_x(current_time)

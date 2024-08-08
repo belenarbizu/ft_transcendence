@@ -127,6 +127,7 @@ function start_spa() {
     });
     create_tooltips();
     webSocketManager.update_sockets();
+    gameManager.update_games();
 }
 
 function end_spa(hide) {

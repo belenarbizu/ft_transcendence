@@ -3,7 +3,7 @@
 export class Controller
 {
 
-    constructor(model)
+    constructor(model, url)
     {
         this.model = model;
         this.model.controller = this;
@@ -12,13 +12,12 @@ export class Controller
             "guest": null
         };
         this.item = [];
-        this.webSocket = new WebSocket('ws://' + window.location.host + '/ws/pong/');
+        this.webSocket = new WebSocket(url);
 
-        var th = this;
-
+        var controller = this;
         this.webSocket.onmessage = function (msg) {
             var data = JSON.parse(msg.data);
-            th.receiver(data);
+            controller.receiver(data);
         };
         this.interface = function (data) {
             var msg = JSON.stringify(data);
@@ -28,7 +27,15 @@ export class Controller
 
     receiver(message)
     {
+        console.log(message["type"]);
         if (message["type"] == "hit")
+        {
+            this.model.set_ball_movement(
+                message["movement"], message["position"],
+                message["last_height"], message["slope"],
+                message["velocity"]);
+        }
+        if (message["type"] == "goal")
         {
             this.model.set_ball_movement(
                 message["movement"], message["position"],
@@ -80,7 +87,7 @@ export class Controller
                 "movement": this.model.ball["movement"] * -1,
                 "position": 0,
                 "last_height": this.model.get_ball_y(1),
-                "slope": (Math.random() - 0.5) * 2,
+                "slope": this.model.get_new_slope(),
                 "velocity": this.model.get_ball_velocity(),
             });
         }
@@ -92,7 +99,7 @@ export class Controller
                 "movement": this.model.ball["movement"] * -1,
                 "position": 0,
                 "last_height": this.model.get_ball_y(1),
-                "slope": (Math.random() - 0.5) * 2,
+                "slope": this.model.get_new_slope(),
                 "velocity": this.model.get_ball_velocity(),
             });
         }
@@ -104,11 +111,11 @@ export class Controller
         {
             this.interface({
                 "player": "home",
-                "type": "hit",
+                "type": "goal",
                 "movement": this.model.ball["movement"] * -1,
                 "position": 0.5,
                 "last_height": 0.5,
-                "slope": (Math.random() - 0.5) * 2,
+                "slope": this.model.get_new_slope(),
                 "velocity": this.model.ball_initial_velocity
             });
         }
@@ -116,11 +123,11 @@ export class Controller
         {
             this.interface({
                 "player": "guest",
-                "type": "hit",
+                "type": "goal",
                 "movement": this.model.ball["movement"] * -1,
                 "position": 0.5,
                 "last_height": 0.5,
-                "slope": (Math.random() - 0.5) * 2,
+                "slope": this.model.get_new_slope(),
                 "velocity": this.model.ball_initial_velocity
             });
         }
@@ -129,7 +136,7 @@ export class Controller
     on_start()
     {
         this.interface({
-            "type": "hit",
+            "type": "start",
             "movement": this.model.ball["movement"] * -1,
             "position": 0.5,
             "last_height": 0.5,
@@ -254,7 +261,8 @@ export class CPU
         {
             movement = -1;
         }
-        if (message["type"] == "hit" || message["type"] == "start")
+        if (message["type"] == "hit" || message["type"] == "start"
+            || message["type"] == "goal")
         {
             let current_position = this.controller.model.get_pad_y(
                 this.player, Date.now());
