@@ -4,6 +4,16 @@ class GameManager{
 
     constructor(){
         this.games = {};
+        import("./pong/src/game.js").then(
+            this.load_modules.bind(this)
+            )
+        this.loaded = false;
+    }
+
+    load_modules()
+    {
+        this.loaded = true;
+        this.update_games();
     }
 
     update_games(){
@@ -12,6 +22,10 @@ class GameManager{
     }
 
     create_games(){
+        if (!this.loaded)
+        {
+            return;
+        }
         var socket_elements = document.querySelectorAll('game[group]');
         socket_elements.forEach(socket_element => {
             var group = socket_element.getAttribute("group");
