@@ -12,7 +12,6 @@ class LiveUpdateConsumer(WebsocketConsumer):
                 self.group_name, self.channel_name
             )
         self.accept()
-        self.send(text_data = self.group_name)
 
     def disconnect(self, code):
         async_to_sync(self.channel_layer.group_discard)(
@@ -91,7 +90,7 @@ class UserConsumer(LiveUpdateConsumer):
         LiveUpdateConsumer.update_forms(
             [f"user_{friend.id}" 
             for friend in self.request_user.friends.all().iterator()],
-            ["#chat-refresh"]
+            ["#chat-refresh", "#user-friends-refresh", "#user-info-refresh"]
         )
 
     def _set_online_status(self, status):
@@ -100,3 +99,33 @@ class UserConsumer(LiveUpdateConsumer):
         user.online = status
         user.save()
         self._notify_online_status()
+
+class GameConsumer(WebsocketConsumer):
+    def connect(self):
+        self.game_id = self.scope['url_route']['kwargs']['game_id']
+        self.user = self.scope['user']
+        Match = apps.get_model("backend", "Match")
+        self.game = Match.objects.get(id = self.game_id)
+        self.players = []
+        if self.game.home.user == self.user:
+            self.players.append("home")
+        if self.game.guest.user == self.user:
+            self.players.append("guest")
+        self.group_name = f"game_{self.game_id}"
+        async_to_sync(self.channel_layer.group_add)(
+            self.group_name, self.channel_name)
+        self.accept()
+    
+    def disconnect(self, code):
+        async_to_sync(self.channel_layer.group_discard)(
+            self.group_name, self.channel_name)
+        return super().disconnect(code)
+
+    def receive(self, text_data):
+        d = json.loads(text_data)
+        if d["type"] == "start" or d["player"] in self.players:
+            async_to_sync(self.channel_layer.group_send)(
+                self.group_name, {'type':'forward', 'data': text_data})
+
+    def forward(self, event):
+        self.send(event['data'])

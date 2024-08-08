@@ -3,6 +3,8 @@ from . import views
 
 urlpatterns = [
     path('user/<username>/', views.user_view, name="user"),
+    path('user/<username>/friends', views.user_view_friends, name="user_friends"),
+    path('user/<username>/info', views.user_view_info, name="user_info"),
     path('block/', views.block_user, name="block_user"),
     path('', views.index_view, name="index"),
     path('invitation/create/', views.create_invitation, name="invitation_create"),
@@ -26,6 +28,7 @@ urlpatterns = [
     path('match/mock/', views.mock_match, name="match_mock"),
     path('three/', views.three_demo, name="three"),
     path('edit_profile/', views.edit_profile, name="edit_profile"),
+    path('game/<int:game_id>/', views.game_view, name="game"),
     path('logout/', views.logout, name="logout"),
     path('login/options/', views.login_options, name="login_options"),
     path('login/', views.login, name="login"),
