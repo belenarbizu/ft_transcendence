@@ -37,8 +37,8 @@ class CustomUser(AbstractUser):
 
     objects = managers.CustomUserManager()
 
-    online = models.BooleanField(
-        default = False,
+    online = models.IntegerField(
+        default = 0,
         verbose_name = _("Online status")
     )
 

@@ -96,7 +96,12 @@ class UserConsumer(LiveUpdateConsumer):
     def _set_online_status(self, status):
         CustomUser = apps.get_model("backend", "CustomUser")
         user = CustomUser.objects.get(id = self.user_id)
-        user.online = status
+        if status == True:
+            user.online += 1
+        else:
+            user.online -= 1
+        if user.online < 0:
+            user.online = 0
         user.save()
         self._notify_online_status()
 
