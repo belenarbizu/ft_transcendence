@@ -76,15 +76,16 @@ function submit_form(element) {
         element = element.closest("form");
     }
     const data = new URLSearchParams();
+    const formData = new FormData(element);
     for (const pair of new FormData(element)) {
         if (pair[0] == 'next') {
-            data.append(pair[0], pair[1] + "?SPA=True");
+            formData.append(pair[0], pair[1] + "?SPA=True");
         }
         else {
-            data.append(pair[0], pair[1]);
+            formData.append(pair[0], pair[1]);
         }
     }
-    post_request(get_action(element), data, get_target(element),
+    post_request(get_action(element), formData, get_target(element),
         get_push(element), get_hide(element));
     if (get_reset(element)){
         element.reset();

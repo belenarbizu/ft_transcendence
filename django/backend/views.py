@@ -11,7 +11,7 @@ from django.contrib import auth
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 from .managers import CustomUserManager
-from .forms import RegistrationForm
+from .forms import RegistrationForm, EditProfileForm
 from .consumers import *
 
 def notify_errors(view):
@@ -44,6 +44,7 @@ def user_view(request, username):
 		"can_invite": user in CustomUser.objects.uninvited_users(request.user, user.username),
 		"sent_invitation": user in request.user.invited_by.all(),
 		"received_invitation": user in request.user.invited_users.all(),
+		"form": EditProfileForm(request.POST, instance=request.user),
 	}
 	return render(request, "backend/index.html", data)
 
@@ -356,6 +357,24 @@ def register_view(request):
 def three_demo(request):
 	return render(request, 'backend/three.html', {})
 
+@require_http_methods(["POST"])
+@notify_errors
+def edit_profile(request):
+	next = request.POST.get("next", "/")
+	form = EditProfileForm(request.POST, request.FILES)
+	print(request.POST.get("preferred_language"))
+	if form.is_valid():
+		if form.cleaned_data["bio"] != None:
+			request.user.bio = form.cleaned_data["bio"]
+		if form.cleaned_data["preferred_language"] != None:
+			request.user.preferred_language = form.cleaned_data["preferred_language"]
+		if form.cleaned_data["picture"] != None:
+			request.user.picture = form.cleaned_data["picture"]
+		request.user.save()
+		return redirect(reverse('backend:user', kwargs={"username":request.user.username}))
+	raise Exception(_("Bad form"))
+
 def game_view(request, game_id):
 	game = Match.objects.get(id = int(game_id))
 	return render(request, 'backend/game.html', {"game": game})
+

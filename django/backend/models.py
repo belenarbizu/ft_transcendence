@@ -45,6 +45,8 @@ class CustomUser(AbstractUser):
     bio = models.CharField(
         max_length = 500,
         verbose_name = "Bio",
+        null = True,
+        blank = True,
         )
 
     picture = models.ImageField(
