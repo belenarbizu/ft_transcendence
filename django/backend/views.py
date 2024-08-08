@@ -334,6 +334,7 @@ def three_demo(request):
 def edit_profile(request):
 	next = request.POST.get("next", "/")
 	form = EditProfileForm(request.POST, request.FILES)
+	print(request.POST.get("preferred_language"))
 	if form.is_valid():
 		if form.cleaned_data["bio"] != None:
 			request.user.bio = form.cleaned_data["bio"]
