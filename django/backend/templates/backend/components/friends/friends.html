@@ -110,7 +110,7 @@
                                 {% csrf_token %}
                                 <input name="username" type="hidden" value="{{ friend.username }}" />
                                 <button type="submit" spa class="btn btn-link m-0 p-0" data-bs-toggle="modal" data-bs-target="#chatModal">
-                                    <i class="fs-5 bi bi-chat-fill" data-bs-toggle="tooltip"
+                                    <i class="fs-5 bi bi-chat-fill"
                                         data-bs-title="{% translate 'Open chat with' %} {{ friend.username }}">
                                         <span class="badge rounded-pill bg-danger">{{ friend.unread_messages }}</span>
                                     </i>
