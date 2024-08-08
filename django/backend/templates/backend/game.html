@@ -1,0 +1,37 @@
+{% extends 'base_generic.html' %}
+{% load static %}
+{% block content %}
+
+<div class="col mb-4">
+    <div class="row p-4">
+        <div class="col-2"></div>
+        <div class="col col-8">
+            <div class="card">
+                <div class="card-body p-2">
+                    <div class="row">
+                        <div class="col">
+                            <game group="ws/game/{{ game.id }}" type="pong" mode="2cpu"></socket>
+        
+                    <div class="card" id="map">
+                        <div class="card-body m-0 p-0" style="min-height: 500px;">
+                            <span class="h1 p-0 m-0" style="color:green; position:absolute;" id="ball">·</span>
+                            <span class="h1 p-0 m-0" style="color:red; position:absolute; left:0px;" id="guest-pad-t">·</span>
+                            <span class="h1 p-0 m-0" style="color:black; position:absolute; left:0px;" id="guest-pad-c">·</span>
+                            <span class="h1 p-0 m-0" style="color:red; position:absolute; left:0px;" id="guest-pad-b">·</span>
+                            <span class="h1 p-0 m-0" style="color:red; position:absolute; left:0px;" id="home-pad-t">·</span>
+                            <span class="h1 p-0 m-0" style="color:black; position:absolute; left:0px;" id="home-pad-c">·</span>
+                            <span class="h1 p-0 m-0" style="color:red; position:absolute; left:0px;" id="home-pad-b">·</span>
+                        </div>
+                      </div>
+                        <button id="start">Start game</button>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-2"></div>
+    </div>
+</div>
+
+{% endblock %}
