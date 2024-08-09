@@ -331,9 +331,19 @@ class Match(models.Model):
         return self.state == "fi"
     
     def win(self, competitor):
+        if self.is_finished:
+            return
         self.winner = competitor
         self.state = "fi"
         self.save()
+        if competitor == self.home:
+            self.guest.eliminated = True
+            self.guest.save()
+        else:
+            self.home.eliminated = True
+            self.home.save()
+        if self.tournament:
+            Tournament.objects.new_round(self.tournament)
 
     def lose(self, competitor):
         if self.home == competitor:
@@ -353,10 +363,11 @@ class Match(models.Model):
         return False
     
     def try_start(self):
-        if (not self.is_practice and self.home_ready and self.guest_ready) \
-            or self.is_practice and (self.home_ready or self.guest_ready):
-            self.state == "st"
-            self.save()
+        if (not self.is_practice and self.home_ready and self.guest_ready):
+            self.state = "st"
+        if (self.is_practice and (self.home_ready or self.guest_ready)):
+            self.state = "st"
+        self.save()
 
     def join(self, user):
         if self.home.user == user:
@@ -368,6 +379,7 @@ class Match(models.Model):
 
     def leave(self, user):
         if not self.is_waiting:
+            print ("now its playing")
             if self.home.user == user:
                 self.lose(self.home)
             if self.guest.user == user:
@@ -470,9 +482,6 @@ class Competitor(models.Model):
         for match in Match.objects.played_by(self).not_finished():
             match.lose(self)
         self.eliminated = True
-        self.save()
-        if self.tournament:
-            Tournament.objects.new_round(self.tournament)
 
 
 class Tournament(models.Model):

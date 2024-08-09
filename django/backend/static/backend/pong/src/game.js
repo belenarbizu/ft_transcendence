@@ -45,6 +45,11 @@ export class PongGame
         this.view.draw(Date.now());
         window.requestAnimationFrame(this.on_loop.bind(this));
     }
+
+    disconnect()
+    {
+        this.controller.webSocket.close();
+    }
 }
 
 window.PongGame = PongGame;
