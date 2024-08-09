@@ -14,13 +14,15 @@
 
         <div class="row justify-content-center">
         <div class="col-sm-8 mb-3">
-          <input type="text" class="w-100 form-control" placeholder="{% translate 'Username' %}" name="username" autofocus="" autocapitalize="none" autocomplete="username" maxlength="150" required="" id="id_username">
+          <label for="id_username" class="form-label text-white">{% translate 'Username' %}</label>
+          <input type="text" class="w-100 form-control" name="username" autofocus="" autocapitalize="none" autocomplete="username" maxlength="150" required="" id="id_username">
         </div>
         </div>
 
         <div class="row justify-content-center">
         <div class="col-sm-8 mb-3">
-          <input type="password" class="w-100 form-control" placeholder="{% translate 'Password' %}" name="password" autocomplete="current-password" required="" id="id_password">
+          <label for="id_password" class="form-label text-white">{% translate 'Password' %}</label>
+          <input type="password" class="w-100 form-control" name="password" autocomplete="current-password" required="" id="id_password">
         </div>
         </div>
         <input type="hidden" name="next" value="{% url 'backend:index' %}">
