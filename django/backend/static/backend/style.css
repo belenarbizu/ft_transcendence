@@ -109,3 +109,10 @@ html, body {
   padding-left:50px;
   padding-right:50px;
 }
+
+.disappointed {
+  background-image: url('/static/backend/images/disappointed.png');
+  background-size: 250px;
+  background-repeat: no-repeat;
+  background-position: bottom right;
+}

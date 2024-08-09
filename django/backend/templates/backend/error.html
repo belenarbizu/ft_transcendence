@@ -1,0 +1,19 @@
+{% extends "base_generic.html" %}
+{% load static %}
+{% load i18n %}
+{% block content %}
+
+<div class="col">
+    <div class="row p-4">
+        <div class="col col-12" id="user-view-info">
+            <div class="card card-height-sm disappointed" id="user_info">
+                <div class="card-img-overlay">
+                    <h5 class="card-title">{% translate 'Did you do it on purpose?' %}</h5>
+                    <p class="card-text">{{ reason }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
