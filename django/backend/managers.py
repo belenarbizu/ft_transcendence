@@ -14,9 +14,13 @@ def default_profile_photo():
         'profile_defaults/cat.jpg',
         'profile_defaults/lion.jpg',
         'profile_defaults/panda.jpg',
-        'profile_defaults/pig.jpg',
         'profile_defaults/rabbit.jpg',
         'profile_defaults/rat.jpg',
+		'profile_defaults/dog.jpg',
+		'profile_defaults/otter.jpg',
+		'profile_defaults/fox.jpg',
+		'profile_defaults/koala.jpg',
+		'profile_defaults/white_tiger.jpg',
     ]
     return random.choice(photos)
 
