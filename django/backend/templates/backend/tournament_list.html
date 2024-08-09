@@ -22,7 +22,7 @@
                     {% endif %}
                 </h4>
                 <div class="card-header bg-white d-flex align-items-center">
-                    <span class="px-2">Filter</span>
+                    <span class="px-2">{% translate 'Filter' %}</span>
                     <form spa id="tournament_list_update" method="POST" action="{% url 'backend:tournament_list_update' %}" target="#tournament-list-id">
                         {% csrf_token %}
                         <div class="d-flex">
