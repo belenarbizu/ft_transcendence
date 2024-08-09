@@ -32,7 +32,7 @@ export class Model
         this.pad_velocity = pad_velocity;
         this.pad_height = pad_height;
         this.ball_initial_velocity = ball_velocity;
-        this.pad_fantasy = 0.02;
+        this.pad_fantasy = 1.1;
         this.turns = 0;
         this.goal = false;
         this.hit = false;
@@ -123,9 +123,12 @@ export class Model
         return ((Math.random() - 0.5) * 2);
     }
 
-    score(player)
+    goal_to(player)
     {
-        this.scores[player] += 1;
+        if (player == "home")
+            this.scores["guest"] += 1;
+        if (player == "guest")
+            this.scores["home"] += 1;
     }
 
     get_ball_x(current_time)
@@ -164,6 +167,6 @@ export class Model
         }
         let pad_y = this.get_pad_y(player, current_time);
         let ball_y = this.get_ball_y(1);
-        return (Math.abs(pad_y - ball_y) - this.pad_fantasy < this.pad_height / 2);
+        return (Math.abs(pad_y - ball_y) < this.pad_fantasy * this.pad_height / 2);
     }
 }

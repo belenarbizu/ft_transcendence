@@ -131,6 +131,12 @@ class GameConsumer(WebsocketConsumer):
         if d["type"] == "start" or d["player"] in self.players:
             async_to_sync(self.channel_layer.group_send)(
                 self.group_name, {'type':'forward', 'data': text_data})
+            if d["type"] == "goal":
+                if d["player"] == "home":
+                    self.game.guest_score += 1;
+                if d["player"] == "guest":
+                    self.game.home_score += 1;
+                self.game.save()
 
     def forward(self, event):
         self.send(event['data'])

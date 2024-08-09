@@ -376,5 +376,5 @@ def edit_profile(request):
 
 def game_view(request, game_id):
 	game = Match.objects.get(id = int(game_id))
-	return render(request, 'backend/game.html', {"game": game})
+	return render(request, 'backend/game.html', {"match": game})
 

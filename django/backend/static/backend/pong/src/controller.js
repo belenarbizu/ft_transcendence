@@ -34,13 +34,16 @@ export class Controller
                 message["movement"], message["position"],
                 message["last_height"], message["slope"],
                 message["velocity"]);
+            this.view.update_labels();
         }
         if (message["type"] == "goal")
         {
+            this.model.goal_to(message["player"]);
             this.model.set_ball_movement(
                 message["movement"], message["position"],
                 message["last_height"], message["slope"],
                 message["velocity"]);
+            this.view.update_labels();
         }
         if (message["type"] == "movement")
         {
@@ -54,6 +57,7 @@ export class Controller
                 message["movement"], message["position"],
                 message["last_height"], message["slope"],
                 message["velocity"]);
+            this.view.update_labels();
         }
         if (this.players["home"] != null)
         {
@@ -247,6 +251,7 @@ export class CPU
         this.player = player;
         this.pad_movement = 0;
         this.target = 0.5;
+        this.error = 1.3;
     }
 
     receiver(message)
@@ -275,6 +280,7 @@ export class CPU
             {
                 this.target = 0.5;
             }
+            this.target += this.error * (Math.random() * this.controller.model.pad_height - this.controller.model.pad_height / 2);
             if (current_position < this.target)
             {
                 this.pad_movement = 1;
