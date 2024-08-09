@@ -31,7 +31,9 @@
                         {% endif %}
                         {% endif %}
                     </div>
+                    {% if not user.bio == None %}
                     <p>{{ user.bio }}</p>
+                    {% endif %}
                     <div class="d-flex">
                         <p>HYPERPONG</p>
                         <div class="d-flex justify-content-center">
