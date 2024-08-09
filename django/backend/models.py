@@ -352,7 +352,8 @@ class Match(models.Model):
             self.win(self.home)
 
     def reason_user_cannot_join(self, user):
-        if not user == self.home.user or not user == self.guest.user:
+        if not user == self.home.user and not user == self.guest.user:
+            print (user, self.home.user, self.guest.user)
             return _("Only players can join this match")
         if not self.is_waiting:
             return _("You can't join a match that already started")
