@@ -117,11 +117,17 @@ class GameConsumer(WebsocketConsumer):
         if self.game.guest.user == self.user:
             self.players.append("guest")
         self.group_name = f"game_{self.game_id}"
+        reason = self.game.reason_user_cannot_join(self.user)
+        if (reason != False):
+            self.close()
+            return
+        self.game.join(self.user)
         async_to_sync(self.channel_layer.group_add)(
             self.group_name, self.channel_name)
         self.accept()
     
     def disconnect(self, code):
+        self.game.leave(self.user)
         async_to_sync(self.channel_layer.group_discard)(
             self.group_name, self.channel_name)
         return super().disconnect(code)
@@ -133,9 +139,9 @@ class GameConsumer(WebsocketConsumer):
                 self.group_name, {'type':'forward', 'data': text_data})
             if d["type"] == "goal":
                 if d["player"] == "home":
-                    self.game.guest_score += 1;
+                    self.game.guest_score += 1
                 if d["player"] == "guest":
-                    self.game.home_score += 1;
+                    self.game.home_score += 1
                 self.game.save()
 
     def forward(self, event):
