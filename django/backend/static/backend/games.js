@@ -5,12 +5,12 @@ class GameManager{
     constructor(){
         this.games = {};
         import("./pong/src/game.js").then(
-            this.load_modules.bind(this)
+            this.load_pong_game.bind(this)
             )
         this.loaded = false;
     }
 
-    load_modules()
+    load_pong_game()
     {
         this.loaded = true;
         this.update_games();
