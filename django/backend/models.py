@@ -300,6 +300,16 @@ class Match(models.Model):
         verbose_name = _("Tournament round"),
     )
 
+    home_ready = models.BooleanField(
+        default = False,
+        verbose_name=_("Home player joined the match")
+    )
+
+    guest_ready = models.BooleanField(
+        default = False,
+        verbose_name=_("Guest player joined the match")
+    )
+
     @property
     def is_practice(self):
         return self.mode == "pr"
@@ -327,10 +337,46 @@ class Match(models.Model):
 
     def lose(self, competitor):
         if self.home == competitor:
-            self.winner = self.guest
+            self.win(self.guest)
         else:
-            self.winner = self.home
-        self.state = "fi"
+            self.win(self.home)
+
+    def reason_user_cannot_join(self, user):
+        if not user == self.home.user or not user == self.guest.user:
+            return _("Only players can join this match")
+        if not self.is_waiting:
+            return _("You can't join a match that already started")
+        if user == self.home.user and self.home_ready:
+            return _("You already joined this match")
+        if user == self.guest.user and self.guest_ready:
+            return _("You already joined this match")
+        return False
+    
+    def try_start(self):
+        if (not self.is_practice and self.home_ready and self.guest_ready) \
+            or self.is_practice and (self.home_ready or self.guest_ready):
+            self.state == "st"
+            self.save()
+
+    def join(self, user):
+        if self.home.user == user:
+            self.home_ready = True
+        if self.guest.user == user:
+            self.guest_ready = True
+        self.try_start()
+        self.save()
+
+    def leave(self, user):
+        if not self.is_waiting:
+            if self.home.user == user:
+                self.lose(self.home)
+            if self.guest.user == user:
+                self.lose(self.guest)
+        if self.is_waiting:
+            if self.home.user == user:
+                self.home_ready = False
+            if self.guest.user == user:
+                self.guest_ready = False
         self.save()
 
 
