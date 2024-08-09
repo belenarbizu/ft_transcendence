@@ -11,7 +11,7 @@
         {% for round in rounds %}
         <tr>
             <td></td>
-            <td><h5 class="text-center align-items-center pt-2">Round {{ round }}</h5></td>
+            <td><h5 class="text-center align-items-center pt-2">{% translate 'Round' %} {{ round }}</h5></td>
             <td></td>
         </tr>
                 {% for match in tournament.matches.order_by_state %}
