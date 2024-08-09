@@ -42,3 +42,70 @@ html, body {
   background-size: cover;
   z-index: -1;
 }
+
+.col-centered {
+  display:inline-block;
+  float:none;
+  text-align:left;
+  margin-right:-4px;
+}
+
+.game-frame {
+  aspect-ratio: 1.5;
+  padding-top:16px;
+  padding-bottom:70px;
+  padding-left:50px;
+  padding-right:50px;
+}
+
+.player-info {
+  padding: 10px;
+  display: flex;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.guest-player-info {
+  position: relative;
+  height: 50px;
+  width: 35%;
+  z-index: 0;
+  margin-top: -10px;
+  margin-bottom: -40px;
+  border-radius: 15px;
+}
+
+.guest-player-picture {
+  position: relative;
+  width: 100px;
+  margin-top: -30px;
+  margin-bottom: -70px;
+  z-index:1;
+  margin-left: -50px;
+}
+
+.home-player-info {
+  position: relative;
+  height: 50px;
+  width: 35%;
+  z-index: 0;
+  margin-top: -40px;
+  margin-bottom: -10px;
+  left: 65%;
+  border-radius: 15px;
+}
+
+.home-player-picture {
+  position: relative;
+  width: 100px;
+  margin-top: -70px;
+  margin-bottom: -30px;
+  z-index:2;
+  margin-left: -50px;
+  left: 100%;
+}
+
+.how-to-play {
+  padding-left:50px;
+  padding-right:50px;
+}
