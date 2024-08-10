@@ -16,8 +16,8 @@
                 class="img-fluid avatar-xxl rounded-circle guest-player-picture" alt="">
             <div class="card h-100 border-0" style="z-index: -1;">
                 <div class="card-body p-3 h-100">
-                    <span class="card h-100 border-0" id="threejs-container">
-                    </span>
+                    <div class="card h-100 border-0" id="threejs-container">
+                    </div>
 
                     <!-- Home winner -->
                     <span class="m-0 p-0 winner" id="home" style="display: none;">
@@ -70,6 +70,7 @@
             </div>
         </div>
     </div>
-    <game group="ws/game/{{ match.id }}" type="pong" mode="2cpu"></game>
+
+    <game group="ws/game/{{ match.id }}" type="pong" mode="local" />
 </div>
 {% endblock %}
