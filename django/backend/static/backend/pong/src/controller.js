@@ -41,7 +41,6 @@ export class Controller
                 message["movement"], message["position"],
                 message["last_height"], message["slope"],
                 message["velocity"]);
-            this.view.update_labels();
         }
         if (message["type"] == "goal")
         {
@@ -55,7 +54,8 @@ export class Controller
             {
                 this.on_end(winner);
             }
-            this.view.update_labels();
+            this.view.set_scores(
+                self.model.scores["home"], self.model.scores["guest"]);
         }
         if (message["type"] == "movement")
         {
@@ -69,15 +69,18 @@ export class Controller
                 message["movement"], message["position"],
                 message["last_height"], message["slope"],
                 message["velocity"]);
-            this.view.update_labels();
         }
         if (message["type"] == "end")
         {
+            var winner = this.model.has_winner();
+            if (winner != false)
+            {
+                this.view.set_winner(winner);
+            }
             this.model.set_ball_movement(
                 message["movement"], 0.5,
                 0.5, message["slope"],
                 0);
-            this.view.update_labels();
         }
         if (this.players["home"] != null)
         {
