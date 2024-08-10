@@ -351,6 +351,12 @@ class Match(models.Model):
         else:
             self.win(self.home)
 
+    def end(self, player):
+        if player == "home":
+            self.win(self.home)
+        else:
+            self.win(self.guest)
+
     def reason_user_cannot_join(self, user):
         if not user == self.home.user and not user == self.guest.user:
             print (user, self.home.user, self.guest.user)

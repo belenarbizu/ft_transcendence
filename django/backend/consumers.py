@@ -106,6 +106,7 @@ class UserConsumer(LiveUpdateConsumer):
         self._notify_online_status()
 
 class GameConsumer(WebsocketConsumer):
+
     def connect(self):
         self.game_id = self.scope['url_route']['kwargs']['game_id']
         self.user = self.scope['user']
@@ -134,7 +135,14 @@ class GameConsumer(WebsocketConsumer):
 
     def receive(self, text_data):
         d = json.loads(text_data)
-        if d["type"] == "start" or d["player"] in self.players:
+        if d["type"] == "start" and self.game.is_started:
+            async_to_sync(self.channel_layer.group_send)(
+                self.group_name, {'type':'forward', 'data': text_data})
+        elif d["type"] == "end" and self.game.is_started:
+            async_to_sync(self.channel_layer.group_send)(
+                self.group_name, {'type':'forward', 'data': text_data})
+            self.game.end(d["winner"])
+        elif d["player"] in self.players:
             async_to_sync(self.channel_layer.group_send)(
                 self.group_name, {'type':'forward', 'data': text_data})
             if d["type"] == "goal":

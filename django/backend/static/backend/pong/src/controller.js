@@ -43,6 +43,11 @@ export class Controller
                 message["movement"], message["position"],
                 message["last_height"], message["slope"],
                 message["velocity"]);
+            var winner = this.model.has_winner();
+            if (winner != false)
+            {
+                this.on_end(winner);
+            }
             this.view.update_labels();
         }
         if (message["type"] == "movement")
@@ -57,6 +62,14 @@ export class Controller
                 message["movement"], message["position"],
                 message["last_height"], message["slope"],
                 message["velocity"]);
+            this.view.update_labels();
+        }
+        if (message["type"] == "end")
+        {
+            this.model.set_ball_movement(
+                message["movement"], 0.5,
+                0.5, message["slope"],
+                0);
             this.view.update_labels();
         }
         if (this.players["home"] != null)
@@ -146,6 +159,14 @@ export class Controller
             "last_height": 0.5,
             "slope": (Math.random() - 0.5) * 2,
             "velocity": this.model.ball_initial_velocity
+        })
+    }
+
+    on_end(winner)
+    {
+        this.interface({
+            "type": "end",
+            "winner": winner,
         })
     }
 }
@@ -244,14 +265,14 @@ export class Human
 export class CPU
 {
 
-    constructor(controller, player)
+    constructor(controller, player, error_rate)
     {
         this.controller = controller;
         this.controller.players[player] = this;
         this.player = player;
         this.pad_movement = 0;
         this.target = 0.5;
-        this.error = 1.3;
+        this.error = error_rate;
     }
 
     receiver(message)
