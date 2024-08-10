@@ -147,6 +147,7 @@ class GameConsumer(WebsocketConsumer):
                 async_to_sync(self.channel_layer.group_send)(
                     self.group_name, {'type':'forward', 'data': text_data})
                 if d["type"] == "goal":
+                    self.game.refresh_from_db()
                     if d["player"] == "home":
                         self.game.guest_score += 1
                     if d["player"] == "guest":
