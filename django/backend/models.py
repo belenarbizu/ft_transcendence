@@ -359,7 +359,6 @@ class Match(models.Model):
 
     def reason_user_cannot_join(self, user):
         if not user == self.home.user and not user == self.guest.user:
-            print (user, self.home.user, self.guest.user)
             return _("Only players can join this match")
         if not self.is_waiting:
             return _("You can't join a match that already started")
@@ -370,10 +369,12 @@ class Match(models.Model):
         return False
     
     def try_start(self):
-        if (not self.is_practice and self.home_ready and self.guest_ready):
+        if (not self.is_practice and self.home_ready and self.guest_ready) \
+            or (self.is_practice and (self.home_ready or self.guest_ready)):
             self.state = "st"
-        if (self.is_practice and (self.home_ready or self.guest_ready)):
-            self.state = "st"
+            layer = get_channel_layer()
+            async_to_sync(layer.group_send)(
+                f"game_{self.id}", {"type": "forward", "data": json.dumps({"type": "ready"})})
         self.save()
 
     def join(self, user):
@@ -386,7 +387,6 @@ class Match(models.Model):
 
     def leave(self, user):
         if self.is_started:
-            print ("now its playing")
             if self.home.user == user:
                 self.lose(self.home)
             if self.guest.user == user:

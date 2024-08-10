@@ -3,10 +3,12 @@
 export class Controller
 {
 
-    constructor(model, url)
+    constructor(model, view, url)
     {
         this.model = model;
         this.model.controller = this;
+        this.view = view;
+        this.view.controller = this;
         this.players = {
             "home": null,
             "guest": null
@@ -27,7 +29,12 @@ export class Controller
 
     receiver(message)
     {
-        console.log(message["type"]);
+        if (message["type"] == "ready")
+        {
+            this.view.hide_waiting_screen();
+            new Promise((resolve) => setTimeout(resolve, 5000)).then(
+                this.on_start.bind(this));
+        }
         if (message["type"] == "hit")
         {
             this.model.set_ball_movement(

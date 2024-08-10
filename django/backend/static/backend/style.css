@@ -147,3 +147,15 @@ html, body {
   background-repeat: no-repeat;
   background-position: bottom right;
 }
+
+.waiting-screen {
+  height: 50px;
+  z-index: 0;
+  margin-top: -10px;
+  margin-bottom: -40px;
+  border-radius: 15px;
+  width: 30%;
+  position: relative;
+  top: -25px;
+  left: -15%;
+}

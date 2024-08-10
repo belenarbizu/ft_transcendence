@@ -118,14 +118,14 @@ class GameConsumer(WebsocketConsumer):
         if self.game.guest.user == self.user:
             self.players.append("guest")
         self.group_name = f"game_{self.game_id}"
+        async_to_sync(self.channel_layer.group_add)(
+            self.group_name, self.channel_name)
+        self.accept()
         reason = self.game.reason_user_cannot_join(self.user)
         if (reason != False):
             self.close()
             return
         self.game.join(self.user)
-        async_to_sync(self.channel_layer.group_add)(
-            self.group_name, self.channel_name)
-        self.accept()
     
     def disconnect(self, code):
         self.game.leave(self.user)

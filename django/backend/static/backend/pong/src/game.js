@@ -14,8 +14,8 @@ export class PongGame
             0.15,   // Pad height
             5       // Win condition
         );
-        this.controller = new Controller(this.model, url);
-        this.view = new View(this.model, this.controller);
+        this.view = new View(this.model);
+        this.controller = new Controller(this.model, this.view, url);
 
         if (mode == "home" || mode == "local" || mode == "cpu")
         {

@@ -19,6 +19,16 @@
                     <div class="card h-100 border-0" id="threejs-container">
                     </div>
 
+                    <!-- Waiting screen -->
+                    <span class="m-0 p-0 winner" id="waiting-screen">
+                        <div class="card text-center waiting-screen border-0">
+                            <h4 class="winner-info text-middle">
+                                {% translate 'Waiting for players' %}
+                            </h4>
+                        </div>
+                    </span>
+                    <!-- end of Waiting screen -->
+
                     <!-- Home winner -->
                     <span class="m-0 p-0 winner" id="home" style="display: none;">
                         <img src="{{ match.home.get_profile_picture }}"
@@ -64,7 +74,6 @@
             <div class="card-body">
                 <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus in sapien vitae tellus sollicitudin pellentesque. Vivamus nibh ligula, porttitor id convallis vitae, accumsan ac tellus. Nunc dapibus feugiat consectetur. Suspendisse potenti. Aliquam erat volutpat. Nulla sed ante et massa ornare tristique. Curabitur id viverra arcu. Nullam cursus tempus elit, nec imperdiet risus elementum et. Sed nisl orci, finibus ut lectus nec, semper pretium risus. Donec id sollicitudin erat, non dapibus quam. Nam tincidunt sapien id interdum mollis. Duis nibh tortor, tincidunt id fermentum viverra, eleifend eget odio. Aliquam eget erat sodales, facilisis magna at, ullamcorper tellus. Praesent iaculis cursus egestas. Phasellus sit amet magna sit amet justo maximus interdum at in mi. Cras tristique molestie ante, a egestas turpis.</p>
                 <p>Fusce faucibus turpis vel diam vehicula, vitae molestie ligula egestas. Fusce imperdiet mi vel auctor euismod. Proin ex velit, interdum ut ultricies sed, feugiat at ex. Pellentesque quam turpis, auctor in tortor eget, porttitor fringilla urna. Mauris auctor pellentesque aliquet. Morbi ultricies, sem eget laoreet rhoncus, ligula augue dictum eros, quis maximus nulla orci sit amet mauris. Quisque efficitur leo a quam pulvinar ullamcorper. Suspendisse ut enim sed tortor semper porta. </p>
-                <button id="start">Start game</button>
             </div>
                 
             </div>

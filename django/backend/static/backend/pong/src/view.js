@@ -3,13 +3,9 @@
 export class View
 {
 
-    constructor(model, controller)
+    constructor(model)
     {
         this.model = model;
-        this.controller = controller;
-        this.controller.view = this;
-        this.start = document.getElementById("start");
-        this.start.onclick = (o) => {this.controller.on_start();};
 
         this.container = document.getElementById("threejs-container")
         this.container.innerHTML = `
@@ -38,8 +34,6 @@ export class View
 
     draw(current_time)
     {
-
-
         var positionInfo = this.container.getBoundingClientRect();
         var ballposInfo = this.ball.getBoundingClientRect();
         this.ball.style.left = this.model.get_ball_x(current_time)
@@ -47,7 +41,6 @@ export class View
         this.ball.style.top = (1 - this.model.get_ball_y(
             this.model.get_ball_position(current_time))) * positionInfo.height
             - ballposInfo.height / 2 + 'px';
-
         
         this.guest_pad_t.style.left = - ballposInfo.width / 2 + "px";
         this.guest_pad_c.style.left = - ballposInfo.width / 2 + 'px';
@@ -80,24 +73,56 @@ export class View
 
     update_labels()
     {
-        this.home_score.innerHTML = this.model.scores["home"];
-        this.guest_score.innerHTML = this.model.scores["guest"];
+        this.set_scores(this.model.scores["home"], this.model.scores["guest"]);
 
         if (this.model.ball["movement"] == -1)
         {
-            this.home_info.classList.add("text-muted");
-            this.guest_info.classList.remove("text-muted");
+            this.set_turn("guest");
         }
         if (this.model.ball["movement"] == 1)
         {
-            this.home_info.classList.remove("text-muted");
-            this.guest_info.classList.add("text-muted");
+            this.set_turn("home");
         }
 
         var winner = this.model.has_winner();
         if (winner != false)
         {
-            document.getElementById(winner).style.display = "block";
+            this.set_winner(winner);
         }
+    }
+
+    set_winner(player)
+    {
+        document.getElementById(player).style.display = "block";
+    }
+
+    set_scores(home, guest)
+    {
+        document.getElementById("home-score").innerHTML = home;
+        document.getElementById("guest-score").innerHTML = guest;
+    }
+
+    set_turn(player)
+    {
+        if (player == "home")
+        {
+            document.getElementById("home-info").classList.remove("text-muted");
+            document.getElementById("guest-info").classList.add("text-muted");
+        }
+        if (player == "guest")
+        {
+            document.getElementById("home-info").classList.add("text-muted");
+            document.getElementById("guest-info").classList.remove("text-muted");
+        }
+        if (player == "no-player")
+        {
+            document.getElementById("home-info").classList.remove("text-muted");
+            document.getElementById("guest-info").classList.remove("text-muted");
+        }
+    }
+
+    hide_waiting_screen()
+    {
+        document.getElementById("waiting-screen").style.display = "none";
     }
 }
