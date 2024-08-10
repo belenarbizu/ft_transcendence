@@ -336,12 +336,23 @@ class Match(models.Model):
         self.winner = competitor
         self.state = "fi"
         self.save()
+        layer = get_channel_layer()
         if competitor == self.home:
             self.guest.eliminated = True
             self.guest.save()
+            async_to_sync(layer.group_send)(
+                f"game_{self.id}", {
+                    "type": "forward",
+                    "data":json.dumps({"type": "end", "winner": "home"})
+                    })
         else:
             self.home.eliminated = True
             self.home.save()
+            async_to_sync(layer.group_send)(
+                f"game_{self.id}", {
+                    "type": "forward",
+                    "data":json.dumps({"type": "end", "winner": "guest"})
+                    })
         if self.tournament:
             Tournament.objects.new_round(self.tournament)
 
