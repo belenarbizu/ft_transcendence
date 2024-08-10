@@ -129,13 +129,7 @@ function start_spa() {
     });
     create_tooltips();
     webSocketManager.update_sockets();
-    try
-    {
-        gameManager.update_games();
-    }
-    catch { 
-        console.log("Error");
-    }
+    gameManager.update_games();
 }
 
 function end_spa(hide) {

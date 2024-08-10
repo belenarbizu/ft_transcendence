@@ -1,15 +1,13 @@
 
+import { GameView } from '../../gameview.js';
 
-export class View
+export class View extends GameView
 {
 
-    constructor(model, controller)
+    constructor(model)
     {
+        super();
         this.model = model;
-        this.controller = controller;
-        this.controller.view = this;
-        this.start = document.getElementById("start");
-        this.start.onclick = (o) => {this.controller.on_start();};
 
         this.container = document.getElementById("threejs-container")
         this.container.innerHTML = `
@@ -38,8 +36,6 @@ export class View
 
     draw(current_time)
     {
-
-
         var positionInfo = this.container.getBoundingClientRect();
         var ballposInfo = this.ball.getBoundingClientRect();
         this.ball.style.left = this.model.get_ball_x(current_time)
@@ -47,7 +43,6 @@ export class View
         this.ball.style.top = (1 - this.model.get_ball_y(
             this.model.get_ball_position(current_time))) * positionInfo.height
             - ballposInfo.height / 2 + 'px';
-
         
         this.guest_pad_t.style.left = - ballposInfo.width / 2 + "px";
         this.guest_pad_c.style.left = - ballposInfo.width / 2 + 'px';
@@ -78,20 +73,4 @@ export class View
             - ballposInfo.height / 2 + 'px';
     }
 
-    update_labels()
-    {
-        this.home_score.innerHTML = this.model.scores["home"];
-        this.guest_score.innerHTML = this.model.scores["guest"];
-
-        if (this.model.ball["movement"] == -1)
-        {
-            this.home_info.classList.add("text-muted");
-            this.guest_info.classList.remove("text-muted");
-        }
-        if (this.model.ball["movement"] == 1)
-        {
-            this.home_info.classList.remove("text-muted");
-            this.guest_info.classList.add("text-muted");
-        }
-    }
 }

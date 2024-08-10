@@ -300,6 +300,16 @@ class Match(models.Model):
         verbose_name = _("Tournament round"),
     )
 
+    home_ready = models.BooleanField(
+        default = False,
+        verbose_name=_("Home player joined the match")
+    )
+
+    guest_ready = models.BooleanField(
+        default = False,
+        verbose_name=_("Guest player joined the match")
+    )
+
     @property
     def is_practice(self):
         return self.mode == "pr"
@@ -321,16 +331,82 @@ class Match(models.Model):
         return self.state == "fi"
     
     def win(self, competitor):
+        if self.is_finished:
+            return
         self.winner = competitor
         self.state = "fi"
         self.save()
+        layer = get_channel_layer()
+        if competitor == self.home:
+            self.guest.eliminated = True
+            self.guest.save()
+            async_to_sync(layer.group_send)(
+                f"game_{self.id}", {
+                    "type": "forward",
+                    "data":json.dumps({"type": "end", "winner": "home"})
+                    })
+        else:
+            self.home.eliminated = True
+            self.home.save()
+            async_to_sync(layer.group_send)(
+                f"game_{self.id}", {
+                    "type": "forward",
+                    "data":json.dumps({"type": "end", "winner": "guest"})
+                    })
+        if self.tournament:
+            Tournament.objects.new_round(self.tournament)
 
     def lose(self, competitor):
         if self.home == competitor:
-            self.winner = self.guest
+            self.win(self.guest)
         else:
-            self.winner = self.home
-        self.state = "fi"
+            self.win(self.home)
+
+    def end(self, player):
+        if player == "home":
+            self.win(self.home)
+        else:
+            self.win(self.guest)
+
+    def reason_user_cannot_join(self, user):
+        if not user == self.home.user and not user == self.guest.user:
+            return _("Only players can join this match")
+        if not self.is_waiting:
+            return _("You can't join a match that already started")
+        if user == self.home.user and self.home_ready:
+            return _("You already joined this match")
+        if user == self.guest.user and self.guest_ready:
+            return _("You already joined this match")
+        return False
+    
+    def try_start(self):
+        if (not self.is_practice and self.home_ready and self.guest_ready) \
+            or (self.is_practice and (self.home_ready or self.guest_ready)):
+            self.state = "st"
+            layer = get_channel_layer()
+            async_to_sync(layer.group_send)(
+                f"game_{self.id}", {"type": "ready"})
+        self.save()
+
+    def join(self, user):
+        if self.home.user == user:
+            self.home_ready = True
+        if self.guest.user == user:
+            self.guest_ready = True
+        self.try_start()
+        self.save()
+
+    def leave(self, user):
+        if self.is_started:
+            if self.home.user == user:
+                self.lose(self.home)
+            if self.guest.user == user:
+                self.lose(self.guest)
+        if self.is_waiting:
+            if self.home.user == user:
+                self.home_ready = False
+            if self.guest.user == user:
+                self.guest_ready = False
         self.save()
 
 
@@ -424,9 +500,6 @@ class Competitor(models.Model):
         for match in Match.objects.played_by(self).not_finished():
             match.lose(self)
         self.eliminated = True
-        self.save()
-        if self.tournament:
-            Tournament.objects.new_round(self.tournament)
 
 
 class Tournament(models.Model):

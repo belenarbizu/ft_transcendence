@@ -374,7 +374,10 @@ def edit_profile(request):
 		return redirect(reverse('backend:user', kwargs={"username":request.user.username}))
 	raise Exception(_("Bad form"))
 
+@login_required(login_url=reverse_lazy("backend:login_options"))
 def game_view(request, game_id):
 	game = Match.objects.get(id = int(game_id))
+	reason = game.reason_user_cannot_join(request.user)
+	if (reason):
+		return render(request, 'backend/error.html', {"reason": reason})
 	return render(request, 'backend/game.html', {"match": game})
-

@@ -11,10 +11,11 @@ export class PongGame
         this.model = new Model(
             0.001,  // Pad velocity
             0.0005, // Ball initial velocity
-            0.15    // Pad height
+            0.15,   // Pad height
+            5       // Win condition
         );
-        this.controller = new Controller(this.model, url);
-        this.view = new View(this.model, this.controller);
+        this.view = new View(this.model);
+        this.controller = new Controller(this.model, this.view, url);
 
         if (mode == "home" || mode == "local" || mode == "cpu")
         {
@@ -26,11 +27,11 @@ export class PongGame
         }
         if (mode == "cpu" || mode == "2cpu")
         {
-            this.guest = new CPU(this.controller, "guest");
+            this.guest = new CPU(this.controller, "guest", 2);
         }
         if (mode == "2cpu")
         {
-            this.home = new CPU(this.controller, "home");
+            this.home = new CPU(this.controller, "home", 2);
         }
     }
 
@@ -44,6 +45,11 @@ export class PongGame
         this.controller.on_loop();
         this.view.draw(Date.now());
         window.requestAnimationFrame(this.on_loop.bind(this));
+    }
+
+    disconnect()
+    {
+        this.controller.webSocket.close();
     }
 }
 

@@ -3,10 +3,12 @@
 export class Controller
 {
 
-    constructor(model, url)
+    constructor(model, view, url)
     {
         this.model = model;
         this.model.controller = this;
+        this.view = view;
+        this.view.controller = this;
         this.players = {
             "home": null,
             "guest": null
@@ -27,14 +29,18 @@ export class Controller
 
     receiver(message)
     {
-        console.log(message["type"]);
+        if (message["type"] == "ready")
+        {
+            this.view.hide_waiting_screen();
+            new Promise((resolve) => setTimeout(resolve, 5000)).then(
+                this.on_start.bind(this));
+        }
         if (message["type"] == "hit")
         {
             this.model.set_ball_movement(
                 message["movement"], message["position"],
                 message["last_height"], message["slope"],
                 message["velocity"]);
-            this.view.update_labels();
         }
         if (message["type"] == "goal")
         {
@@ -43,7 +49,13 @@ export class Controller
                 message["movement"], message["position"],
                 message["last_height"], message["slope"],
                 message["velocity"]);
-            this.view.update_labels();
+            var winner = this.model.has_winner();
+            if (winner != false)
+            {
+                this.on_end(winner);
+            }
+            this.view.set_scores(
+                this.model.scores["home"], this.model.scores["guest"]);
         }
         if (message["type"] == "movement")
         {
@@ -57,7 +69,14 @@ export class Controller
                 message["movement"], message["position"],
                 message["last_height"], message["slope"],
                 message["velocity"]);
-            this.view.update_labels();
+        }
+        if (message["type"] == "end")
+        {
+            this.view.set_winner(message["winner"]);
+            this.model.set_ball_movement(
+                1, 0.5,
+                0.5, 0,
+                0);
         }
         if (this.players["home"] != null)
         {
@@ -146,6 +165,14 @@ export class Controller
             "last_height": 0.5,
             "slope": (Math.random() - 0.5) * 2,
             "velocity": this.model.ball_initial_velocity
+        })
+    }
+
+    on_end(winner)
+    {
+        this.interface({
+            "type": "end",
+            "winner": winner,
         })
     }
 }
@@ -244,14 +271,14 @@ export class Human
 export class CPU
 {
 
-    constructor(controller, player)
+    constructor(controller, player, error_rate)
     {
         this.controller = controller;
         this.controller.players[player] = this;
         this.player = player;
         this.pad_movement = 0;
         this.target = 0.5;
-        this.error = 1.3;
+        this.error = error_rate;
     }
 
     receiver(message)

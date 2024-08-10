@@ -25,6 +25,10 @@ class WebSocketManager{
                         window[callback](e);
                     }
                 }
+                if (socket_element.hasAttribute("autoreload"))
+                {
+                    get_request(window.location.href, "#wrapper", true, true);
+                }
             }
         });
     }

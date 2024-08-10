@@ -49,6 +49,7 @@ class GameManager{
             var game = document.querySelectorAll(
                 `game[group="${group}"]`);
             if (game.length == 0){
+                this.games[group].disconnect();
                 delete this.games[group];
             }
         }

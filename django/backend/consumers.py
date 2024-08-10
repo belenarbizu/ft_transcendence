@@ -106,6 +106,7 @@ class UserConsumer(LiveUpdateConsumer):
         self._notify_online_status()
 
 class GameConsumer(WebsocketConsumer):
+
     def connect(self):
         self.game_id = self.scope['url_route']['kwargs']['game_id']
         self.user = self.scope['user']
@@ -120,23 +121,42 @@ class GameConsumer(WebsocketConsumer):
         async_to_sync(self.channel_layer.group_add)(
             self.group_name, self.channel_name)
         self.accept()
+        reason = self.game.reason_user_cannot_join(self.user)
+        if (reason != False):
+            self.close()
+            return
+        self.game.join(self.user)
     
     def disconnect(self, code):
+        self.game.leave(self.user)
         async_to_sync(self.channel_layer.group_discard)(
             self.group_name, self.channel_name)
         return super().disconnect(code)
 
     def receive(self, text_data):
         d = json.loads(text_data)
-        if d["type"] == "start" or d["player"] in self.players:
-            async_to_sync(self.channel_layer.group_send)(
-                self.group_name, {'type':'forward', 'data': text_data})
-            if d["type"] == "goal":
-                if d["player"] == "home":
-                    self.game.guest_score += 1;
-                if d["player"] == "guest":
-                    self.game.home_score += 1;
-                self.game.save()
+        if self.game.is_started:
+            if d["type"] == "start":
+                async_to_sync(self.channel_layer.group_send)(
+                    self.group_name, {'type':'forward', 'data': text_data})
+            elif d["type"] == "end":
+                async_to_sync(self.channel_layer.group_send)(
+                    self.group_name, {'type':'forward', 'data': text_data})
+                self.game.end(d["winner"])
+            elif "player" in d and d["player"] in self.players:
+                async_to_sync(self.channel_layer.group_send)(
+                    self.group_name, {'type':'forward', 'data': text_data})
+                if d["type"] == "goal":
+                    self.game.refresh_from_db()
+                    if d["player"] == "home":
+                        self.game.guest_score += 1
+                    if d["player"] == "guest":
+                        self.game.home_score += 1
+                    self.game.save()
 
     def forward(self, event):
         self.send(event['data'])
+
+    def ready(self, event):
+        self.game.refresh_from_db()
+        self.send(json.dumps(event))

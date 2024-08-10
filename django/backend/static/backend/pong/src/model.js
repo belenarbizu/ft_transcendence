@@ -3,7 +3,7 @@
 export class Model
 {
 
-    constructor(pad_velocity, ball_velocity, pad_height)
+    constructor(pad_velocity, ball_velocity, pad_height, win_condition)
     {
         this.pads = {
             "home": {
@@ -37,6 +37,7 @@ export class Model
         this.goal = false;
         this.hit = false;
         this.goal_position = 1.1;
+        this.win_condition = win_condition;
     }
 
     set_pad_movement(player, movement, position)
@@ -168,5 +169,14 @@ export class Model
         let pad_y = this.get_pad_y(player, current_time);
         let ball_y = this.get_ball_y(1);
         return (Math.abs(pad_y - ball_y) < this.pad_fantasy * this.pad_height / 2);
+    }
+
+    has_winner()
+    {
+        if (this.scores["home"] == this.win_condition)
+            return "home";
+        if (this.scores["guest"] == this.win_condition)
+            return "guest";
+        return false;
     }
 }
