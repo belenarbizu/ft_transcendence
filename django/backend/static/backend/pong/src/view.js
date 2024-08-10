@@ -93,5 +93,11 @@ export class View
             this.home_info.classList.remove("text-muted");
             this.guest_info.classList.add("text-muted");
         }
+
+        var winner = this.model.has_winner();
+        if (winner != false)
+        {
+            document.getElementById(winner).style.display = "block";
+        }
     }
 }

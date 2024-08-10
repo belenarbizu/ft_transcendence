@@ -65,6 +65,37 @@ html, body {
   overflow: hidden;
 }
 
+.winner-info {
+  padding: 10px;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.winner-player-info {
+  height: 50px;
+  z-index: 0;
+  margin-top: -10px;
+  margin-bottom: -40px;
+  border-radius: 15px;
+  width: 30%;
+  position: relative;
+  top: -120px;
+  left: -15%;
+}
+
+.winner {
+  position: relative;
+  top:-50%;
+  left: 50%;
+}
+
+.winner-picture {
+  max-width: 200px;
+  position: relative;
+  top: -100px;
+  left: -100px;
+}
+
 .guest-player-info {
   position: relative;
   height: 50px;
