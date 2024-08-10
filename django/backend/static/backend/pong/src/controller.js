@@ -55,7 +55,7 @@ export class Controller
                 this.on_end(winner);
             }
             this.view.set_scores(
-                self.model.scores["home"], self.model.scores["guest"]);
+                this.model.scores["home"], this.model.scores["guest"]);
         }
         if (message["type"] == "movement")
         {
@@ -72,14 +72,10 @@ export class Controller
         }
         if (message["type"] == "end")
         {
-            var winner = this.model.has_winner();
-            if (winner != false)
-            {
-                this.view.set_winner(winner);
-            }
+            this.view.set_winner(message["winner"]);
             this.model.set_ball_movement(
-                message["movement"], 0.5,
-                0.5, message["slope"],
+                1, 0.5,
+                0.5, 0,
                 0);
         }
         if (this.players["home"] != null)
