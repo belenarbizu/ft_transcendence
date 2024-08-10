@@ -385,7 +385,7 @@ class Match(models.Model):
         self.save()
 
     def leave(self, user):
-        if not self.is_waiting:
+        if self.is_started:
             print ("now its playing")
             if self.home.user == user:
                 self.lose(self.home)
