@@ -6,6 +6,7 @@ export class View extends GameView
 
     constructor(model)
     {
+        super();
         this.model = model;
 
         this.container = document.getElementById("threejs-container")
