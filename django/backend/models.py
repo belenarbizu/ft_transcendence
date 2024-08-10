@@ -374,7 +374,7 @@ class Match(models.Model):
             self.state = "st"
             layer = get_channel_layer()
             async_to_sync(layer.group_send)(
-                f"game_{self.id}", {"type": "forward", "data": json.dumps({"type": "ready"})})
+                f"game_{self.id}", {"type": "ready"})
         self.save()
 
     def join(self, user):

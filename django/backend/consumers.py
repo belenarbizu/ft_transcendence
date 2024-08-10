@@ -135,22 +135,27 @@ class GameConsumer(WebsocketConsumer):
 
     def receive(self, text_data):
         d = json.loads(text_data)
-        if d["type"] == "start" and self.game.is_started:
-            async_to_sync(self.channel_layer.group_send)(
-                self.group_name, {'type':'forward', 'data': text_data})
-        elif d["type"] == "end" and self.game.is_started:
-            async_to_sync(self.channel_layer.group_send)(
-                self.group_name, {'type':'forward', 'data': text_data})
-            self.game.end(d["winner"])
-        elif d["player"] in self.players and self.game.is_started:
-            async_to_sync(self.channel_layer.group_send)(
-                self.group_name, {'type':'forward', 'data': text_data})
-            if d["type"] == "goal":
-                if d["player"] == "home":
-                    self.game.guest_score += 1
-                if d["player"] == "guest":
-                    self.game.home_score += 1
-                self.game.save()
+        if self.game.is_started:
+            if d["type"] == "start":
+                async_to_sync(self.channel_layer.group_send)(
+                    self.group_name, {'type':'forward', 'data': text_data})
+            elif d["type"] == "end":
+                async_to_sync(self.channel_layer.group_send)(
+                    self.group_name, {'type':'forward', 'data': text_data})
+                self.game.end(d["winner"])
+            elif "player" in d and d["player"] in self.players:
+                async_to_sync(self.channel_layer.group_send)(
+                    self.group_name, {'type':'forward', 'data': text_data})
+                if d["type"] == "goal":
+                    if d["player"] == "home":
+                        self.game.guest_score += 1
+                    if d["player"] == "guest":
+                        self.game.home_score += 1
+                    self.game.save()
 
     def forward(self, event):
         self.send(event['data'])
+
+    def ready(self, event):
+        self.game.refresh_from_db()
+        self.send(json.dumps(event))
