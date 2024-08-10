@@ -142,7 +142,7 @@ class GameConsumer(WebsocketConsumer):
             async_to_sync(self.channel_layer.group_send)(
                 self.group_name, {'type':'forward', 'data': text_data})
             self.game.end(d["winner"])
-        elif d["player"] in self.players:
+        elif d["player"] in self.players and self.game.is_started:
             async_to_sync(self.channel_layer.group_send)(
                 self.group_name, {'type':'forward', 'data': text_data})
             if d["type"] == "goal":
