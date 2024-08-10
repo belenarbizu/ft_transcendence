@@ -29,7 +29,11 @@
                     </td>
                     <td class="px-3 align-middle text-center col-1">
                         {% if match.is_waiting %}
+                        {% if match.home.user == request.user or match.guest.user == request.user %}
                         <a spa href="{% url 'backend:game' match.id %}">{% translate 'play' %}</a>
+                        {% else %}
+                        <span class="badge rounded-pill bg-primary">{% translate 'waiting' %}</span>
+                        {% endif %}
                         {% elif match.is_started %}
                         <span class="badge rounded-pill bg-primary">{% translate 'playing' %}</span>
                         {% elif match.is_finished %}
