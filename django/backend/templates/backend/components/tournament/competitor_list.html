@@ -5,10 +5,10 @@
     <td class="ps-3 align-middle w-75">
         <img src="{{ competitor.get_profile_picture }}" class="avatar-sm rounded-circle" alt="">
         {% if competitor.eliminated %}
-        <span class="px-2 link-dark text-decoration-none text-capitalize">
+        <span class="px-2 link-dark text-decoration-none">
             <del>{{ competitor.get_display_name }}</del></span>
         {% else %}
-        <span class="px-2 link-dark text-decoration-none text-capitalize">
+        <span class="px-2 link-dark text-decoration-none">
             {{ competitor.get_display_name }}</span>
         {% endif %}
     </td>
