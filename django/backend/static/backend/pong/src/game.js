@@ -1,4 +1,5 @@
 import { Model } from './model.js';
+import { View } from './view.js';
 import { View3D } from './3dview.js';
 import { Controller, Human, CPU } from './controller.js';
 
@@ -27,11 +28,11 @@ export class PongGame
         }
         if (mode == "cpu" || mode == "2cpu")
         {
-            this.guest = new CPU(this.controller, "guest", 2);
+            this.guest = new CPU(this.controller, "guest", 0);
         }
         if (mode == "2cpu")
         {
-            this.home = new CPU(this.controller, "home", 2);
+            this.home = new CPU(this.controller, "home", 0);
         }
     }
 
@@ -43,7 +44,7 @@ export class PongGame
     on_loop()
     {
         this.controller.on_loop();
-        //this.view.draw(Date.now());
+        this.view.draw(Date.now());
         window.requestAnimationFrame(this.on_loop.bind(this));
     }
 
