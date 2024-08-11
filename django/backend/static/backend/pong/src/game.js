@@ -1,5 +1,6 @@
 import { Model } from './model.js';
 import { View } from './view.js';
+import { View3D } from './3dview.js';
 import { Controller, Human, CPU } from './controller.js';
 
 
@@ -14,7 +15,7 @@ export class PongGame
             0.15,   // Pad height
             5       // Win condition
         );
-        this.view = new View(this.model);
+        this.view = new View3D(this.model);
         this.controller = new Controller(this.model, this.view, url);
 
         if (mode == "home" || mode == "local" || mode == "cpu")
@@ -27,11 +28,11 @@ export class PongGame
         }
         if (mode == "cpu" || mode == "2cpu")
         {
-            this.guest = new CPU(this.controller, "guest", 2);
+            this.guest = new CPU(this.controller, "guest", 0);
         }
         if (mode == "2cpu")
         {
-            this.home = new CPU(this.controller, "home", 2);
+            this.home = new CPU(this.controller, "home", 0);
         }
     }
 

@@ -1,4 +1,3 @@
-
 import { GameView } from '../../gameview.js';
 
 export class View extends GameView
@@ -32,6 +31,8 @@ export class View extends GameView
         this.guest_score = document.getElementById("guest-score");
         this.home_info = document.getElementById("home-info");
         this.guest_info = document.getElementById("guest-info");
+
+
     }
 
     draw(current_time)
