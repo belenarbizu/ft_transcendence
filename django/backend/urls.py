@@ -33,4 +33,5 @@ urlpatterns = [
     path('login/options/', views.login_options, name="login_options"),
     path('login/', views.login, name="login"),
     path('register/', views.register_view, name="register"),
+    path('match/create/', views.create_match, name="create_match"),
 ]
