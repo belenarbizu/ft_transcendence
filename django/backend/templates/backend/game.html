@@ -3,16 +3,6 @@
 {% load i18n %}
 {% block content %}
 
-<script type="importmap">
-    {
-      "imports": {
-        "three": "/static/threejs/three.module.js",
-        "three/addons/": "/static/threejs/examples/jsm/"
-      }
-    }
-</script>
-
-
 <div class="col">
     <div class="row pt-4">
         <div class="game-frame">        
@@ -92,9 +82,6 @@
 
 </div>
 
-
-
-
-    <game group="ws/game/{{ match.id }}" type="pong" mode="local" />
+<game group="ws/game/{{ match.id }}" type="pong" mode="2cpu" />
 
 {% endblock %}
