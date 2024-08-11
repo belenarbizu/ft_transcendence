@@ -41,6 +41,15 @@
             data-bs-title="{% translate 'View profile of' %} {{ user.username }}"></a>
         <i class="fs-3 bi bi-controller ms-5 text-primary" data-bs-toggle="tooltip"
             data-bs-title="{% translate 'Play with' %} {{ user.username }}"></i>
+        
+        <form spa target=".chat-messages" action="{% url 'backend:create_match' %}" method="POST">
+            {% csrf_token %}
+            <input name="user_id" type="hidden" value="{{ user.id }}" />
+            <input name="game" type="hidden" value="po" />
+            <button type="submit" class="btn btn-link m-0 p-0"><i class="fs-3 bi bi-controller ms-5 text-primary" data-bs-toggle="tooltip"
+                data-bs-title="{% translate 'Play with' %} {{ user.username }}"></i></button>
+        </form>
+
         <form spa action="{% url 'backend:block_user' %}" method="POST">
             {% csrf_token %}
             <input name="username" type="hidden" value="{{ user.username }}" />
