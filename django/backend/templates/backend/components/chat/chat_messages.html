@@ -11,9 +11,18 @@
                 <small class="my-0">
                     {{ message.sender.username }}  {{ message.date }}
                 </small>
+                {% if message.match %}
                 <p class="my-0">
-                    {{ message.message }}
+                {{ message.sender.username }} {% translate 'sent an invitation to play' %}
                 </p>
+                    {% if message.match.is_waiting %}
+                    <a spa hide href="{% url 'backend:game' message.match.id %}">{% translate 'Play' %} {{ message.match.get_game_display }}</a>
+                    {% endif %}
+                {% else %}
+                <p class="my-0">
+                {{ message.message }}
+                </p>
+                {% endif %}
             </div>
         </div>
         <div class="m-2">
@@ -38,9 +47,16 @@
                 <small class="my-0">
                     {{ message.sender.username }}  {{ message.date }}
                 </small>
+                {% if message.match %}
                 <p class="my-0">
-                    {{ message.message }}
+                {{ message.sender.username }} {% translate 'invited you to play' %}
                 </p>
+                <a href="{% url 'backend:game' message.match.id %}">{% translate 'Play' %}</a>
+                {% else %}
+                <p class="my-0">
+                {{ message.message }}
+                </p>
+                {% endif %}
             </div>
         </div>
     </div>

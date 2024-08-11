@@ -392,6 +392,8 @@ def create_match(request):
 	guest_competitor = Competitor.objects.create(user=user)
 	match = Match.objects.create(mode="re",
 		game=game, home=home_competitor, guest=guest_competitor)
+	ChatMessage.objects.send_message(
+		sender=request.user, recipient=user, match=match, message="new match")
 	data = {
 		'messages': ChatMessage.objects.between(user, request.user).ordered(),
 		'user': user,

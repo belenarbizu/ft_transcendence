@@ -214,6 +214,15 @@ class ChatMessage(models.Model):
         verbose_name = _("Message"),
     )
 
+    match = models.ForeignKey(
+        'Match',
+        null = True,
+        blank = True,
+        on_delete = models.CASCADE,
+        verbose_name = _("Game notification"),
+        related_name = "notified_in_messages",
+    )
+
     date = models.DateTimeField(
         auto_now = True,
         verbose_name = _("Date"),
