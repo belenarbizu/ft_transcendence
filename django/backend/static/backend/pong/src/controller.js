@@ -316,9 +316,6 @@ export class CPU
             {
                 this.pad_movement = -1;
             }
-            console.log("Current", current_position);
-            console.log("Target", this.target);
-            console.log("Movement", this.pad_movement);
             this.controller.interface({
                 "player": this.player,
                 "type": "movement",
