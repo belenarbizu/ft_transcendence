@@ -104,6 +104,7 @@ export class Model
             {
                 this.hit = true;
                 this.controller.on_hit();
+                return (1);
             }
             else
             {
