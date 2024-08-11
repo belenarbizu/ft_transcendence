@@ -479,7 +479,7 @@ class Competitor(models.Model):
     
     @property
     def is_practice(self):
-        return self.tournament.is_practice
+        return self.tournament and self.tournament.is_practice
     
     @property
     def get_display_name(self):
