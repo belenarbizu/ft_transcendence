@@ -13,7 +13,7 @@
         {% endif %}
     </td>
     <td>
-        {% if tournament.owner == user and tournament.is_created and tournament.is_practice %}
+        {% if tournament.owner == user and tournament.is_created %}
         <form spa class="form px-1 d-flex justify-content-between align-items-center"
             action="{% url 'backend:tournament_remove_competitor' tournament.id %}" method="POST">
             {% csrf_token %}
