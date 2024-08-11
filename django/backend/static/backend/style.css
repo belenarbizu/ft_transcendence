@@ -159,3 +159,7 @@ html, body {
   top: -25px;
   left: -15%;
 }
+
+.chat-msg-text {
+  word-break: break-all;
+}

@@ -22,11 +22,10 @@ def notify_errors(view):
 			return HttpResponse(str(e), status=409)
 	return decorated_view
 
+@login_required(login_url=reverse_lazy("backend:login_options"))
 def index_view(request):
-	if request.user.is_authenticated:
-		return redirect(reverse("backend:user",
-			kwargs={'username':request.user.username}))
-	return 0
+	return redirect(reverse("backend:user",
+		kwargs={'username':request.user.username}))
 
 @login_required(login_url=reverse_lazy("backend:login_options"))
 def user_view(request, username):
