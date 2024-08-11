@@ -185,19 +185,7 @@ class CustomUser(AbstractUser):
         raise Exception(_("You unblocked ") + user.username)
     
     def set_default_picture(self):
-        pictures = [
-            'profile_defaults/cat.jpg',
-            'profile_defaults/lion.jpg',
-            'profile_defaults/panda.jpg',
-            'profile_defaults/rabbit.jpg',
-            'profile_defaults/rat.jpg',
-            'profile_defaults/dog.jpg',
-            'profile_defaults/otter.jpg',
-            'profile_defaults/fox.jpg',
-            'profile_defaults/koala.jpg',
-            'profile_defaults/white_tiger.jpg',
-        ]
-        self.picture = random.choice(pictures)
+        self.picture = managers.get_default_picture()
         self.save()
 
     @property

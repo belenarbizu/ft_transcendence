@@ -9,6 +9,21 @@ from .consumers import LiveUpdateConsumer
 from django.apps import apps
 import random
 
+def get_default_picture():
+        pictures = [
+            'profile_defaults/cat.jpg',
+            'profile_defaults/lion.jpg',
+            'profile_defaults/panda.jpg',
+            'profile_defaults/rabbit.jpg',
+            'profile_defaults/rat.jpg',
+            'profile_defaults/dog.jpg',
+            'profile_defaults/otter.jpg',
+            'profile_defaults/fox.jpg',
+            'profile_defaults/koala.jpg',
+            'profile_defaults/white_tiger.jpg',
+        ]
+        return random.choice(pictures)
+
 class CustomUserManager(UserManager.from_queryset(querysets.CustomUserQuerySet)):
 
     def create_user(self, *args, **kwargs):
@@ -152,7 +167,7 @@ class CompetitorManager(
 
 	def create(self, *args, **kwargs):
 		competitor = super().create(*args, **kwargs)
-		competitor.picture = default_profile_photo()
+		competitor.picture = get_default_picture()
 		competitor.save()
 		return competitor
 	
