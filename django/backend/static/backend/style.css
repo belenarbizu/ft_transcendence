@@ -155,10 +155,10 @@ html, body {
   margin-top: -10px;
   margin-bottom: -40px;
   border-radius: 15px;
-  width: 30%;
+  width: 60%;
   position: relative;
   top: -25px;
-  left: -15%;
+  left: -30%;
 }
 
 .chat-msg-text {
