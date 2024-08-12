@@ -403,6 +403,17 @@ def create_match(request):
 @require_http_methods(["POST"])
 @login_required(login_url=reverse_lazy("backend:login_options"))
 def remove_match(request):
+	user_id = int(request.POST.get("user_id"))
+	user = CustomUser.objects.get(id=user_id)
 	match_id = request.POST.get("match_id")
 	Match.objects.get(id=match_id).delete()
-	return HttpResponse("", status=204)
+	LiveUpdateConsumer.update_forms(
+		[f"user_{user_id}"],
+		["#chat-refresh"]
+	)
+	data = {
+		'messages': ChatMessage.objects.between(user, request.user).ordered(),
+		'user': user,
+		"online_status": user.see_online_status_as(request.user),
+		}
+	return render(request, "backend/components/chat/chat_messages.html", data)
