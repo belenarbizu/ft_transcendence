@@ -23,7 +23,7 @@
                 </h4>
             </div>
             <img src="{{ match.guest.get_profile_picture }}"
-                class="img-fluid avatar-xxl rounded-circle guest-player-picture" alt="">
+                class="img-fluid avatar-l rounded-circle guest-player-picture" alt="">
             <div class="card h-100 border-0" style="z-index: -1;">
                 <div class="card-body p-3 h-100">
                     <div class="card h-100 border-0" id="threejs-container">
@@ -42,7 +42,7 @@
                     <!-- Home winner -->
                     <span class="m-0 p-0 winner" id="home" style="display: none;">
                         <img src="{{ match.home.get_profile_picture }}"
-                            class="img-fluid avatar-xxl rounded-circle winner-picture" alt="">
+                            class="img-fluid avatar-xl rounded-circle winner-picture" alt="">
                         <div class="card text-center winner-player-info border-0">
                             <h4 class="winner-info text-middle">
                                 {{ match.home.get_display_name }}
@@ -54,7 +54,7 @@
                     <!-- Guest winner -->
                     <span class="m-0 p-0 winner" id="guest" style="display: none;">
                         <img src="{{ match.guest.get_profile_picture }}"
-                            class="img-fluid avatar-xxl rounded-circle winner-picture" alt="">
+                            class="img-fluid avatar-xl rounded-circle winner-picture" alt="">
                         <div class="card text-center winner-player-info border-0">
                             <h4 class="winner-info text-middle">
                                 {{ match.guest.get_display_name }}
@@ -66,7 +66,7 @@
                 </div>
             </div>
             <img src="{{ match.home.get_profile_picture }}"
-                class="img-fluid avatar-xxl rounded-circle home-player-picture" alt="">
+                class="img-fluid avatar-l rounded-circle home-player-picture" alt="">
             <div class="card text-start border-0 home-player-info">
                 <h4 class="player-info" id="home-info">
                     <span class="px-2" id="home-score">0</span>

@@ -12,9 +12,6 @@ html, body {
   right: -10px;
   display: block;
 }
-.avatar-sm {
-  max-width: 2em;
-}
 
 .card-height-sm {
   height: 350px;
@@ -162,4 +159,24 @@ html, body {
 
 .chat-msg-text {
   word-break: break-all;
+}
+
+.avatar-sm {
+  aspect-ratio: 1/1;
+  width: 2em;
+}
+
+.avatar-l {
+  aspect-ratio: 1/1;
+  width: 100px;
+}
+
+.avatar-xl {
+  aspect-ratio: 1/1;
+  width: 200px;
+}
+
+.avatar-xxl {
+  aspect-ratio: 1/1;
+  width: 16em;
 }
