@@ -183,6 +183,10 @@ class CustomUser(AbstractUser):
         if blocked:
             raise Exception(_("You blocked ") + user.username)
         raise Exception(_("You unblocked ") + user.username)
+    
+    def set_default_picture(self):
+        self.picture = managers.get_default_picture()
+        self.save()
 
     @property
     def get_profile_picture(self):
