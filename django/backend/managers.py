@@ -73,32 +73,7 @@ class ChatMessageManager(
 
 class MatchManager(
     models.Manager.from_queryset(querysets.MatchQuerySet)):
-    
-
-    def update_ELO(self, match):
-
-        def elo(a, b, k, result):
-            winner_elo = a if result else b
-            loser_elo = b if result else a
-            elo = int(k / (1 + 10 ** ((winner_elo - loser_elo) / 400)))
-            print (elo)
-            return elo
-        
-        def updated_elo(prev_elo, elo, result):
-            return (prev_elo + elo) if result else max(0, prev_elo - elo)
-
-        if (not match.is_practice and match.is_finished):
-            if (match.game == 'po'):
-                match.elo = elo(match.home.user.pong_elo, match.guest.user.pong_elo, 20, match.winner == match.home)
-                match.home.user.pong_elo = updated_elo(match.home.user.pong_elo, match.elo, match.winner == match.home)
-                match.guest.user.pong_elo = updated_elo(match.guest.user.pong_elo, match.elo, match.winner == match.guest)
-            else:
-                match.elo = elo(match.home.user.pirates_elo, match.guest.user.pirates_elo, 20, match.winner == match.home)
-                match.home.user.pong_elo = updated_elo(match.home.user.pirates_elo, match.elo, match.winner == match.home)
-                match.guest.user.pong_elo = updated_elo(match.guest.user.pirates_elo, match.elo, match.winner == match.guest)
-            match.save()
-            match.home.user.save()
-            match.guest.user.save()
+	pass
         
 
 class TournamentManager(
