@@ -40,6 +40,14 @@
         {% if not request.GET.SPA %}
     </div>
     {% include "backend/components/error_toast.html" %}
+    <script type="importmap">
+        {
+          "imports": {
+            "three": "/static/threejs/three.module.js",
+            "three/addons/": "/static/threejs/examples/jsm/"
+          }
+        }
+    </script>
     <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
     <script src="{% static 'backend/notifications.js' %}"></script>
     <script src="{% static 'backend/websockets.js' %}"></script>
