@@ -23,7 +23,7 @@ function dispose_tooltips() {
 function hide_modals() {
     dispose_tooltips();
     document.querySelectorAll('.modal').forEach(modal => {
-        console.log(modal); let currentModal = bootstrap.Modal.getInstance(modal)
+        let currentModal = bootstrap.Modal.getInstance(modal);
         if (currentModal) currentModal.hide()
     });
 }

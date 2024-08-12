@@ -61,20 +61,38 @@ class ChatMessageQuerySet(models.QuerySet):
 
 class MatchQuerySet(models.QuerySet):
     
+    def losses_of(self, user, game):
+        return self.finished().of_game(game).played_by(user).lost_by(user).count()
+    
+    def wins_of(self, user, game):
+        return self.finished().of_game(game).played_by(user).won_by(user).count()
+
     def as_home(self, user):
-        return self.filter(home = user)
+        return self.filter(home__user = user)
     
     def as_guest(self, user):
-        return self.filter(guest = user)
+        return self.filter(guest__user = user)
     
     def played_by(self, user):
         return self.as_home(user) | self.as_guest(user)
+    
+    def won_by(self, user):
+        return self.filter(winner__user = user)
+    
+    def lost_by(self, user):
+        return self.exclude(winner__user = user)
+    
+    def of_game(self, game):
+        return self.filter(game = game)
     
     def order_by_state(self):
         return self.order_by('-state')
     
     def not_finished(self):
         return self.exclude(state = "fi")
+    
+    def finished(self):
+        return self.filter(state = "fi")
 
 
 class CompetitorQuerySet(models.QuerySet):
