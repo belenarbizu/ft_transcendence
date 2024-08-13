@@ -1,13 +1,11 @@
 from django.db import models
 from . import querysets
 from django.contrib.auth.models import UserManager
-from channels.layers import get_channel_layer
 from django.utils.translation import gettext_lazy as _
-from django.templatetags.static import static
-from asgiref.sync import async_to_sync
 from .consumers import LiveUpdateConsumer
 from django.apps import apps
 import random
+from .exceptions import Notification
 
 def get_default_picture():
         pictures = [
@@ -114,10 +112,10 @@ class TournamentManager(
 	def start_tournament(self, tournament_id, user):
 		tournament = self.get(id = tournament_id)
 		if user != tournament.owner:
-			raise Exception(_("You can't start the tournament"))
+			raise Notification(_("You can't start the tournament"))
 		if tournament.is_created:
 			if len(tournament.competitors.all()) < 3:
-				raise Exception(_("You can't start the tournament with less than 3 competitors"))
+				raise Notification(_("You can't start the tournament with less than 3 competitors"))
 			tournament.state = 'st'
 			LiveUpdateConsumer.reload_page(f"tournament_{tournament.id}")
 			LiveUpdateConsumer.update_forms(
@@ -175,12 +173,12 @@ class CompetitorManager(
 		tournament_aliases = tournament.competitors.values_list('alias', flat = True)
 		tournament_users = tournament.competitors.values_list('user', flat = True)
 		if not tournament.is_created:
-			raise Exception(_("Competitors can't be added once the tournament is started"))
+			raise Notification(_("Competitors can't be added once the tournament is started"))
 		if tournament.is_practice:
 			if alias == "":
-				raise Exception(_("You must choose an alias for this tournament"))
+				raise Notification(_("You must choose an alias for this tournament"))
 			if alias in tournament_aliases:
-				raise Exception(_("The alias is already in use"))
+				raise Notification(_("The alias is already in use"))
 			competitor = self.create(
 				alias = alias,
 				user = user,
@@ -188,7 +186,7 @@ class CompetitorManager(
 			competitor.save()
 		if not tournament.is_practice:
 			if user.id in tournament_users:
-				raise Exception(_("You already joined the tournament"))
+				raise Notification(_("You already joined the tournament"))
 			if alias in tournament_aliases or alias == "":
 				alias = user.username
 			id = 1
@@ -210,9 +208,9 @@ class CompetitorManager(
 		try:
 			competitor = self.get(id = competitor_id)
 		except:
-			raise Exception(_("Competitor not found"))
+			raise Notification(_("Competitor not found"))
 		if not competitor.tournament.is_created:
-			raise Exception(_("Competitors can't be removed once the tournament is started"))
+			raise Notification(_("Competitors can't be removed once the tournament is started"))
 		tournament = competitor.tournament
 		competitor.delete()
 		if tournament:

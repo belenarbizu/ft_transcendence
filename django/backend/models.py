@@ -4,7 +4,7 @@ from django.utils.translation import gettext_lazy as _
 from django.templatetags.static import static
 from . import managers
 from .consumers import *
-import random
+from .exceptions import Notification
 
 GAME_MODE_CHOICES = (
     ("lo", _("Practice (private)")),
@@ -107,16 +107,16 @@ class CustomUser(AbstractUser):
 
     def create_invitation(self, invited):
         if self.username == invited:
-            raise Exception(_("You cannot invite yourself"))
+            raise Notification(_("You cannot invite yourself"))
         if self.invited_by.filter(username = invited).exists():
-            raise Exception(_("The user is already invited"))
+            raise Notification(_("The user is already invited"))
         if self.invited_users.filter(username = invited).exists():
-            raise Exception(_("The user already sent you an invitation"))
+            raise Notification(_("The user already sent you an invitation"))
         invited_user = CustomUser.objects.filter(username = invited).first()
         if not invited_user:
-            raise Exception(_("The user doesn't exist"))
+            raise Notification(_("The user doesn't exist"))
         if self.friends.contains(invited_user):
-            raise Exception(_("The user is already your friend"))
+            raise Notification(_("The user is already your friend"))
         self.invited_by.add(invited_user)
         self.save()
         LiveUpdateConsumer.update_forms(
@@ -131,7 +131,7 @@ class CustomUser(AbstractUser):
     def dismiss_invitation(self, invited):
         invited_user = CustomUser.objects.filter(username = invited).first()
         if not invited_user:
-            raise Exception(_("The user doesn't exist"))
+            raise Notification(_("The user doesn't exist"))
         self.invited_users.remove(invited_user)
         self.save()
         LiveUpdateConsumer.update_forms(
@@ -142,7 +142,7 @@ class CustomUser(AbstractUser):
     def accept_invitation(self, invited):
         invited_user = CustomUser.objects.filter(username = invited).first()
         if not invited_user:
-            raise Exception(_("The user doesn't exist"))
+            raise Notification(_("The user doesn't exist"))
         self.invited_users.remove(invited_user)
         self.friends.add(invited_user)
         self.save()
@@ -158,7 +158,7 @@ class CustomUser(AbstractUser):
     def cancel_invitation(self, invited):
         invited_user = CustomUser.objects.filter(username = invited).first()
         if not invited_user:
-            raise Exception(_("The user doesn't exist"))
+            raise Notification(_("The user doesn't exist"))
         self.invited_by.remove(invited_user)
         self.save()
         LiveUpdateConsumer.update_forms(
@@ -181,8 +181,8 @@ class CustomUser(AbstractUser):
             [f"#chat-refresh", "#user-friends-refresh", "#user-info-refresh"]
                 )
         if blocked:
-            raise Exception(_("You blocked ") + user.username)
-        raise Exception(_("You unblocked ") + user.username)
+            raise Notification(_("You blocked ") + user.username)
+        raise Notification(_("You unblocked ") + user.username)
     
     def set_default_picture(self):
         self.picture = managers.get_default_picture()
