@@ -5,6 +5,7 @@ from django.templatetags.static import static
 from . import managers
 from .consumers import *
 import random
+from django.utils import timezone
 
 GAME_MODE_CHOICES = (
     ("lo", _("Practice (private)")),
@@ -323,6 +324,12 @@ class Match(models.Model):
         verbose_name=_("Guest player joined the match")
     )
 
+    date = models.DateTimeField(
+        null = True,
+        blank = True,
+        verbose_name = _("Date")
+    )
+
     @property
     def is_practice(self):
         return self.mode == "lo"
@@ -355,9 +362,6 @@ class Match(models.Model):
         def updated_elo(prev_elo, elo, result):
             return (prev_elo + elo) if result else max(0, prev_elo - elo)
 
-        print (self.is_practice)
-        print (self.tournament.is_practice)
-        print (self.is_finished)
         if (not self.is_practice) and self.is_finished:
             if (self.game == 'po'):
                 self.elo = elo(self.home.user.pong_elo, self.guest.user.pong_elo, 20, self.winner == self.home)
@@ -376,6 +380,7 @@ class Match(models.Model):
             return
         self.winner = competitor
         self.state = "fi"
+        self.date = timezone.now()
         self.save()
         self.update_ELO()
         layer = get_channel_layer()

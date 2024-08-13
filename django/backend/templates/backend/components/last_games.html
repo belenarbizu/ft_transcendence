@@ -13,25 +13,25 @@
                     <th>{% translate "Result" %}</th>
                 </thead>
                 <tbody>
-                    {% for game in games %}
+                    {% for game in games.finished %}
                     <tr>
-                        {% if game.home.username == user.username %}
-                        <td class="ps-3"><a href="{% url 'backend:user' game.guest %}" spa data-bs-toggle="tooltip" data-bs-title="{% translate 'View the profile of' %} {{ game.home }}" class="link-dark text-decoration-none text-capitalize">{{ game.guest }}</a></td>
-                        <td>{{ game.game }}</td>
+                        {% if game.home.user == user %}
+                        <td class="ps-3"><a href="{% url 'backend:user' game.guest.user.username %}" spa data-bs-toggle="tooltip" data-bs-title="{% translate 'View the profile of' %} {{ game.guest.user.username }}" class="link-dark text-decoration-none text-capitalize">{{ game.guest.user.username }}</a></td>
+                        <td>{{ game.get_game_display }}</td>
                         <td>{{ game.date }}</td>
                         <td>
-                            {% if game.winner.id == user.id %}
+                            {% if game.winner.user == user %}
                             <span class="badge rounded-pill bg-success">{{ game.home_score }} - {{ game.guest_score }}</span>
                             {% else %}
                             <span class="badge rounded-pill bg-danger">{{ game.home_score }} - {{ game.guest_score }}</span>
                             {% endif %}
                         </td>
                         {% else %}
-                        <td class="ps-3"><a href="{% url 'backend:user' game.home %}" spa data-bs-toggle="tooltip" data-bs-title="{% translate 'View the profile of' %} {{ game.home }}" class="link-dark text-decoration-none text-capitalize">{{ game.home }}</a></td>
-                        <td>{{ game.game }}</td>
+                        <td class="ps-3"><a href="{% url 'backend:user' game.home.user.username %}" spa data-bs-toggle="tooltip" data-bs-title="{% translate 'View the profile of' %} {{ game.home.user.username }}" class="link-dark text-decoration-none text-capitalize">{{ game.home.user.username }}</a></td>
+                        <td>{{ game.get_game_display }}</td>
                         <td>{{ game.date }}</td>
                         <td>
-                            {% if game.winner.id == user.id %}
+                            {% if game.winner.user == user %}
                             <span class="badge rounded-pill bg-success">{{ game.home_score }} - {{ game.guest_score }}</span>
                             {% else %}
                             <span class="badge rounded-pill bg-danger">{{ game.home_score }} - {{ game.guest_score }}</span>
