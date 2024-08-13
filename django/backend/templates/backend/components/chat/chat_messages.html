@@ -28,10 +28,11 @@
                     {% else %}
                         {% if request.user == message.match.winner.user %}
                         {% translate 'You won the match' %}
+                        <span class="badge rounded-pill bg-success">{{ message.match.home_score }} - {{ message.match.guest_score }}</span>
                         {% else %}
                         {% translate 'You lost the match' %}
+                        <span class="badge rounded-pill bg-danger">{{ message.match.home_score }} - {{ message.match.guest_score }}</span>
                         {% endif %}
-                    <span class="badge rounded-pill bg-primary">{{ message.match.home_score }} - {{ message.match.guest_score }}</span>
                     {% endif %}
                 {% else %}
                 <p class="my-0">
@@ -79,10 +80,11 @@
                         {% else %}
                             {% if request.user == message.match.winner.user %}
                             {% translate 'You won the match' %}
+                            <span class="badge rounded-pill bg-success">{{ message.match.home_score }} - {{ message.match.guest_score }}</span>
                             {% else %}
                             {% translate 'You lost the match' %}
+                            <span class="badge rounded-pill bg-danger">{{ message.match.home_score }} - {{ message.match.guest_score }}</span>
                             {% endif %}
-                        <span class="badge rounded-pill bg-primary">{{ message.match.home_score }} - {{ message.match.guest_score }}</span>
                         {% endif %}
                 {% else %}
                 <p class="my-0">
