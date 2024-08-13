@@ -52,6 +52,16 @@ def user_view(request, username):
 		"can_invite": user in CustomUser.objects.uninvited_users(request.user, user.username),
 		"sent_invitation": user in request.user.invited_by.all(),
 		"received_invitation": user in request.user.invited_users.all(),
+		"stats": {
+			"pirates": {
+				"losses": Match.objects.losses_of(request.user, "pi"),
+				"wins": Match.objects.wins_of(request.user, "pi")
+			},
+			"pong": {
+				"losses": Match.objects.losses_of(request.user, "po"),
+				"wins": Match.objects.wins_of(request.user, "po")
+			},
+		},
 		"form": EditProfileForm(request.POST, instance=request.user),
 	}
 	return render(request, "backend/index.html", data)
@@ -81,6 +91,16 @@ def user_view_info(request, username):
 		"can_invite": user in CustomUser.objects.uninvited_users(request.user, user.username),
 		"sent_invitation": user in request.user.invited_by.all(),
 		"received_invitation": user in request.user.invited_users.all(),
+		"stats": {
+			"pirates": {
+				"losses": Match.objects.losses_of(user, "pi"),
+				"wins": Match.objects.wins_of(user, "pi")
+			},
+			"pong": {
+				"losses": Match.objects.losses_of(user, "po"),
+				"wins": Match.objects.wins_of(user, "po")
+			},
+		},
 	}
 	return render(request, "backend/components/user_info.html", data)
 
@@ -355,12 +375,14 @@ def create_match(request):
 	user_id = int(request.POST.get("user_id"))
 	user = CustomUser.objects.get(id=user_id)
 	game = request.POST.get("game")
-	home_competitor = Competitor.objects.create(user=request.user)
-	guest_competitor = Competitor.objects.create(user=user)
-	match = Match.objects.create(mode="re",
-		game=game, home=home_competitor, guest=guest_competitor)
-	ChatMessage.objects.send_message(
-		sender=request.user, recipient=user, match=match, message="new match")
+	if not user in request.user.blocked_users.all() \
+		and not request.user in user.blocked_users.all():
+		home_competitor = Competitor.objects.create(user=request.user)
+		guest_competitor = Competitor.objects.create(user=user)
+		match = Match.objects.create(mode="re",
+			game=game, home=home_competitor, guest=guest_competitor)
+		ChatMessage.objects.send_message(
+			sender=request.user, recipient=user, match=match, message="new match")
 	data = {
 		'messages': ChatMessage.objects.between(user, request.user).ordered(),
 		'user': user,

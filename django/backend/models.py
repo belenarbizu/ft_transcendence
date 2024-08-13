@@ -325,7 +325,7 @@ class Match(models.Model):
 
     @property
     def is_practice(self):
-        return self.mode == "pr"
+        return self.mode == "lo"
     
     @property
     def is_single_game(self):
@@ -343,12 +343,41 @@ class Match(models.Model):
     def is_finished(self):
         return self.state == "fi"
     
+    def update_ELO(self):
+
+        def elo(a, b, k, result):
+            winner_elo = a if result else b
+            loser_elo = b if result else a
+            elo = int(k / (1 + 10 ** ((winner_elo - loser_elo) / 400)))
+            print (elo)
+            return elo
+        
+        def updated_elo(prev_elo, elo, result):
+            return (prev_elo + elo) if result else max(0, prev_elo - elo)
+
+        print (self.is_practice)
+        print (self.tournament.is_practice)
+        print (self.is_finished)
+        if (not self.is_practice) and self.is_finished:
+            if (self.game == 'po'):
+                self.elo = elo(self.home.user.pong_elo, self.guest.user.pong_elo, 20, self.winner == self.home)
+                self.home.user.pong_elo = updated_elo(self.home.user.pong_elo, self.elo, self.winner == self.home)
+                self.guest.user.pong_elo = updated_elo(self.guest.user.pong_elo, self.elo, self.winner == self.guest)
+            else:
+                self.elo = elo(self.home.user.pirates_elo, self.guest.user.pirates_elo, 20, self.winner == self.home)
+                self.home.user.pong_elo = updated_elo(self.home.user.pirates_elo, self.elo, self.winner == self.home)
+                self.guest.user.pong_elo = updated_elo(self.guest.user.pirates_elo, self.elo, self.winner == self.guest)
+            self.save()
+            self.home.user.save()
+            self.guest.user.save()
+
     def win(self, competitor):
         if self.is_finished:
             return
         self.winner = competitor
         self.state = "fi"
         self.save()
+        self.update_ELO()
         layer = get_channel_layer()
         if competitor == self.home:
             self.guest.eliminated = True
