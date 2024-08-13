@@ -407,12 +407,14 @@ def create_match(request):
 	user_id = int(request.POST.get("user_id"))
 	user = CustomUser.objects.get(id=user_id)
 	game = request.POST.get("game")
-	home_competitor = Competitor.objects.create(user=request.user)
-	guest_competitor = Competitor.objects.create(user=user)
-	match = Match.objects.create(mode="re",
-		game=game, home=home_competitor, guest=guest_competitor)
-	ChatMessage.objects.send_message(
-		sender=request.user, recipient=user, match=match, message="new match")
+	if not user in request.user.blocked_users.all() \
+		and not request.user in user.blocked_users.all():
+		home_competitor = Competitor.objects.create(user=request.user)
+		guest_competitor = Competitor.objects.create(user=user)
+		match = Match.objects.create(mode="re",
+			game=game, home=home_competitor, guest=guest_competitor)
+		ChatMessage.objects.send_message(
+			sender=request.user, recipient=user, match=match, message="new match")
 	data = {
 		'messages': ChatMessage.objects.between(user, request.user).ordered(),
 		'user': user,
