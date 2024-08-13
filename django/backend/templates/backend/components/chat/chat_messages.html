@@ -17,6 +17,22 @@
                 </p>
                     {% if message.match.is_waiting %}
                     <a spa hide href="{% url 'backend:game' message.match.id %}">{% translate 'Play' %} {{ message.match.get_game_display }}</a>
+                    <form spa target=".chat-messages" action="{% url 'backend:remove_match' %}" method="POST">
+                        {% csrf_token %}
+                        <input name="match_id" type="hidden" value="{{ message.match.id }}" />
+                        <input name="user_id" type="hidden" value="{{ user.id }}" />
+                        <button type="submit" spa class="btn btn-link m-0 p-0"><span class="badge rounded-pill bg-danger">{% translate 'Cancel' %}</span></button>
+                    </form>
+                    {% elif message.match.is_started %}
+                    <span class="badge rounded-pill bg-primary">{% translate 'playing' %}</span>
+                    {% else %}
+                        {% if request.user == message.match.winner.user %}
+                        {% translate 'You won the match' %}
+                        <span class="badge rounded-pill bg-success">{{ message.match.home_score }} - {{ message.match.guest_score }}</span>
+                        {% else %}
+                        {% translate 'You lost the match' %}
+                        <span class="badge rounded-pill bg-danger">{{ message.match.home_score }} - {{ message.match.guest_score }}</span>
+                        {% endif %}
                     {% endif %}
                 {% else %}
                 <p class="my-0">
@@ -49,9 +65,27 @@
                 </small>
                 {% if message.match %}
                 <p class="my-0">
-                {{ message.sender.username }} {% translate 'invited you to play' %}
-                </p>
-                <a href="{% url 'backend:game' message.match.id %}">{% translate 'Play' %}</a>
+                    {{ message.sender.username }} {% translate 'sent an invitation to play' %}
+                    </p>
+                        {% if message.match.is_waiting %}
+                        <a spa hide href="{% url 'backend:game' message.match.id %}">{% translate 'Play' %} {{ message.match.get_game_display }}</a>
+                        <form spa target=".chat-messages" action="{% url 'backend:remove_match' %}" method="POST">
+                            {% csrf_token %}
+                            <input name="match_id" type="hidden" value="{{ message.match.id }}" />
+                            <input name="user_id" type="hidden" value="{{ user.id }}" />
+                            <button type="submit" spa class="btn btn-link m-0 p-0"><span class="badge rounded-pill bg-danger">{% translate 'Cancel' %}</span></button>
+                        </form>
+                        {% elif message.match.is_started %}
+                        <span class="badge rounded-pill bg-primary">{% translate 'playing' %}</span>
+                        {% else %}
+                            {% if request.user == message.match.winner.user %}
+                            {% translate 'You won the match' %}
+                            <span class="badge rounded-pill bg-success">{{ message.match.home_score }} - {{ message.match.guest_score }}</span>
+                            {% else %}
+                            {% translate 'You lost the match' %}
+                            <span class="badge rounded-pill bg-danger">{{ message.match.home_score }} - {{ message.match.guest_score }}</span>
+                            {% endif %}
+                        {% endif %}
                 {% else %}
                 <p class="my-0">
                 {{ message.message }}

@@ -33,4 +33,5 @@ urlpatterns = [
     path('login/', views.login, name="login"),
     path('register/', views.register_view, name="register"),
     path('match/create/', views.create_match, name="create_match"),
+    path('match/remove/', views.remove_match, name="remove_match"),
 ]
