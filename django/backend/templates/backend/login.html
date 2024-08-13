@@ -5,7 +5,7 @@
 <div class="row justify-content-evenly mt-5">
   <div class="col-4"></div>
   <div class="col-12 col-lg-4">
-    <form spa method="post" action="{% url 'backend:login' %}">
+    <form spa push method="post" action="{% url 'backend:login' %}">
         {% csrf_token %}
 
         {% if error %}
