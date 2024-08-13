@@ -140,6 +140,7 @@ class GameConsumer(WebsocketConsumer):
                 async_to_sync(self.channel_layer.group_send)(
                     self.group_name, {'type':'forward', 'data': text_data})
             elif d["type"] == "end":
+                self.game.refresh_from_db()
                 async_to_sync(self.channel_layer.group_send)(
                     self.group_name, {'type':'forward', 'data': text_data})
                 self.game.end(d["winner"])
