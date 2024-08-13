@@ -43,6 +43,16 @@ def user_view(request, username):
 		"can_invite": user in CustomUser.objects.uninvited_users(request.user, user.username),
 		"sent_invitation": user in request.user.invited_by.all(),
 		"received_invitation": user in request.user.invited_users.all(),
+		"stats": {
+			"pirates": {
+				"losses": Match.objects.losses_of(request.user, "pi"),
+				"wins": Match.objects.wins_of(request.user, "pi")
+			},
+			"pong": {
+				"losses": Match.objects.losses_of(request.user, "po"),
+				"wins": Match.objects.wins_of(request.user, "po")
+			},
+		},
 		"form": EditProfileForm(request.POST, instance=request.user),
 	}
 	return render(request, "backend/index.html", data)
@@ -72,6 +82,16 @@ def user_view_info(request, username):
 		"can_invite": user in CustomUser.objects.uninvited_users(request.user, user.username),
 		"sent_invitation": user in request.user.invited_by.all(),
 		"received_invitation": user in request.user.invited_users.all(),
+		"stats": {
+			"pirates": {
+				"losses": Match.objects.losses_of(user, "pi"),
+				"wins": Match.objects.wins_of(user, "pi")
+			},
+			"pong": {
+				"losses": Match.objects.losses_of(user, "po"),
+				"wins": Match.objects.wins_of(user, "po")
+			},
+		},
 	}
 	return render(request, "backend/components/user_info.html", data)
 

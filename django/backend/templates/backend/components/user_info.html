@@ -37,14 +37,14 @@
                     <div class="d-flex">
                         <p>HYPERPONG</p>
                         <div class="d-flex justify-content-center">
-                            <p class="ms-2 fw-bold">5</p><i class="bi bi-trophy-fill ms-2" style="color:green"></i>
-                            <p class="ms-2 fw-bold">5</p><i class="bi bi-hand-thumbs-down-fill ms-2" style="color:red"></i>
+                            <p class="ms-2 fw-bold">{{ stats.pong.wins }}</p><i class="bi bi-trophy-fill ms-2" style="color:green"></i>
+                            <p class="ms-2 fw-bold">{{ stats.pong.losses }}</p><i class="bi bi-hand-thumbs-down-fill ms-2" style="color:red"></i>
                             <p class="ms-2 fw-bold">{{ user.pong_elo }}</p><i class="bi bi-award-fill ms-2" style="color:#007bff"></i>
                         </div>
                         <p class="ms-5">PIRATES REVENGE</p>
                         <div class="d-flex justify-content-center">
-                            <p class="ms-2 fw-bold">5</p><i class="bi bi-trophy-fill ms-2" style="color:green"></i>
-                            <p class="ms-2 fw-bold">5</p><i class="bi bi-hand-thumbs-down-fill ms-2" style="color:red"></i>
+                            <p class="ms-2 fw-bold">{{ stats.pirates.wins }}</p><i class="bi bi-trophy-fill ms-2" style="color:green"></i>
+                            <p class="ms-2 fw-bold">{{ stats.pirates.losses }}</p><i class="bi bi-hand-thumbs-down-fill ms-2" style="color:red"></i>
                             <p class="ms-2 fw-bold">{{ user.pirates_elo }}</p><i class="bi bi-award-fill ms-2" style="color:#007bff"></i>
                         </div>
                     </div>
