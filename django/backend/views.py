@@ -13,13 +13,22 @@ from django.http import JsonResponse
 from .managers import CustomUserManager
 from .forms import RegistrationForm, EditProfileForm
 from .consumers import *
+from .exceptions import Notification
 
-def notify_errors(view):
+def notifier(view):
 	def decorated_view(*args, **kwargs):
 		try:
 			return view(*args, **kwargs)
-		except Exception as e:
+		except Notification as e:
 			return HttpResponse(str(e), status=409)
+	return decorated_view
+
+def login_401(view):
+	@require_http_methods(["POST"])
+	def decorated_view(request, *args, **kwargs):
+		if not request.user.is_authenticated:
+			return HttpResponse("Login required.", status=401)
+		return view(request, *args, **kwargs)
 	return decorated_view
 
 @login_required(login_url=reverse_lazy("backend:login_options"))
@@ -57,8 +66,8 @@ def user_view(request, username):
 	}
 	return render(request, "backend/index.html", data)
 
-@login_required(login_url=reverse_lazy("backend:login_options"))
 @require_http_methods(["POST"])
+@login_401
 def user_view_friends(request, username):
 	user = get_object_or_404(CustomUser, username=username)
 	data = {
@@ -71,8 +80,8 @@ def user_view_friends(request, username):
 	}
 	return render(request, "backend/components/friends/friends.html", data)
 
-@login_required(login_url=reverse_lazy("backend:login_options"))
 @require_http_methods(["POST"])
+@login_401
 def user_view_info(request, username):
 	user = get_object_or_404(CustomUser, username=username)
 	data = {
@@ -96,59 +105,51 @@ def user_view_info(request, username):
 	return render(request, "backend/components/user_info.html", data)
 
 @require_http_methods(["POST"])
-@login_required(login_url=reverse_lazy("backend:login_options"))
+@login_401
+@notifier
 def create_invitation(request):
 	invited_username = request.POST.get("username", "")
 	next = request.POST.get("next", "/")
-	try:
-		request.user.create_invitation(invited_username)
-	except Exception as e:
-		return HttpResponse(str(e), status=409)
+	request.user.create_invitation(invited_username)
 	return redirect(next)
 
 @require_http_methods(["POST"])
-@login_required(login_url=reverse_lazy("backend:login_options"))
-@notify_errors
+@login_401
+@notifier
 def block_user(request):
 	blocked_user = CustomUser.objects.get(
 		username = request.POST.get("username", ""))
 	request.user.block(blocked_user)
 
 @require_http_methods(["POST"])
-@login_required(login_url=reverse_lazy("backend:login_options"))
+@login_401
+@notifier
 def dismiss_invitation(request):
 	invited_username = request.POST.get("username", "")
 	next = request.POST.get("next", "/")
-	try:
-		request.user.dismiss_invitation(invited_username)
-	except Exception as e:
-		return HttpResponse(str(e), status=409)
+	request.user.dismiss_invitation(invited_username)
 	return redirect(next)
 
 @require_http_methods(["POST"])
-@login_required(login_url=reverse_lazy("backend:login_options"))
+@login_401
+@notifier
 def accept_invitation(request):
 	invited_username = request.POST.get("username", "")
 	next = request.POST.get("next", "/")
-	try:
-		request.user.accept_invitation(invited_username)
-	except Exception as e:
-		return HttpResponse(str(e), status=409)
+	request.user.accept_invitation(invited_username)
 	return redirect(next)
 
 @require_http_methods(["POST"])
-@login_required(login_url=reverse_lazy("backend:login_options"))
+@login_401
+@notifier
 def cancel_invitation(request):
 	invited_username = request.POST.get("username", "")
 	next = request.POST.get("next", "/")
-	try:
-		request.user.cancel_invitation(invited_username)
-	except Exception as e:
-		return HttpResponse(str(e), status=409)
+	request.user.cancel_invitation(invited_username)
 	return redirect(next)
 
 @require_http_methods(["POST"])
-@login_required(login_url=reverse_lazy("backend:login_options"))
+@login_401
 def uninvited_users(request):
 	username = request.POST.get('username', '')
 	users = CustomUser.objects.uninvited_users(request.user, username)
@@ -156,7 +157,7 @@ def uninvited_users(request):
 	return render(request, "backend/components/friends/invite_list.html", data)
 
 @require_http_methods(["POST"])
-@login_required(login_url=reverse_lazy("backend:login_options"))
+@login_401
 def chat_messages_form(request):
 	username = request.POST.get('username', '')
 	user = CustomUser.objects.get(username = username)
@@ -168,7 +169,7 @@ def chat_messages_form(request):
 	return render(request, "backend/components/chat/chat_form.html", data)
 
 @require_http_methods(["POST"])
-@login_required(login_url=reverse_lazy("backend:login_options"))
+@login_401
 def send_message(request):
 	user = CustomUser.objects.get(
 		username = request.POST.get('username', '')
@@ -186,7 +187,7 @@ def send_message(request):
 	return render(request, "backend/components/chat/chat_messages.html", data)
 
 @require_http_methods(["POST"])
-@login_required(login_url=reverse_lazy("backend:login_options"))
+@login_401
 def list_messages(request):
 	user = CustomUser.objects.get(
 		username = request.POST.get('username', '')
@@ -212,70 +213,59 @@ def tournament_view(request, tournament_id):
 			tournament).of_user(request.user).first()
 		})
 
-
-@login_required(login_url=reverse_lazy("backend:login_options"))
 @require_http_methods(["POST"])
+@login_401
 def tournament_competitors(request, tournament_id):
 	tournament = get_object_or_404(Tournament, id = tournament_id)
 	return render(request, "backend/components/tournament/competitor_list.html",{
 		"tournament": tournament,
 	})
 
-@login_required(login_url=reverse_lazy("backend:login_options"))
 @require_http_methods(["POST"])
+@login_401
+@notifier
 def tournament_remove_competitor(request, tournament_id):
-	try:
-		Competitor.objects.remove_competitor(request.POST.get("competitor", ""))
-	except Exception as e:
-		return HttpResponse(str(e), status=409)
+	Competitor.objects.remove_competitor(request.POST.get("competitor", ""))
 	return redirect(reverse("backend:tournament",
 		kwargs={'tournament_id':tournament_id}))
 
-@login_required(login_url=reverse_lazy("backend:login_options"))
 @require_http_methods(["POST"])
+@login_401
+@notifier
 def tournament_disqualify_competitor(request, tournament_id):
-	try:
-		comp = Competitor.objects.get(id = request.POST.get("competitor", ""))
-		comp.disqualify()
-	except Exception as e:
-		return HttpResponse(str(e), status=409)
+	comp = Competitor.objects.get(id = request.POST.get("competitor", ""))
+	comp.disqualify()
 	return redirect(reverse("backend:tournament",
 		kwargs={'tournament_id':tournament_id}))
 
-@login_required(login_url=reverse_lazy("backend:login_options"))
 @require_http_methods(["POST"])
+@login_401
+@notifier
 def tournament_register_competitor(request, tournament_id):
 	tournament = get_object_or_404(Tournament, id = tournament_id)
-	try:
-		Competitor.objects.register_competitor(
-			tournament, request.user, request.POST.get("alias", ""))
-	except Exception as e:
-		return HttpResponse(str(e), status=409)
+	Competitor.objects.register_competitor(
+		tournament, request.user, request.POST.get("alias", ""))
 	return redirect(reverse("backend:tournament",
 		kwargs={'tournament_id':tournament_id}))
 
-@login_required(login_url=reverse_lazy("backend:login_options"))
 @require_http_methods(["POST"])
+@login_401
+@notifier
 def tournament_start(request, tournament_id):
-	try:
-		Tournament.objects.start_tournament(tournament_id, request.user)
-	except Exception as e:
-		return HttpResponse(str(e), status=409)
+	Tournament.objects.start_tournament(tournament_id, request.user)
 	return redirect(reverse("backend:tournament",
 		kwargs={'tournament_id':tournament_id}))
 
-@login_required(login_url=reverse_lazy("backend:login_options"))
 @require_http_methods(["POST"])
+@login_401
+@notifier
 def tournament_remove(request, tournament_id):
-	try:
-		tournament = Tournament.objects.get(id = tournament_id)
-		if not request.user == tournament.owner:
-			raise Exception ("Only the owner can remove tournaments.")
-		tournament.delete()
-		LiveUpdateConsumer.update_forms("tournament_list", "#tournament_list_update")
-		LiveUpdateConsumer.reload_page(f"tournament_{tournament_id}")
-	except Exception as e:
-		return HttpResponse(str(e), status=409)
+	tournament = Tournament.objects.get(id = tournament_id)
+	if not request.user == tournament.owner:
+		raise Notification ("Only the owner can remove tournaments.")
+	tournament.delete()
+	LiveUpdateConsumer.update_forms("tournament_list", "#tournament_list_update")
+	LiveUpdateConsumer.reload_page(f"tournament_{tournament_id}")
 	return redirect(reverse("backend:tournament",
 		kwargs={'tournament_id':tournament_id}))
 
@@ -290,8 +280,8 @@ def tournament_list(request):
 	if (request.method == "GET"):
 		return render(request, "backend/tournament_list.html", data)
 
-@login_required(login_url=reverse_lazy("backend:login_options"))
 @require_http_methods(["POST"])
+@login_401
 def tournament_create(request):
 	tournament = Tournament.objects.create(
 		owner = request.user,
@@ -304,36 +294,13 @@ def tournament_create(request):
 	return redirect(reverse("backend:tournament",
 							kwargs = {"tournament_id": tournament.id}))
 
-@login_required(login_url=reverse_lazy("backend:login_options"))
 @require_http_methods(["POST"])
+@login_401
 def tournament_list_update(request):
 	data = {
 		"tournaments": Tournament.objects.visible_to(request.user).filtered(**request.POST),
 	}
 	return render(request, "backend/components/tournament/tournament_list.html", data)
-
-# This view is for development purposes
-@require_http_methods(["POST"])
-def mock_match(request):
-	import random
-	match = get_object_or_404(Match, id = request.POST.get("match_id"))
-	match.winner = random.choice([match.home, match.guest])
-	match.home_score = random.randint(0, 4)
-	match.guest_score = random.randint(0, 4)
-	if match.winner == match.guest:
-		match.guest_score = 5
-		match.home.eliminated = True
-		match.home.save()
-	else:
-		match.home_score = 5
-		match.guest.eliminated = True
-		match.guest.save()
-	match.state = "fi"
-	match.save()
-	Match.objects.update_ELO(match)
-	Tournament.objects.new_round(match.tournament)
-	return redirect(reverse("backend:tournament",
-		kwargs={'tournament_id':match.tournament.id}))
 
 @login_required(login_url=reverse_lazy("backend:login_options"))
 def logout(request):
@@ -377,7 +344,8 @@ def three_demo(request):
 	return render(request, 'backend/three.html', {})
 
 @require_http_methods(["POST"])
-@notify_errors
+@login_401
+@notifier
 def edit_profile(request):
 	next = request.POST.get("next", "/")
 	form = EditProfileForm(request.POST, request.FILES)
@@ -391,7 +359,7 @@ def edit_profile(request):
 			request.user.picture = form.cleaned_data["picture"]
 		request.user.save()
 		return redirect(reverse('backend:user', kwargs={"username":request.user.username}))
-	raise Exception(_("Bad form"))
+	raise Notification(_("Bad form"))
 
 @login_required(login_url=reverse_lazy("backend:login_options"))
 def game_view(request, game_id):
@@ -402,7 +370,7 @@ def game_view(request, game_id):
 	return render(request, 'backend/game.html', {"match": game})
 
 @require_http_methods(["POST"])
-@login_required(login_url=reverse_lazy("backend:login_options"))
+@login_401
 def create_match(request):
 	user_id = int(request.POST.get("user_id"))
 	user = CustomUser.objects.get(id=user_id)
@@ -423,7 +391,7 @@ def create_match(request):
 	return render(request, "backend/components/chat/chat_messages.html", data)
 
 @require_http_methods(["POST"])
-@login_required(login_url=reverse_lazy("backend:login_options"))
+@login_401
 def remove_match(request):
 	match_id = request.POST.get("match_id")
 	Match.objects.get(id=match_id).delete()

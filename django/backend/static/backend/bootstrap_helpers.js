@@ -24,6 +24,13 @@ function hide_modals() {
     dispose_tooltips();
     document.querySelectorAll('.modal').forEach(modal => {
         let currentModal = bootstrap.Modal.getInstance(modal);
-        if (currentModal) currentModal.hide()
+        if (currentModal) {
+            currentModal.hide();
+        }
+    });
+    document.body.classList.remove("modal-open");
+    document.body.removeAttribute('style');
+    document.querySelectorAll(".modal-backdrop").forEach(modal => {
+        modal.remove();
     });
 }
