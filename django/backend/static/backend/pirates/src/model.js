@@ -6,7 +6,7 @@
 /*   By: plopez-b <plopez-b@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/09 22:31:24 by plopez-b          #+#    #+#             */
-/*   Updated: 2024/06/09 22:31:24 by plopez-b         ###   ########.fr       */
+/*   Updated: 2024/08/14 01:22:30 by plopez-b         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,6 +70,11 @@ export class ShipModel extends EventDispatcher
         }
         this.dispatchEvent({type: 'good_location', ship: this});
         return true;
+    }
+
+    hide()
+    {
+        this.dispatchEvent({type: 'hide', ship: this});
     }
 
     get_occupied_cells()
@@ -304,6 +309,11 @@ export class GridModel extends EventDispatcher
         return null;
     }
 
+    hide_ships()
+    {
+        this.ships.forEach((ship) => ship.hide());
+    }
+
 }
 
 
@@ -359,6 +369,12 @@ export class GameModel extends EventDispatcher
     ev_()
     {
         this.dispatchEvent('hola', "Hellooo");
+    }
+
+    hide_ships()
+    {
+        this.home_grid.hide_ships();
+        this.guest_grid.hide_ships();
     }
 
     is_terminal()

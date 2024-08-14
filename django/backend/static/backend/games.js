@@ -5,14 +5,24 @@ class GameManager{
     constructor(){
         this.games = {};
         import("./pong/src/game.js").then(
-            this.load_pong_game.bind(this)
-            )
-        this.loaded = false;
+            this.set_pong_loaded.bind(this)
+        )
+        import ("./pirates/src/game.js").then(
+            this.set_pirates_loaded.bind(this)
+        )
+        this.pong_loaded = false;
+        this.pirates_loaded = false;
     }
 
-    load_pong_game()
+    set_pong_loaded()
     {
-        this.loaded = true;
+        this.pong_loaded = true;
+        this.update_games();
+    }
+
+    set_pirates_loaded()
+    {
+        this.pirates_loaded = true;
         this.update_games();
     }
 
@@ -22,7 +32,7 @@ class GameManager{
     }
 
     create_games(){
-        if (!this.loaded)
+        if (!this.pong_loaded)
         {
             return;
         }
@@ -33,13 +43,16 @@ class GameManager{
             var type = socket_element.getAttribute("type");
             var mode = socket_element.getAttribute("mode");
             if (!this.games[group]){
-
-                if (type == "pong")
+                if (type == "po" && this.pong_loaded)
                 {
                     this.games[group] = new PongGame(mode, url);
                     this.games[group].start();
                 }
-
+                if (type == "pr" && this.pirates_loaded)
+                {
+                    this.games[group] = new PiratesGame(mode, url);
+                    this.games[group].start();
+                }
             }
         });
     }

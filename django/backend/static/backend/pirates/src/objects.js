@@ -6,7 +6,7 @@
 /*   By: plopez-b <plopez-b@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 00:46:06 by plopez-b          #+#    #+#             */
-/*   Updated: 2024/06/10 00:46:06 by plopez-b         ###   ########.fr       */
+/*   Updated: 2024/08/14 01:20:00 by plopez-b         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,6 +120,8 @@ export class PlayerGrid extends THREE.Object3D
             'locate', (o) => ship.on_locate(o));
         event.ship.addEventListener(
             'sunk', (o) => ship.on_sunk(o));
+        event.ship.addEventListener(
+            'hide', (o) => ship.on_hide(o));
     }
 
     on_hit(event)
@@ -258,6 +260,11 @@ export class Ship extends THREE.Object3D
                 o.material = this.death_material;
             }
         });
+    }
+
+    on_hide(event)
+    {
+        this.visible = false;
     }
 
     set_default_material()

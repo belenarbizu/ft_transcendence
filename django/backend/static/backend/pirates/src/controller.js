@@ -6,7 +6,7 @@
 /*   By: plopez-b <plopez-b@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 00:49:29 by plopez-b          #+#    #+#             */
-/*   Updated: 2024/06/10 00:49:29 by plopez-b         ###   ########.fr       */
+/*   Updated: 2024/08/14 02:05:14 by plopez-b         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,8 +74,8 @@ export class LocalController extends StateController
     {
         super(model);
         this.player = player;
-        this.place_controller = new ShipPlaceController(this.model, player);
-        this.shoot_controller = new ShootController(this.model, player);
+        this.place_controller = new ShipPlaceController(this.model, view, player);
+        this.shoot_controller = new ShootController(this.model, view, player);
         this.view = view;
         this.view_ready = true;
         
@@ -83,7 +83,7 @@ export class LocalController extends StateController
         this.mouse.addEventListener(
             'hover_enter', (o) => this.on_hover_enter(o));
         this.mouse.addEventListener(
-            'hover_leave', (o) => this.on_hover_leave(o));
+            'hover_leave', (o) => this.on_hover_leave(o)); 
         this.mouse.addEventListener(
             'left_click', (o) => this.on_left_click(o));
         this.mouse.addEventListener(
@@ -124,10 +124,11 @@ export class LocalController extends StateController
 class ShipPlaceController extends StateController
 {
 
-    constructor(model, player)
+    constructor(model, view, player)
     {
         super(model);
         this.player = player;
+        this.view = view;
         this.dir = 0;
     }
 
@@ -175,6 +176,10 @@ class ShipPlaceController extends StateController
             {
                 ship.move(event.cell.value[0], event.cell.value[1], this.dir);
                 ship.set_location();
+                if (grid.is_ready())
+                {
+                    this.model.hide_ships();
+                }
                 return;
             }
         }
@@ -195,6 +200,8 @@ class ShipPlaceController extends StateController
                 return;
             }
         }
+
+        
     }
 
 }
