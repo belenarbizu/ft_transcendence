@@ -2,17 +2,34 @@
 
 <div class="card card-height-sm">
         <h4 class="card-header bg-white">
-            <div class="p-2">{% translate "Last games" %}</div>
+            <div class="p-2">{% translate "Games" %}</div>
         </h4>
         <div class="card-body table-responsive p-0">
             <table class="table table-borderless table-striped">
-                <thead style="position: sticky; top: 0; background-color: white;">
-                    <th class="ps-3">{% translate "Opponent" %}</th>
-                    <th>{% translate "Game" %}</th>
-                    <th>{% translate "Date" %}</th>
-                    <th>{% translate "Result" %}</th>
-                </thead>
                 <tbody>
+                    {% for game in games.waiting %}
+                    <tr>
+                        {% if game.home.user == user %}
+                        <td class="ps-3"><a href="{% url 'backend:user' game.guest.user.username %}" spa data-bs-toggle="tooltip" data-bs-title="{% translate 'View the profile of' %} {{ game.guest.user.username }}" class="link-dark text-decoration-none text-capitalize">{{ game.guest.user.username }}</a></td>
+                        <td>{{ game.get_game_display }}</td>
+                        <td>
+                            <button class="btn btn-primary">{% translate 'Play' %}</button>
+                        </td>
+                        <td>
+                            <button class="btn btn-primary">{% translate 'Cancel' %}</button>
+                        </td>
+                        {% else %}
+                        <td class="ps-3"><a href="{% url 'backend:user' game.home.user.username %}" spa data-bs-toggle="tooltip" data-bs-title="{% translate 'View the profile of' %} {{ game.home.user.username }}" class="link-dark text-decoration-none text-capitalize">{{ game.home.user.username }}</a></td>
+                        <td>{{ game.get_game_display }}</td>
+                        <td>
+                            <button class="btn btn-primary">{% translate 'Play' %}</button>
+                        </td>
+                        <td>
+                            <button class="btn btn-primary">{% translate 'Cancel' %}</button>
+                        </td>
+                        {% endif %}
+                    </tr>
+                    {% endfor %}
                     {% for game in games.finished %}
                     <tr>
                         {% if game.home.user == user %}

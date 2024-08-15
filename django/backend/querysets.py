@@ -93,6 +93,9 @@ class MatchQuerySet(models.QuerySet):
     
     def finished(self):
         return self.filter(state = "fi")
+    
+    def waiting(self):
+        return self.filter(state = "wa")
 
 
 class CompetitorQuerySet(models.QuerySet):
