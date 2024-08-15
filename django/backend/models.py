@@ -355,9 +355,6 @@ class Match(models.Model):
         def updated_elo(prev_elo, elo, result):
             return (prev_elo + elo) if result else max(0, prev_elo - elo)
 
-        print (self.is_practice)
-        print (self.tournament.is_practice)
-        print (self.is_finished)
         if (not self.is_practice) and self.is_finished:
             if (self.game == 'po'):
                 self.elo = elo(self.home.user.pong_elo, self.guest.user.pong_elo, 20, self.winner == self.home)
