@@ -8,32 +8,23 @@
                     <div class="nav-item pe-3">
                         <a spa class="link-dark text-decoration-none" href="{% if request.user.is_authenticated %}{% url 'backend:user' request.user.username %}{% endif %}">{{ request.user.username }}</a>
                     </div>
-                    <div class="nav-item">
                         {% if request.user.is_authenticated %}
+                    <div class="nav-item">
                         <button class="btn btn-dark mx-1" data-bs-toggle="modal" data-bs-target="#playModal">{% translate 'Play' %}</button>
-                        {% endif %}
                     </div>
                     <div class="nav-item pe-3">
-                        {% if request.user.is_authenticated %}
                         <form spa push action="{% url 'backend:logout' %}" method="POST">
                             {% csrf_token %}
                             <input type="hidden" name="next" value="{{ request.url }}" />
                             <button class="btn btn-dark mx-1" type="submit">{% translate 'Logout' %}</button>
                         </form>
-                        {% endif %}
                     </div>
                     <div class="nav-item pe-3">
                         <a spa class="link-dark" href="{% url 'backend:tournament_list' %}">
                             {% translate 'Tournaments' %}
                         </a>
                     </div>
-                    <div class="nav-item">
-                        {% if not request.user.is_authenticated %}
-                        <form spa push action="{% url 'backend:login_options' %}" method="GET">
-                            <button class="btn btn-dark" type="submit">{% translate 'Login' %}</button>
-                        </form>
                         {% endif %}
-                    </div>
                     {% include "backend/components/language_switch.html" %}
                 </div>
         </div>

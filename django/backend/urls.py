@@ -25,7 +25,6 @@ urlpatterns = [
     path('tournament/list/', views.tournament_list, name="tournament_list"),
     path('tournament/list/update', views.tournament_list_update, name="tournament_list_update"),
     path('tournament/create/', views.tournament_create, name="tournament_create"),
-    path('match/mock/', views.mock_match, name="match_mock"),
     path('three/', views.three_demo, name="three"),
     path('edit_profile/', views.edit_profile, name="edit_profile"),
     path('game/<int:game_id>/', views.game_view, name="game"),
@@ -34,4 +33,5 @@ urlpatterns = [
     path('login/', views.login, name="login"),
     path('register/', views.register_view, name="register"),
     path('match/create/', views.create_match, name="create_match"),
+    path('match/remove/', views.remove_match, name="remove_match"),
 ]

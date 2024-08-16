@@ -177,9 +177,17 @@ function handle_response(response, target, push, hide) {
             start_spa();
         })
     }
-    else {
+    else if (response.status == 401) {
+        get_request(window.location.href, "#wrapper", true, true);
+    }
+    else if (response.status == 409){
         response.text().then(partHtml => {
             show_notification(partHtml);
+        })
+    }
+    else {
+        response.text().then(partHtml => {
+            document.documentElement.innerHTML = partHtml;
         })
     }
 }
