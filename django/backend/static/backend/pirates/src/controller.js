@@ -6,7 +6,7 @@
 /*   By: plopez-b <plopez-b@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 00:49:29 by plopez-b          #+#    #+#             */
-/*   Updated: 2024/08/14 02:05:14 by plopez-b         ###   ########.fr       */
+/*   Updated: 2024/08/16 04:43:21 by plopez-b         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,8 +74,8 @@ export class LocalController extends StateController
     {
         super(model);
         this.player = player;
-        this.place_controller = new ShipPlaceController(this.model, view, player);
-        this.shoot_controller = new ShootController(this.model, view, player);
+        this.place_controller = new ShipPlaceController(this.model, player);
+        this.shoot_controller = new ShootController(this.model, player);
         this.view = view;
         this.view_ready = true;
         
@@ -83,7 +83,7 @@ export class LocalController extends StateController
         this.mouse.addEventListener(
             'hover_enter', (o) => this.on_hover_enter(o));
         this.mouse.addEventListener(
-            'hover_leave', (o) => this.on_hover_leave(o)); 
+            'hover_leave', (o) => this.on_hover_leave(o));
         this.mouse.addEventListener(
             'left_click', (o) => this.on_left_click(o));
         this.mouse.addEventListener(
@@ -96,14 +96,11 @@ export class LocalController extends StateController
 
     get_controller()
     {
-        let grid = this.model.get_player_grid(this.player);
-
-        if (this.model.player != this.player
-            || this.view_ready == false)
+        if (this.model.state["player"] != this.player)
         {
-            return null;
+            return (null);
         }
-        if (grid.is_ready())
+        if (this.model.all_ships_placed(this.player))
         {
             return this.shoot_controller;
         }
@@ -124,65 +121,60 @@ export class LocalController extends StateController
 class ShipPlaceController extends StateController
 {
 
-    constructor(model, view, player)
+    constructor(model, player)
     {
         super(model);
         this.player = player;
-        this.view = view;
-        this.dir = 0;
+        this.dir = "horizontal";
     }
 
     on_hover_enter(event)
     {
-        let grid = this.model.get_player_grid(this.player);
-        let ship;
-
-        for (let i = 0; i < grid.ships.length; i++)
+        var x = event.cell.value[0];
+        var y = event.cell.value[1];
+        var ship = this.model.next_ship_to_place(this.player);
+        if (ship != null)
         {
-            ship = grid.ships[i];
-            if (!ship.has_definitive_location())
-            {
-                ship.move(event.cell.value[0], event.cell.value[1], this.dir);
-                return;
-            }
+            this.model.update_model({
+                "type": "preview",
+                "player": this.player,
+                "x": x,
+                "y": y,
+                "ship": this.model.next_ship_to_place(this.player),
+                "direction": this.dir
+            });
         }
+        
     }
 
     on_hover_leave(event)
     {
-        let grid = this.model.get_player_grid(this.player);
-        let ship;
-
-        for (let i = 0; i < grid.ships.length; i++)
+        var ship = this.model.next_ship_to_place(this.player);
+        if (ship != null)
         {
-            ship = grid.ships[i];
-            if (!ship.has_definitive_location())
-            {
-                ship.move(-1, -1, this.dir);
-                return;
-            }
+            this.model.update_model({
+                "type": "hide",
+                "player": this.player,
+                "x": -1,
+                "y": -1,
+                "ship": this.model.next_ship_to_place(this.player),
+                "direction": this.dir
+            });
         }
     }
 
     on_left_click(event)
     {
-        let grid = this.model.get_player_grid(this.player);
-        let ship;
-
-        for (let i = 0; i < grid.ships.length; i++)
-        {
-            ship = grid.ships[i];
-            if (!ship.has_definitive_location())
-            {
-                ship.move(event.cell.value[0], event.cell.value[1], this.dir);
-                ship.set_location();
-                if (grid.is_ready())
-                {
-                    this.model.hide_ships();
-                }
-                return;
-            }
-        }
+        var x = event.cell.value[0];
+        var y = event.cell.value[1];
+        this.model.update_model({
+            "type": "placement",
+            "player": this.player,
+            "x": x,
+            "y": y,
+            "ship": this.model.next_ship_to_place(this.player),
+            "direction": this.dir
+        });
     }
 
     on_right_click(event)
@@ -200,8 +192,6 @@ class ShipPlaceController extends StateController
                 return;
             }
         }
-
-        
     }
 
 }
@@ -227,10 +217,15 @@ class ShootController extends StateController
 
     on_left_click(event)
     {
-        event.cell.material = event.cell.default_material;
-        let grid = this.model.get_player_grid(this.player);
-        let cell = event.cell.value;
-        this.model.move(cell[0], cell[1]);
+        if (event.cell != null)
+        {
+            var x = event.cell.value[0];
+            var y = event.cell.value[1];
+            event.cell.material = event.cell.default_material;
+            this.model.update_model(
+                this.model.check_shot(this.player, x, y)
+            );
+        }
     }
 
 }

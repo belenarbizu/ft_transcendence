@@ -6,7 +6,7 @@
 /*   By: plopez-b <plopez-b@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/09 22:31:24 by plopez-b          #+#    #+#             */
-/*   Updated: 2024/08/14 01:22:30 by plopez-b         ###   ########.fr       */
+/*   Updated: 2024/08/15 15:19:53 by plopez-b         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -144,7 +144,7 @@ export class ShipModel extends EventDispatcher
         this.z_position = z;
         this.direction = direction;
         this.touched_cells = this.get_occupied_cells();
-        this.set_location();
+        this.dispatchEvent({type: 'sunk', target: this});
     }
 
     overlaps(ship)
@@ -273,6 +273,29 @@ export class GridModel extends EventDispatcher
         this.dispatchEvent({type: 'miss', cell: [x, z]})
     }
 
+    set_hit(x, z)
+    {
+        this.dispatchEvent({type: 'hit', cell: [x, z]});
+    }
+
+    set_miss(x, z)
+    {
+        this.dispatchEvent({type: 'miss', cell: [x, z]});
+    }
+
+    set_sunk(x, z, length, direction)
+    {
+        for (let i = 0; i < this.ships.length; i++)
+        {
+            var ship = this.ships[i];
+            if (ship.length == length && !ship.has_definitive_location())
+            {
+                ship.set_sunk_location(x, z, direction)
+                return;
+            }
+        }
+    }
+
     is_touched_at(x, z)
     {
         for (let i = 0; i < this.ships.length; i++)
@@ -283,6 +306,12 @@ export class GridModel extends EventDispatcher
             }
         }
         return false;
+    }
+
+    is_sunk_at(x, z)
+    {
+        var ship = this.ship_at(x, z);
+        return (ship != null && ship.is_sunk());
     }
 
     ships_sunk()
@@ -346,7 +375,7 @@ export class GameModel extends EventDispatcher
 
     get_player_grid(player)
     {
-        if (player == 1)
+        if (player == "home")
         {
             return this.home_grid;
         }
@@ -394,6 +423,15 @@ export class GameModel extends EventDispatcher
         let target_grid = this.get_player_grid(this.player);
         target_grid.touch(x, z);
         this.change_player();
+    }
+
+    get_opponent(player)
+    {
+        if (player == "home")
+        {
+            return ("guest");
+        } 
+        return ("home");
     }
 
 }

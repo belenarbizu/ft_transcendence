@@ -1,6 +1,7 @@
 
+import * as THREE from 'three';
 
-export class GameView
+export class GameView extends THREE.EventDispatcher
 {
 
     set_winner(player)

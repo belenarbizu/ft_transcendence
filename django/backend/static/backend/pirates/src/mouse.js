@@ -6,7 +6,7 @@
 /*   By: plopez-b <plopez-b@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 02:35:23 by plopez-b          #+#    #+#             */
-/*   Updated: 2024/08/06 03:07:34 by plopez-b         ###   ########.fr       */
+/*   Updated: 2024/08/16 03:12:46 by plopez-b         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,6 @@ export class Mouse extends EventDispatcher
 
     on_left_click(event)
     {
-        event.preventDefault();
         this.dispatchEvent({
             type: 'left_click', cell: this.selected_cell});
         this.on_mouse_move(event);

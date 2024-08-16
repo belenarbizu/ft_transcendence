@@ -6,7 +6,7 @@
 /*   By: plopez-b <plopez-b@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 00:46:06 by plopez-b          #+#    #+#             */
-/*   Updated: 2024/08/14 01:20:00 by plopez-b         ###   ########.fr       */
+/*   Updated: 2024/08/16 04:13:49 by plopez-b         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,9 +15,12 @@ import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 
 export class GridCell extends THREE.Object3D
 {
-    constructor(x, z)
+    constructor(x, z, model, player)
     {
         super();
+
+        this.model = model;
+        this.player = player;
 
         this.line_material = new THREE.LineBasicMaterial({color: 0x505050});
 
@@ -30,6 +33,16 @@ export class GridCell extends THREE.Object3D
             { color: 0x7fffff, side: THREE.DoubleSide });
         this.hover_material.opacity = 0.3;
         this.hover_material.transparent = true;
+
+        this.hit_material = new THREE.MeshPhongMaterial(
+            { color: 0xff0000, side: THREE.DoubleSide });
+        this.hit_material.opacity = 0.3;
+        this.hit_material.transparent = true;
+
+        this.miss_material = new THREE.MeshPhongMaterial(
+            { color: 0xffffff, side: THREE.DoubleSide });
+        this.miss_material.opacity = 0.3;
+        this.miss_material.transparent = true;
 
         let shape = new THREE.Shape()
             .moveTo( -0.5, -0.5 )
@@ -60,6 +73,26 @@ export class GridCell extends THREE.Object3D
         line.rotation.set(Math.PI / 2, 0, 0);
         this.add(line);
     }
+
+    update_view()
+    {
+        var cells = this.model.state[this.player]["grid"];
+        var cell = cells[this.value[0]][this.value[1]];
+        if (cell != 0)
+        {
+            console.log(cell);
+        }
+        if (cell == "miss")
+        {
+            this.mesh.default_material = this.miss_material;
+            this.mesh.material = this.mesh.default_material;
+        }
+        if (cell == "hit")
+        {
+            this.mesh.default_material = this.hit_material;
+            this.mesh.material = this.mesh.default_material;
+        }
+    }
 }
 
 function ship_factory(length)
@@ -80,23 +113,28 @@ function ship_factory(length)
 
 export class PlayerGrid extends THREE.Object3D
 {
-    constructor(x_width, z_width)
+    constructor(model, player)
     {
         super();
         this.cells = [];
         this.ships = [];
+        this.cell_objects = [];
+
+        this.model = model;
+        this.player = player;
 
         this.group = new THREE.Group();
         this.group.position.set(
-            -(x_width / 2 - 0.5), 0, -(z_width / 2 - 0.5));
+            -(6 / 2 - 0.5), 0, -(6 / 2 - 0.5));
         super.add(this.group);
             
-        for (let x_ = 0; x_ < x_width; x_++)
+        for (let x_ = 0; x_ < 6; x_++)
         {
-            for (let z_ = 0; z_ < z_width; z_++)
+            for (let z_ = 0; z_ < 6; z_++)
             {
-                let cell = new GridCell(x_, z_);
-                cell.position.set(x_, 0, z_);
+                let cell = new GridCell(x_, z_, this.model, this.player);
+                this.cell_objects.push(cell);
+                cell.position.set(z_, 0, x_);
                 this.cells.push(cell.mesh);
                 this.add(cell);
             }
@@ -162,14 +200,25 @@ export class PlayerGrid extends THREE.Object3D
     {
         this.group.add(object);
     }
+
+    update_view()
+    {
+        for (let i = 0; i < this.cell_objects.length; i++)
+        {
+            this.cell_objects[i].update_view();
+        }
+    }
 }
 
 export class Ship extends THREE.Object3D
 {
-    constructor(file, length, x, y, z)
+    constructor(file, player, ship, x, y, z, model)
     {
         super();
-        this.length = length;
+        this.length = 0;
+        this.player = player;
+        this.ship = ship;
+        this.model = model;
 
         this.group = new THREE.Group();
         this.add(this.group);
@@ -204,7 +253,63 @@ export class Ship extends THREE.Object3D
             }
         );
 
-        this.visible = false;
+        this.visible = true;
+    }
+
+    update_view()
+    {
+        var ship = this.model.state[this.player]["ships"][this.ship];
+        var direction = ship["direction"] == "horizontal" ? 1 : 0;
+        this.position.set(
+            this.model.state[this.player]["ships"][this.ship]["y"],
+            0,
+            this.model.state[this.player]["ships"][this.ship]["x"]
+        );
+        this.rotation.set(0, direction * Math.PI / 2, 0);
+        if (ship["state"] == "invisible")
+        {
+            this.visible = false;
+        }
+        else if (ship["state"] == "placed")
+        {
+            this.visible = true;
+            this.traverse((o) => {
+                if (o.isMesh)
+                {
+                    o.material = o.default_material;
+                }
+            })
+        }
+        else if (ship["state"] == "sunk")
+        {
+            this.visible = true;
+            this.traverse((o) => {
+                if (o.isMesh)
+                {
+                    o.material = this.death_material;
+                }
+            });
+        }
+        else if (ship["state"] == "valid")
+        {
+            this.visible = true;
+            this.traverse((o) => {
+                if (o.isMesh)
+                {
+                    o.material = this.hover_material;
+                }
+            });
+        }
+        else if (ship["state"] == "invalid")
+        {
+            this.visible = true;
+            this.traverse((o) => {
+                if (o.isMesh)
+                {
+                    o.material = this.overlap_material;
+                }
+            });
+        }
     }
 
     on_good_location(event)
@@ -234,7 +339,7 @@ export class Ship extends THREE.Object3D
         this.visible = false;
     }
 
-    on_move(event)
+    on_move()
     {
         this.position.set(event.ship.x_position, 0, event.ship.z_position);
         this.rotation.set(0, event.ship.direction * Math.PI / 2, 0);
