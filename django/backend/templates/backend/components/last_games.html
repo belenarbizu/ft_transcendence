@@ -7,13 +7,15 @@
         <div class="card-body table-responsive p-0">
             <table class="table table-borderless table-striped">
                 <tbody>
+                    {% if request.user.username == user.username %}
                     {% for game in games.waiting %}
+                    {% if not game.is_practice %}
                     <tr>
                         {% if game.home.user == user %}
                         <td class="ps-3"><a href="{% url 'backend:user' game.guest.user.username %}" spa data-bs-toggle="tooltip" data-bs-title="{% translate 'View the profile of' %} {{ game.guest.user.username }}" class="link-dark text-decoration-none text-capitalize">{{ game.guest.user.username }}</a></td>
                         <td>{{ game.get_game_display }}</td>
                         <td>
-                            <button class="btn btn-primary">{% translate 'Play' %}</button>
+                            <a spa hide href="{% url 'backend:game' game.id %}">{% translate 'Play' %}</a>
                         </td>
                         <td>
                             <button class="btn btn-primary">{% translate 'Cancel' %}</button>
@@ -22,14 +24,17 @@
                         <td class="ps-3"><a href="{% url 'backend:user' game.home.user.username %}" spa data-bs-toggle="tooltip" data-bs-title="{% translate 'View the profile of' %} {{ game.home.user.username }}" class="link-dark text-decoration-none text-capitalize">{{ game.home.user.username }}</a></td>
                         <td>{{ game.get_game_display }}</td>
                         <td>
-                            <button class="btn btn-primary">{% translate 'Play' %}</button>
+                            <a spa hide href="{% url 'backend:game' game.id %}">{% translate 'Play' %}</a>
                         </td>
                         <td>
                             <button class="btn btn-primary">{% translate 'Cancel' %}</button>
                         </td>
                         {% endif %}
                     </tr>
+                    {% endif %}
                     {% endfor %}
+                    {% endif %}
+
                     {% for game in games.finished %}
                     <tr>
                         {% if game.home.user == user %}
