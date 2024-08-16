@@ -4,6 +4,8 @@ from django.utils.translation import gettext_lazy as _
 from django.templatetags.static import static
 from . import managers
 from .consumers import *
+import random
+from django.utils import timezone
 from .exceptions import Notification
 
 GAME_MODE_CHOICES = (
@@ -323,6 +325,12 @@ class Match(models.Model):
         verbose_name=_("Guest player joined the match")
     )
 
+    date = models.DateTimeField(
+        null = True,
+        blank = True,
+        verbose_name = _("Date")
+    )
+
     @property
     def is_practice(self):
         return self.mode == "lo"
@@ -373,6 +381,7 @@ class Match(models.Model):
             return
         self.winner = competitor
         self.state = "fi"
+        self.date = timezone.now()
         self.save()
         self.update_ELO()
         layer = get_channel_layer()

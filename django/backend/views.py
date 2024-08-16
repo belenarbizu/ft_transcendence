@@ -46,7 +46,7 @@ def user_view(request, username):
 			"invitations": user.invited_users.all(),
 			"accepted": CustomUser.objects.friend_of(user),
 		},
-		"games": [],
+		"games": Match.objects.played_by(user),
 		"is_blocked": user in request.user.blocked_users.all(),
 		"online_status": user.see_online_status_as(request.user),
 		"can_invite": user in CustomUser.objects.uninvited_users(request.user, user.username),
