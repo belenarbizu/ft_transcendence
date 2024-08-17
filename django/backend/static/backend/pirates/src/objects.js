@@ -6,7 +6,7 @@
 /*   By: plopez-b <plopez-b@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 00:46:06 by plopez-b          #+#    #+#             */
-/*   Updated: 2024/08/16 04:13:49 by plopez-b         ###   ########.fr       */
+/*   Updated: 2024/08/17 06:14:00 by plopez-b         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,10 +78,6 @@ export class GridCell extends THREE.Object3D
     {
         var cells = this.model.state[this.player]["grid"];
         var cell = cells[this.value[0]][this.value[1]];
-        if (cell != 0)
-        {
-            console.log(cell);
-        }
         if (cell == "miss")
         {
             this.mesh.default_material = this.miss_material;
@@ -407,7 +403,7 @@ export class SkyBox extends THREE.Object3D
     }
 }
 
-export class Hit extends THREE.Object3D
+export class Asteroid extends THREE.Object3D
 {
     constructor(x, y, z)
     {
@@ -425,6 +421,7 @@ export class Hit extends THREE.Object3D
                         _this.add(gltf.scene);
                         _this.animations = gltf.animations;
                         _this.scene = gltf.scene;
+                        console.log(_this.animations);
                         o.position.set(x, y, z);
                     }
                 });
@@ -440,6 +437,8 @@ export class Hit extends THREE.Object3D
         this.mixer = new THREE.AnimationMixer(this.scene);
         const firstAction = this.mixer.clipAction(this.animations[0]);
         const secondAction = this.mixer.clipAction(this.animations[1]);
+        firstAction.timeScale = 2;
+        secondAction.timeScale = 2;
         firstAction.setLoop(THREE.LoopOnce);
         secondAction.setLoop(THREE.LoopOnce);
         firstAction.clampWhenFinished = true;
@@ -454,6 +453,7 @@ export class Hit extends THREE.Object3D
         this.animating = true;
         this.mixer = new THREE.AnimationMixer(this.scene);
         const firstAction = this.mixer.clipAction(this.animations[0]);
+        firstAction.timeScale = 2;
         firstAction.setLoop(THREE.LoopOnce);
         firstAction.clampWhenFinished = true;
         firstAction.play();

@@ -281,13 +281,16 @@ export class Model extends EventDispatcher
             var y = message["y"];
             var ship = message["ship"];
             var direction = message["direction"];
-            this.state[player]["ships"][ship]["direction"] = direction;
-            this.state[player]["ships"][ship]["x"] = x;
-            this.state[player]["ships"][ship]["y"] = y;
-            this.state[player]["ships"][ship]["state"] = "placed";
-            this.state[player]["ships"][ship]["cells"] = this._get_cells(
-                ship, x, y, direction);
-            this.state[player]["ships"][ship]["hit_cells"] = [];
+            if (this.valid_placement(player, ship, x, y, direction))
+            {
+                this.state[player]["ships"][ship]["direction"] = direction;
+                this.state[player]["ships"][ship]["x"] = x;
+                this.state[player]["ships"][ship]["y"] = y;
+                this.state[player]["ships"][ship]["state"] = "placed";
+                this.state[player]["ships"][ship]["cells"] = this._get_cells(
+                    ship, x, y, direction);
+                this.state[player]["ships"][ship]["hit_cells"] = [];
+            }
         }
         else if (message["type"] == "hit")
         {
@@ -301,7 +304,6 @@ export class Model extends EventDispatcher
             {
                 this.state[player]["ships"][ship]["hit_cells"].push([x, y]);
             }
-            this.state["player"] = this.get_opponent(this.state["player"]);
         }
         else if (message["type"] == "miss")
         {
@@ -309,7 +311,6 @@ export class Model extends EventDispatcher
             var x = message["x"];
             var y = message["y"];
             this.state[player]["grid"][x][y] = "miss";
-            this.state["player"] = this.get_opponent(this.state["player"]);
         }
         else if (message["type"] == "sunk")
         {
@@ -330,8 +331,8 @@ export class Model extends EventDispatcher
             {
                 this.state[player]["ships"][ship]["hit_cells"].push([x, y]);
             }
-            this.state["player"] = this.get_opponent(this.state["player"]);
         }
+        this.dispatchEvent({type: 'update', ship: this});
     }
 
 }

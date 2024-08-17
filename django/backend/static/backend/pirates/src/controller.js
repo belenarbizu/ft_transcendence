@@ -6,226 +6,276 @@
 /*   By: plopez-b <plopez-b@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 00:49:29 by plopez-b          #+#    #+#             */
-/*   Updated: 2024/08/16 04:43:21 by plopez-b         ###   ########.fr       */
+/*   Updated: 2024/08/17 06:18:25 by plopez-b         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-import { GameView } from './view.js';
 import { Mouse } from './mouse.js';
+import * as THREE from 'three';
 
-class StateController
+export class Controller
 {
 
-    constructor(model)
+    constructor(model, view, url)
     {
         this.model = model;
+        this.view = view;
+        this.url = url;
+        
+        this.model.controller = this;
+        this.view.controller = this;
+
+        this.players = {
+            "home": null,
+            "guest": null
+        };
+        
+        this.webSocket = new WebSocket(url);
+
+        var controller = this;
+        this.webSocket.onmessage = function (msg) {
+            var data = JSON.parse(msg.data);
+            controller.receiver(data);
+        };
+        this.interface = function (data) {
+            var msg = JSON.stringify(data);
+            this.webSocket.send(msg);
+        };
+        this.place_phase("home");
     }
-
-    get_controller()
+    
+    receiver(message)
     {
-        return null;
-    }
-
-    on_hover_enter(event)
-    {
-        let controller = this.get_controller();
-
-        if (controller != null)
+        if (message["type"] == "placed")
         {
-            this.get_controller().on_hover_enter(event);
+            var opponent = this.model.get_opponent(message["player"]);
+            if (message["player"] == "home")
+            {
+                this.place_phase(opponent);
+            }
+            if (message["player"] == "guest")
+            {
+                this.shot_phase(opponent);
+            }
+        }
+        else if (message["type"] == "shot")
+        {
+            var opponent = this.model.get_opponent(message["player"]);
+            var shot = this.model.check_shot(
+                opponent, message["x"], message["y"]);
+            this.interface(shot);
+        }
+        else if (message["type"] == "hit"
+            || message["type"] == "sunk")
+        {
+            this.activate_controller(null);
+            this.view.hit_animation(
+                message["player"],
+                message["x"],
+                message["y"],
+                "hit").then(function(){
+                    this.model.update_model(message);
+                    this.shot_phase(message["player"]);
+                }.bind(this));
+        }
+        else if (message["type"] == "miss")
+        {
+            this.activate_controller(null);
+            this.view.hit_animation(
+                message["player"],
+                message["x"],
+                message["y"],
+                "miss").then(function(){
+                    this.model.update_model(message);
+                    this.shot_phase(message["player"]);
+                }.bind(this));
         }
     }
 
-    on_hover_leave(event)
+    activate_controller(player)
     {
-        let controller = this.get_controller();
-
-        if (controller != null)
+        if (this.players["home"] != null)
         {
-            this.get_controller().on_hover_leave(event);
+            this.players["home"].is_active = false;
+        }
+        if (this.players["guest"] != null)
+        {
+            this.players["guest"].is_active = false;
+        }
+        if (player == "home" && this.players["home"] != null)
+        {
+            this.players["home"].is_active = true;
+        }
+        if (player == "guest" && this.players["guest"] != null)
+        {
+            this.players["guest"].is_active = true;
         }
     }
 
-    on_left_click(event)
+    place_phase(player)
     {
-        let controller = this.get_controller();
-
-        if (controller != null)
-        {
-            this.get_controller().on_left_click(event);
-        }
+        this.activate_controller(null);
+        this.view.focus_grid(player).then(function(o){
+            var player_controller = this.players[player];
+            this.activate_controller(player);
+            if (player_controller != null)
+            {
+                if (player_controller.mouse != null)
+                {
+                    player_controller.mouse.cells = this.view.get_player_cells(
+                        player);
+                }
+            }
+        }.bind(this));
     }
 
-    on_right_click(event)
+    shot_phase(player)
     {
-        let controller = this.get_controller();
-
-        if (controller != null)
-        {
-            this.get_controller().on_right_click(event);
-        }
+        this.activate_controller(null);
+        var opponent = this.model.get_opponent(player);
+        this.view.focus_grid(opponent).then(function(o){
+            this.activate_controller(player);
+            var player_controller = this.players[player];
+            if (player_controller != null)
+            {
+                if (player_controller.mouse != null)
+                {
+                    player_controller.mouse.cells = this.view.get_player_cells(
+                        opponent);
+                }
+            }
+        }.bind(this));
     }
+
 }
 
-export class LocalController extends StateController
+export class Human
 {
-    
-    constructor(model, view, player)
+
+    constructor(controller, player)
     {
-        super(model);
+        this.controller = controller;
         this.player = player;
-        this.place_controller = new ShipPlaceController(this.model, player);
-        this.shoot_controller = new ShootController(this.model, player);
-        this.view = view;
-        this.view_ready = true;
-        
-        this.mouse = new Mouse(view);
+        this.view = controller.view;
+        this.model = controller.model;
+        this.controller.players[player] = this;
+
+        this.mouse = new Mouse(this.view);
         this.mouse.addEventListener(
             'hover_enter', (o) => this.on_hover_enter(o));
         this.mouse.addEventListener(
             'hover_leave', (o) => this.on_hover_leave(o));
         this.mouse.addEventListener(
             'left_click', (o) => this.on_left_click(o));
-        this.mouse.addEventListener(
-            'right_click', (o) => this.on_right_click(o));
-        this.view.addEventListener(
-            'view_ready', (o) => this.on_view_ready(o));
-        this.view.addEventListener(
-            'view_busy', (o) => this.on_view_busy(o));
-    }
 
-    get_controller()
-    {
-        if (this.model.state["player"] != this.player)
-        {
-            return (null);
-        }
-        if (this.model.all_ships_placed(this.player))
-        {
-            return this.shoot_controller;
-        }
-        return this.place_controller;
-    }
+        this.dir = "vertical";
 
-    on_view_ready(event)
-    {
-        this.view_ready = true;
-    }
-
-    on_view_busy(event)
-    {
-        this.view_ready = false;
-    }
-}
-
-class ShipPlaceController extends StateController
-{
-
-    constructor(model, player)
-    {
-        super(model);
-        this.player = player;
-        this.dir = "horizontal";
+        this.is_active = true;
     }
 
     on_hover_enter(event)
     {
-        var x = event.cell.value[0];
-        var y = event.cell.value[1];
-        var ship = this.model.next_ship_to_place(this.player);
-        if (ship != null)
+        if (!this.is_active)
         {
-            this.model.update_model({
-                "type": "preview",
-                "player": this.player,
-                "x": x,
-                "y": y,
-                "ship": this.model.next_ship_to_place(this.player),
-                "direction": this.dir
-            });
+            return;
         }
-        
-    }
-
-    on_hover_leave(event)
-    {
-        var ship = this.model.next_ship_to_place(this.player);
-        if (ship != null)
+        if (this.model.all_ships_placed(this.player))
         {
-            this.model.update_model({
-                "type": "hide",
-                "player": this.player,
-                "x": -1,
-                "y": -1,
-                "ship": this.model.next_ship_to_place(this.player),
-                "direction": this.dir
-            });
+            // Shot
+            event.cell.material = event.cell.hover_material;
         }
-    }
-
-    on_left_click(event)
-    {
-        var x = event.cell.value[0];
-        var y = event.cell.value[1];
-        this.model.update_model({
-            "type": "placement",
-            "player": this.player,
-            "x": x,
-            "y": y,
-            "ship": this.model.next_ship_to_place(this.player),
-            "direction": this.dir
-        });
-    }
-
-    on_right_click(event)
-    {
-        let grid = this.model.get_player_grid(this.player);
-        let ship;
-        this.dir = 1 - this.dir;
-
-        for (let i = 0; i < grid.ships.length; i++)
+        else
         {
-            ship = grid.ships[i];
-            if (!ship.has_definitive_location())
+            // Place ship
+            var x = event.cell.value[0];
+            var y = event.cell.value[1];
+            var ship = this.model.next_ship_to_place(this.player);
+            if (ship != null)
             {
-                ship.move(event.cell.value[0], event.cell.value[1], this.dir);
-                return;
+                this.model.update_model({
+                    "type": "preview",
+                    "player": this.player,
+                    "x": x,
+                    "y": y,
+                    "ship": this.model.next_ship_to_place(this.player),
+                    "direction": this.dir
+                });
             }
         }
     }
 
-}
-
-class ShootController extends StateController
-{
-
-    constructor(model, player)
-    {
-        super(model);
-        this.player = player;
-    }
-
-    on_hover_enter(event)
-    {
-        event.cell.material = event.cell.hover_material;
-    }
-
     on_hover_leave(event)
     {
-        event.cell.material = event.cell.default_material;
+        if (!this.is_active)
+        {
+            return;
+        }
+        if (this.model.all_ships_placed(this.player))
+        {
+            // Shot
+            event.cell.material = event.cell.default_material;
+        }
+        else
+        {
+            // Place ship
+            var ship = this.model.next_ship_to_place(this.player);
+            if (ship != null)
+            {
+                this.model.update_model({
+                    "type": "hide",
+                    "player": this.player,
+                    "x": -1,
+                    "y": -1,
+                    "ship": this.model.next_ship_to_place(this.player),
+                    "direction": this.dir
+                });
+            }
+        }
     }
 
     on_left_click(event)
     {
+        if (!this.is_active)
+        {
+            return;
+        }
         if (event.cell != null)
         {
-            var x = event.cell.value[0];
-            var y = event.cell.value[1];
-            event.cell.material = event.cell.default_material;
-            this.model.update_model(
-                this.model.check_shot(this.player, x, y)
-            );
-        }
+            if (this.model.all_ships_placed(this.player))
+            {
+                // Shot
+                var x = event.cell.value[0];
+                var y = event.cell.value[1];
+                event.cell.material = event.cell.default_material;
+                this.controller.interface({
+                    "player": this.player,
+                    "type": "shot",
+                    "x": x,
+                    "y": y
+                });
+            }
+            else
+            {
+                // Place ship
+                var x = event.cell.value[0];
+                var y = event.cell.value[1];
+                this.model.update_model({
+                    "type": "placement",
+                    "player": this.player,
+                    "x": x,
+                    "y": y,
+                    "ship": this.model.next_ship_to_place(this.player),
+                    "direction": this.dir
+                });
+                if (this.model.all_ships_placed(this.player))
+                {
+                    this.controller.activate_controller(null);
+                    this.controller.interface({
+                        "player": this.player,
+                        "type": "placed"
+                    });
+                }
+            }
+        }        
     }
-
 }
