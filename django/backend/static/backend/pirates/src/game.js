@@ -11,7 +11,7 @@ export class PiratesGame
     {
         this.model = new Model();
         this.view = new GameView(this.model);
-        this.controller = new Controller(this.model, this.view, url);
+        this.controller = new Controller(this.model, this.view, url, "local");
         this.home = new Human(this.controller, "home");
         this.guest = new Human(this.controller, "guest");
     }

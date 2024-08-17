@@ -6,7 +6,7 @@
 /*   By: plopez-b <plopez-b@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 00:46:06 by plopez-b          #+#    #+#             */
-/*   Updated: 2024/08/17 06:14:00 by plopez-b         ###   ########.fr       */
+/*   Updated: 2024/08/17 06:42:21 by plopez-b         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -262,7 +262,7 @@ export class Ship extends THREE.Object3D
             this.model.state[this.player]["ships"][this.ship]["x"]
         );
         this.rotation.set(0, direction * Math.PI / 2, 0);
-        if (ship["state"] == "invisible")
+        if (ship["state"] == "invisible" || ship["state"] == "hidden")
         {
             this.visible = false;
         }

@@ -6,21 +6,21 @@
 /*   By: plopez-b <plopez-b@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 00:49:29 by plopez-b          #+#    #+#             */
-/*   Updated: 2024/08/17 06:18:25 by plopez-b         ###   ########.fr       */
+/*   Updated: 2024/08/17 06:42:24 by plopez-b         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 import { Mouse } from './mouse.js';
-import * as THREE from 'three';
 
 export class Controller
 {
 
-    constructor(model, view, url)
+    constructor(model, view, url, mode)
     {
         this.model = model;
         this.view = view;
         this.url = url;
+        this.mode = mode;
         
         this.model.controller = this;
         this.view.controller = this;
@@ -49,6 +49,10 @@ export class Controller
         if (message["type"] == "placed")
         {
             var opponent = this.model.get_opponent(message["player"]);
+            if (this.mode == "local")
+            {
+                this.model.hide_all();
+            }
             if (message["player"] == "home")
             {
                 this.place_phase(opponent);

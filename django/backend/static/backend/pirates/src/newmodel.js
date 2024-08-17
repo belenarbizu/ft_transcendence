@@ -149,17 +149,20 @@ export class Model extends EventDispatcher
     next_ship_to_place(player)
     {
         if (this.state[player]["ships"]["small"]["state"] != "placed"
-            && this.state[player]["ships"]["small"]["state"] != "sunk")
+            && this.state[player]["ships"]["small"]["state"] != "sunk"
+            && this.state[player]["ships"]["small"]["state"] != "hidden")
         {
             return ("small");
         }
         if (this.state[player]["ships"]["medium"]["state"] != "placed"
-        && this.state[player]["ships"]["medium"]["state"] != "sunk")
+            && this.state[player]["ships"]["medium"]["state"] != "sunk"
+            && this.state[player]["ships"]["medium"]["state"] != "hidden")
         {
             return ("medium");
         }
         if (this.state[player]["ships"]["large"]["state"] != "placed"
-        && this.state[player]["ships"]["large"]["state"] != "sunk")
+            && this.state[player]["ships"]["large"]["state"] != "sunk"
+            && this.state[player]["ships"]["large"]["state"] != "hidden")
         {
             return ("large");
         }
@@ -237,6 +240,23 @@ export class Model extends EventDispatcher
                 });
             }
         }
+    }
+
+    hide_all()
+    {
+        if (this.state["home"]["ships"]["small"]["state"] == "placed")
+            this.state["home"]["ships"]["small"]["state"] = "hidden";
+        if (this.state["home"]["ships"]["medium"]["state"] == "placed")
+            this.state["home"]["ships"]["medium"]["state"] = "hidden";
+        if (this.state["home"]["ships"]["large"]["state"] == "placed")
+            this.state["home"]["ships"]["large"]["state"] = "hidden";
+        if (this.state["guest"]["ships"]["small"]["state"] == "placed")
+            this.state["guest"]["ships"]["small"]["state"] = "hidden";
+        if (this.state["guest"]["ships"]["medium"]["state"] == "placed")
+            this.state["guest"]["ships"]["medium"]["state"] = "hidden";
+        if (this.state["guest"]["ships"]["large"]["state"] == "placed")
+            this.state["guest"]["ships"]["large"]["state"] = "hidden";
+        this.dispatchEvent({type: 'update', ship: this});
     }
 
     update_model(message)
