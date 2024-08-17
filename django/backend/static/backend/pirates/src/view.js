@@ -6,18 +6,20 @@
 /*   By: plopez-b <plopez-b@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 00:44:48 by plopez-b          #+#    #+#             */
-/*   Updated: 2024/08/17 06:25:11 by plopez-b         ###   ########.fr       */
+/*   Updated: 2024/08/17 07:09:59 by plopez-b         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 import * as THREE from 'three';
 import { PlayerGrid, SkyBox, Ship, Asteroid } from "./objects.js";
+import { GameView } from '../../gameview.js';
 
-export class GameView
+export class View extends GameView
 {
 
     constructor(model)
     {
+        super();
         this.container = document.getElementById('threejs-container');
         var positionInfo = this.container.getBoundingClientRect();
         this.model = model;

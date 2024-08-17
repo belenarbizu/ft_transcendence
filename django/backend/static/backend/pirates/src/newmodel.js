@@ -146,6 +146,19 @@ export class Model extends EventDispatcher
         return (true);
     }
 
+    get_score(player)
+    {
+        var opponent = this.get_opponent(player);
+        var score = 0;
+        if (this.state[opponent]["ships"]["small"]["state"] == "sunk")
+            score ++;
+        if (this.state[opponent]["ships"]["medium"]["state"] == "sunk")
+            score ++;
+        if (this.state[opponent]["ships"]["large"]["state"] == "sunk")
+            score ++;
+        return (score);
+    }
+
     next_ship_to_place(player)
     {
         if (this.state[player]["ships"]["small"]["state"] != "placed"

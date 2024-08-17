@@ -6,7 +6,7 @@
 /*   By: plopez-b <plopez-b@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 00:49:29 by plopez-b          #+#    #+#             */
-/*   Updated: 2024/08/17 06:42:24 by plopez-b         ###   ########.fr       */
+/*   Updated: 2024/08/17 07:55:31 by plopez-b         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,12 +41,19 @@ export class Controller
             var msg = JSON.stringify(data);
             this.webSocket.send(msg);
         };
+
+        this.home_placed = false;
+        this.guest_placed = false;
         this.place_phase("home");
     }
     
     receiver(message)
     {
-        if (message["type"] == "placed")
+        if (message["type"] == "ready")
+        {
+            this.view.hide_waiting_screen();
+        }
+        else if (message["type"] == "placed")
         {
             var opponent = this.model.get_opponent(message["player"]);
             if (this.mode == "local")
@@ -55,12 +62,24 @@ export class Controller
             }
             if (message["player"] == "home")
             {
-                this.place_phase(opponent);
+                this.home_placed = true;
+                if (this.mode == "local")
+                    this.place_phase(opponent);
             }
-            if (message["player"] == "guest")
+            else if (message["player"] == "guest")
+            {
+                this.guest_placed = true;
+            }
+            if (this.home_placed && this.guest_placed)
             {
                 this.shot_phase(opponent);
             }
+        }
+        else if (message["type"] == "goal")
+        {
+            this.view.set_scores(
+                this.model.get_score("home"),
+                this.model.get_score("guest"));
         }
         else if (message["type"] == "shot")
         {
@@ -68,6 +87,13 @@ export class Controller
             var shot = this.model.check_shot(
                 opponent, message["x"], message["y"]);
             this.interface(shot);
+            if (shot["type"] == "sunk")
+            {
+                this.interface({
+                    "player": message["player"],
+                    "type": "goal"
+                });
+            }
         }
         else if (message["type"] == "hit"
             || message["type"] == "sunk")
@@ -79,6 +105,9 @@ export class Controller
                 message["y"],
                 "hit").then(function(){
                     this.model.update_model(message);
+                    this.view.set_scores(
+                        this.model.get_score("home"),
+                        this.model.get_score("guest"));
                     this.shot_phase(message["player"]);
                 }.bind(this));
         }
@@ -118,6 +147,7 @@ export class Controller
 
     place_phase(player)
     {
+        this.view.set_turn(player);
         this.activate_controller(null);
         this.view.focus_grid(player).then(function(o){
             var player_controller = this.players[player];
@@ -135,6 +165,7 @@ export class Controller
 
     shot_phase(player)
     {
+        this.view.set_turn(player);
         this.activate_controller(null);
         var opponent = this.model.get_opponent(player);
         this.view.focus_grid(opponent).then(function(o){
