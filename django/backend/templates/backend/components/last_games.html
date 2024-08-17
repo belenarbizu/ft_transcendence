@@ -21,7 +21,12 @@
                             <a spa hide href="{% url 'backend:game' game.id %}">{% translate 'Play' %}</a>
                         </td>
                         <td>
-                            <button class="btn btn-primary">{% translate 'Cancel' %}</button>
+                            <form spa target=".chat-messages" action="{% url 'backend:remove_match' %}" method="POST">
+                                {% csrf_token %}
+                                <input name="match_id" type="hidden" value="{{ game.id }}" />
+                                <input name="user_id" type="hidden" value="{{ user.id }}" />
+                                <button type="submit" spa class="btn btn-link m-0 p-0"><span class="badge rounded-pill bg-danger">{% translate 'Cancel' %}</span></button>
+                            </form>
                         </td>
                         {% else %}
                         <td class="ps-3 align-middle">
@@ -33,7 +38,12 @@
                             <a spa hide href="{% url 'backend:game' game.id %}">{% translate 'Play' %}</a>
                         </td>
                         <td>
-                            <button class="btn btn-primary">{% translate 'Cancel' %}</button>
+                            <form spa target=".chat-messages" action="{% url 'backend:remove_match' %}" method="POST">
+                                {% csrf_token %}
+                                <input name="match_id" type="hidden" value="{{ game.id }}" />
+                                <input name="user_id" type="hidden" value="{{ user.id }}" />
+                                <button type="submit" spa class="btn btn-link m-0 p-0"><span class="badge rounded-pill bg-danger">{% translate 'Cancel' %}</span></button>
+                            </form>
                         </td>
                         {% endif %}
                     </tr>
