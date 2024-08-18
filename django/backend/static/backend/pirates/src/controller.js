@@ -114,7 +114,8 @@ export class Controller
                             "type": "goal"
                         });
                     }
-                    this.shot_phase(message["player"]);
+                    if (this.model.get_winner() == null)
+                        this.shot_phase(message["player"]);
                 }.bind(this));
         }
         else if (message["type"] == "miss")
