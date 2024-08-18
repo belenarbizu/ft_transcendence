@@ -1,229 +1,549 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   controller.js                                      :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: plopez-b <plopez-b@student.42malaga.com    +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/06/10 00:49:29 by plopez-b          #+#    #+#             */
-/*   Updated: 2024/06/10 00:49:29 by plopez-b         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
-import { GameView } from './view.js';
 import { Mouse } from './mouse.js';
 
-class StateController
+export class Controller
 {
 
-    constructor(model)
+    constructor(model, view, url, mode)
     {
         this.model = model;
-    }
-
-    get_controller()
-    {
-        return null;
-    }
-
-    on_hover_enter(event)
-    {
-        let controller = this.get_controller();
-
-        if (controller != null)
-        {
-            this.get_controller().on_hover_enter(event);
-        }
-    }
-
-    on_hover_leave(event)
-    {
-        let controller = this.get_controller();
-
-        if (controller != null)
-        {
-            this.get_controller().on_hover_leave(event);
-        }
-    }
-
-    on_left_click(event)
-    {
-        let controller = this.get_controller();
-
-        if (controller != null)
-        {
-            this.get_controller().on_left_click(event);
-        }
-    }
-
-    on_right_click(event)
-    {
-        let controller = this.get_controller();
-
-        if (controller != null)
-        {
-            this.get_controller().on_right_click(event);
-        }
-    }
-}
-
-export class LocalController extends StateController
-{
-    
-    constructor(model, view, player)
-    {
-        super(model);
-        this.player = player;
-        this.place_controller = new ShipPlaceController(this.model, player);
-        this.shoot_controller = new ShootController(this.model, player);
         this.view = view;
-        this.view_ready = true;
+        this.url = url;
+        this.mode = mode;
         
-        this.mouse = new Mouse(view);
-        this.mouse.addEventListener(
-            'hover_enter', (o) => this.on_hover_enter(o));
-        this.mouse.addEventListener(
-            'hover_leave', (o) => this.on_hover_leave(o));
-        this.mouse.addEventListener(
-            'left_click', (o) => this.on_left_click(o));
-        this.mouse.addEventListener(
-            'right_click', (o) => this.on_right_click(o));
-        this.view.addEventListener(
-            'view_ready', (o) => this.on_view_ready(o));
-        this.view.addEventListener(
-            'view_busy', (o) => this.on_view_busy(o));
+        this.model.controller = this;
+        this.view.controller = this;
+
+        this.players = {
+            "home": null,
+            "guest": null
+        };
+        
+        this.webSocket = new WebSocket(url);
+
+        var controller = this;
+        this.webSocket.onmessage = function (msg) {
+            var data = JSON.parse(msg.data);
+            controller.receiver(data);
+        };
+        this.interface = function (data) {
+            var msg = JSON.stringify(data);
+            this.webSocket.send(msg);
+        };
+
+        this.home_placed = false;
+        this.guest_placed = false;
     }
-
-    get_controller()
+    
+    receiver(message)
     {
-        let grid = this.model.get_player_grid(this.player);
-
-        if (this.model.player != this.player
-            || this.view_ready == false)
+        if (message["type"] == "ready")
         {
-            return null;
+            this.view.hide_waiting_screen();
+            if (this.mode == "guest")
+            {
+                this.place_phase("guest");
+            }
+            if (this.mode == "home" || this.mode == "local")
+            {
+                this.place_phase("home");
+            }
         }
-        if (grid.is_ready())
+        else if (message["type"] == "placed")
         {
-            return this.shoot_controller;
+            var opponent = this.model.get_opponent(message["player"]);
+            if (this.mode == "local")
+            {
+                this.model.hide_all("home");
+                this.model.hide_all("guest");
+            }
+            if (message["player"] == "home")
+            {
+                this.home_placed = true;
+                if (this.mode == "local")
+                    this.place_phase(opponent);
+            }
+            else if (message["player"] == "guest")
+            {
+                this.guest_placed = true;
+            }
+            if (this.home_placed && this.guest_placed)
+            {
+                this.shot_phase(opponent);
+            }
         }
-        return this.place_controller;
+        else if (message["type"] == "goal")
+        {
+            this.view.set_scores(
+                this.model.get_score("home"),
+                this.model.get_score("guest"));
+            var winner = this.model.get_winner();
+            if (winner != null)
+            {
+                this.interface({
+                    "type": "end",
+                    "winner": winner
+                });
+                return;
+            }
+        }
+        else if (message["type"] == "shot")
+        {
+            var opponent = this.model.get_opponent(message["player"]);
+            var shot = this.model.check_shot(
+                opponent, message["x"], message["y"]);
+            this.interface(shot);
+            
+        }
+        else if (message["type"] == "hit"
+            || message["type"] == "sunk")
+        {
+            this.activate_controller(null);
+            this.view.hit_animation(
+                message["player"],
+                message["x"],
+                message["y"],
+                "hit").then(function(){
+                    this.model.update_model(message);
+                    this.view.set_scores(
+                        this.model.get_score("home"),
+                        this.model.get_score("guest"));
+                    if (message["type"] == "sunk")
+                    {
+                        this.interface({
+                            "player": message["player"],
+                            "type": "goal"
+                        });
+                    }
+                    if (this.model.get_winner() == null)
+                        this.shot_phase(message["player"]);
+                }.bind(this));
+        }
+        else if (message["type"] == "miss")
+        {
+            this.activate_controller(null);
+            this.view.hit_animation(
+                message["player"],
+                message["x"],
+                message["y"],
+                "miss").then(function(){
+                    this.model.update_model(message);
+                    this.shot_phase(message["player"]);
+                }.bind(this));
+        }
+        else if (message["type"] == "end")
+        {
+            this.view.set_winner(message["winner"]);
+        }
     }
 
-    on_view_ready(event)
+    activate_controller(player)
     {
-        this.view_ready = true;
+        if (this.players["home"] != null)
+        {
+            this.players["home"].is_active = false;
+        }
+        if (this.players["guest"] != null)
+        {
+            this.players["guest"].is_active = false;
+        }
+        if (player == "home" && this.players["home"] != null)
+        {
+            this.players["home"].is_active = true;
+        }
+        if (player == "guest" && this.players["guest"] != null)
+        {
+            this.players["guest"].is_active = true;
+        }
     }
 
-    on_view_busy(event)
+    place_phase(player)
     {
-        this.view_ready = false;
+        this.view.set_turn(player);
+        this.activate_controller(null);
+        this.view.focus_grid(player).then(function(o){
+            var player_controller = this.players[player];
+            this.activate_controller(player);
+            if (player_controller != null)
+            {
+                if (player_controller.mouse != null)
+                {
+                    player_controller.mouse.cells = this.view.get_player_cells(
+                        player);
+                }
+                if (player_controller.on_place_phase != null)
+                {
+                    player_controller.on_place_phase();
+                }
+            }
+        }.bind(this));
     }
+
+    shot_phase(player)
+    {
+        this.view.set_turn(player);
+        var opponent = this.model.get_opponent(player);
+        this.activate_controller(null);
+        this.view.focus_grid(opponent).then(function(o){
+            this.activate_controller(player);
+            var player_controller = this.players[player];
+            if (player_controller != null)
+            {
+                if (player_controller.mouse != null)
+                {
+                    player_controller.mouse.cells = this.view.get_player_cells(
+                        opponent);
+                }
+                if (player_controller.on_shot_phase != null)
+                {
+                    player_controller.on_shot_phase();
+                }
+            }
+        }.bind(this));
+    }
+
 }
 
-class ShipPlaceController extends StateController
+export class Human
 {
 
-    constructor(model, player)
+    constructor(controller, player)
     {
-        super(model);
+        this.controller = controller;
         this.player = player;
-        this.dir = 0;
+        this.view = controller.view;
+        this.model = controller.model;
+        this.controller.players[player] = this;
+
+        this.mouse = new Mouse(this.view);
+        this.mouse.addEventListener(
+            'hover_enter', this.on_hover_enter.bind(this));
+        this.mouse.addEventListener(
+            'hover_leave', this.on_hover_leave.bind(this));
+        this.mouse.addEventListener(
+            'left_click', this.on_left_click.bind(this));
+        document.addEventListener("keyup", this.on_key_up.bind(this));
+        document.addEventListener("keydown", this.on_key_down.bind(this));
+
+        this.dir = "vertical";
+        this.item = [];
+
+        this.is_active = true;
+    }
+
+    on_key_down(event) {
+        if (this.item.indexOf(event.key) < 0)
+        {
+            this.item.push(event.key);
+        }
+        else
+        {
+            return;
+        }
+        if (event.key == "s")
+        {
+            this.dir = this.dir == "vertical" ? "horizontal" : "vertical";
+        }
+    }
+
+    on_key_up(event) {
+        let i = this.item.indexOf(event.key);
+        if (i > -1)
+            this.item.splice(i, 1);
     }
 
     on_hover_enter(event)
     {
-        let grid = this.model.get_player_grid(this.player);
-        let ship;
-
-        for (let i = 0; i < grid.ships.length; i++)
+        if (!this.is_active)
         {
-            ship = grid.ships[i];
-            if (!ship.has_definitive_location())
+            return;
+        }
+        if (this.model.all_ships_placed(this.player))
+        {
+            // Shot
+            event.cell.material = event.cell.hover_material;
+        }
+        else
+        {
+            // Place ship
+            var x = event.cell.value[0];
+            var y = event.cell.value[1];
+            var ship = this.model.next_ship_to_place(this.player);
+            if (ship != null)
             {
-                ship.move(event.cell.value[0], event.cell.value[1], this.dir);
-                return;
+                this.model.update_model({
+                    "type": "preview",
+                    "player": this.player,
+                    "x": x,
+                    "y": y,
+                    "ship": this.model.next_ship_to_place(this.player),
+                    "direction": this.dir
+                });
             }
         }
     }
 
     on_hover_leave(event)
     {
-        let grid = this.model.get_player_grid(this.player);
-        let ship;
-
-        for (let i = 0; i < grid.ships.length; i++)
+        if (this.model.all_ships_placed(this.player))
         {
-            ship = grid.ships[i];
-            if (!ship.has_definitive_location())
+            // Shot
+            event.cell.material = event.cell.default_material;
+        }
+        else
+        {
+            // Place ship
+            var ship = this.model.next_ship_to_place(this.player);
+            if (ship != null)
             {
-                ship.move(-1, -1, this.dir);
-                return;
+                this.model.update_model({
+                    "type": "hide",
+                    "player": this.player,
+                    "x": -1,
+                    "y": -1,
+                    "ship": this.model.next_ship_to_place(this.player),
+                    "direction": this.dir
+                });
             }
         }
     }
 
     on_left_click(event)
     {
-        let grid = this.model.get_player_grid(this.player);
-        let ship;
-
-        for (let i = 0; i < grid.ships.length; i++)
+        if (!this.is_active)
         {
-            ship = grid.ships[i];
-            if (!ship.has_definitive_location())
-            {
-                ship.move(event.cell.value[0], event.cell.value[1], this.dir);
-                ship.set_location();
-                return;
-            }
+            return;
         }
-    }
-
-    on_right_click(event)
-    {
-        let grid = this.model.get_player_grid(this.player);
-        let ship;
-        this.dir = 1 - this.dir;
-
-        for (let i = 0; i < grid.ships.length; i++)
+        if (event.cell != null)
         {
-            ship = grid.ships[i];
-            if (!ship.has_definitive_location())
+            if (this.model.all_ships_placed(this.player))
             {
-                ship.move(event.cell.value[0], event.cell.value[1], this.dir);
-                return;
+                // Shot
+                this.controller.activate_controller(null);
+                var x = event.cell.value[0];
+                var y = event.cell.value[1];
+                event.cell.material = event.cell.default_material;
+                this.controller.interface({
+                    "player": this.player,
+                    "type": "shot",
+                    "x": x,
+                    "y": y
+                });
             }
-        }
+            else
+            {
+                // Place ship
+                var x = event.cell.value[0];
+                var y = event.cell.value[1];
+                this.model.update_model({
+                    "type": "placement",
+                    "player": this.player,
+                    "x": x,
+                    "y": y,
+                    "ship": this.model.next_ship_to_place(this.player),
+                    "direction": this.dir
+                });
+                if (this.model.all_ships_placed(this.player))
+                {
+                    this.controller.activate_controller(null);
+                    this.controller.interface({
+                        "player": this.player,
+                        "type": "placed"
+                    });
+                }
+            }
+        }        
     }
-
 }
 
-class ShootController extends StateController
+export class CPU
 {
 
-    constructor(model, player)
+    constructor(controller, player)
     {
-        super(model);
+        this.controller = controller;
         this.player = player;
+        this.view = controller.view;
+        this.model = controller.model;
+        this.controller.players[player] = this;
+        this.is_active = true;
+        this.opponent = this.model.get_opponent(this.player);
+
+        this.grid = [[0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0]];
+        this.count = [];
+        this.has_hit = 0;
     }
 
-    on_hover_enter(event)
+    _update_sunk_ship(ship)
     {
-        event.cell.material = event.cell.hover_material;
+        var ships = this.model.state[this.opponent]["ships"];
+        if (ships[ship]["state"] == "sunk")
+        {
+            var cells = this.model._get_cells(
+                ship,
+                ships[ship]["x"],
+                ships[ship]["y"],
+                ships[ship]["direction"]);
+            for (let i = 0; i < cells.length; i++)
+            {
+                var cell = cells[i];
+                this.grid[cell[0]][cell[1]] = "miss";
+            }
+        }
     }
 
-    on_hover_leave(event)
+    _update_grid()
     {
-        event.cell.material = event.cell.default_material;
+        this.has_hit = 0;
+        for (let x = 0; x < 6; x++)
+        {
+            for (let y = 0; y < 6; y++)
+            {
+                this.grid[x][y] = this.model.state[this.opponent]["grid"][x][y];
+            }
+        }
+        this._update_sunk_ship("small");
+        this._update_sunk_ship("medium");
+        this._update_sunk_ship("large");
+        for (let x = 0; x < 6; x++)
+        {
+            for (let y = 0; y < 6; y++)
+            {
+                if (this.grid[x][y] == "hit")
+                {
+                    this.has_hit += 1;
+                }
+            }
+        }
     }
 
-    on_left_click(event)
+    _add_count(ship, direction)
     {
-        event.cell.material = event.cell.default_material;
-        let grid = this.model.get_player_grid(this.player);
-        let cell = event.cell.value;
-        this.model.move(cell[0], cell[1]);
+        if (this.model.state[this.opponent]["ships"][ship]["state"] 
+            != "sunk")
+        {
+            for (let x = 0; x < 6; x++)
+            {
+                for (let y = 0; y < 6; y++)
+                {
+                    if (this.model.valid_placement(
+                        this.opponent, ship, x, y, direction))
+                    {
+                        var cells = this.model._get_cells(
+                            ship, x, y, direction);
+                        var valid = true;
+                        var hit = 0
+                        for (let i = 0; i < cells.length; i++)
+                        {
+                            var cell = cells[i];
+                            if (this.grid[cell[0]][cell[1]] == "miss")
+                            {
+                                valid = false;
+                            }
+                            if (this.grid[cell[0]][cell[1]] == "hit")
+                            {
+                                hit += 1;
+                            }
+                        }
+                        if (this.has_hit > 0)
+                        {
+                            valid = valid && hit > 0;
+                        }
+                        if (valid)
+                        {
+                            for (let i = 0; i < cells.length; i++)
+                            {
+                                var cell = cells[i];
+                                if (this.grid[cell[0]][cell[1]] != "hit")
+                                    this.count[cell[0]][cell[1]] += 1;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    _max_count()
+    {
+        for (let x = 0; x < 6; x++)
+        {
+            for (let y = 0; y < 6; y++)
+            {
+                if (this.count[x][y] > this.max_count)
+                {
+                    this.max_count = this.count[x][y];
+                }
+            }
+        }
+    }
+
+    _get_options()
+    {
+        var options = [];
+        for (let x = 0; x < 6; x++)
+        {
+            for (let y = 0; y < 6; y++)
+            {
+                if (this.count[x][y] == this.max_count)
+                {
+                    options.push([x, y]);
+                }
+            }
+        }
+        return (options);
+    }
+
+    _update_count()
+    {
+        this.count = [[0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0]];
+        this.max_count = 0;
+        this._add_count("small", "horizontal");
+        this._add_count("small", "vertical");
+        this._add_count("medium", "horizontal");
+        this._add_count("medium", "vertical");
+        this._add_count("large", "horizontal");
+        this._add_count("large", "vertical");
+        this._max_count();
+    }
+
+    on_place_phase()
+    {
+        while (!this.model.all_ships_placed(this.player))
+        {
+            this.model.update_model({
+                "type": "placement",
+                "player": this.player,
+                "x": Math.floor(Math.random() * 6),
+                "y": Math.floor(Math.random() * 6),
+                "ship": this.model.next_ship_to_place(this.player),
+                "direction": Math.floor(
+                    Math.random() * 2) == 0 ? "horizontal" : "vertical"
+            });
+        }
+        this.model.hide_all(this.player);
+        this.controller.interface({
+            "player": this.player,
+            "type": "placed"
+        });
+    }
+
+    on_shot_phase()
+    {
+        this._update_grid();
+        this._update_count();
+        var options = this._get_options();
+        var option_id = Math.floor(Math.floor(Math.random() * options.length));
+        var option = options[option_id];
+        this.controller.interface({
+            "player": this.player,
+            "type": "shot",
+            "x": option[0],
+            "y": option[1]
+        });
     }
 
 }

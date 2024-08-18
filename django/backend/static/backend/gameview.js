@@ -1,6 +1,7 @@
 
+import * as THREE from 'three';
 
-export class GameView
+export class GameView extends THREE.EventDispatcher
 {
 
     set_winner(player)
@@ -16,20 +17,20 @@ export class GameView
 
     set_turn(player)
     {
-        if (player == "home")
-        {
-            document.getElementById("home-info").classList.remove("text-muted");
-            document.getElementById("guest-info").classList.add("text-muted");
-        }
         if (player == "guest")
         {
-            document.getElementById("home-info").classList.add("text-muted");
-            document.getElementById("guest-info").classList.remove("text-muted");
+            document.getElementById("home-info").classList.remove("player-turn");
+            document.getElementById("guest-info").classList.add("player-turn");
         }
-        if (player == "no-player")
+        else if (player == "home")
         {
-            document.getElementById("home-info").classList.remove("text-muted");
-            document.getElementById("guest-info").classList.remove("text-muted");
+            document.getElementById("home-info").classList.add("player-turn");
+            document.getElementById("guest-info").classList.remove("player-turn");
+        }
+        else
+        {
+            document.getElementById("home-info").classList.remove("player-turn");
+            document.getElementById("guest-info").classList.remove("player-turn");
         }
     }
 

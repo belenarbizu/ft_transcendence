@@ -367,7 +367,10 @@ def game_view(request, game_id):
 	reason = game.reason_user_cannot_join(request.user)
 	if (reason):
 		return render(request, 'backend/error.html', {"reason": reason})
-	return render(request, 'backend/game.html', {"match": game})
+	return render(request, 'backend/game.html', {
+		"match": game,
+		"mode": game.mode_as(request.user)
+		})
 
 @require_http_methods(["POST"])
 @login_401

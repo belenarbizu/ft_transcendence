@@ -10,13 +10,14 @@ from .exceptions import Notification
 
 GAME_MODE_CHOICES = (
     ("lo", _("Practice (private)")),
-    ("re", _("Competition (public)"))
+    ("re", _("Competition (public)")),
+    ("cp", _("Practice (cpu)"))
 )
 
 GAME_STATE_CHOICES = (
     ('wa', _('Waiting')),
     ('st', _('Started')),
-    ('fi', _('Finished')),
+    ('fi', _('Finished'))
 )
 
 TOURNAMENT_STATE_CHOICES = (
@@ -351,6 +352,20 @@ class Match(models.Model):
     def is_finished(self):
         return self.state == "fi"
     
+    @property
+    def is_cpu(self):
+        return self.mode == "cp"
+    
+    def mode_as(self, user):
+        if self.is_practice:
+            return "local"
+        if self.home.user == user:
+            return "home"
+        if self.guest.user == user:
+            return "guest"
+        if self.is_cpu:
+            return "cpu"
+        
     def update_ELO(self):
 
         def elo(a, b, k, result):

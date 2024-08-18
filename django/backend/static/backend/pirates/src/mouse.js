@@ -1,15 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   mouse.js                                           :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: plopez-b <plopez-b@student.42malaga.com    +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/06/10 02:35:23 by plopez-b          #+#    #+#             */
-/*   Updated: 2024/08/06 03:07:34 by plopez-b         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 import {EventDispatcher, Vector3, Raycaster} from "three";
 
 export class Mouse extends EventDispatcher
@@ -22,11 +10,11 @@ export class Mouse extends EventDispatcher
         this.view = view;
         this.selected_cell = null;
         document.addEventListener(
-            'mousemove', (o) => this.on_mouse_move(o));
+            'mousemove', this.on_mouse_move.bind(this));
         document.addEventListener(
-            'click', (o) => this.on_left_click(o));
-        document.addEventListener(
-            'contextmenu', (o) => this.on_right_click(o));
+            'click', this.on_left_click.bind(this));
+
+        this.cells = [];
     }
 
     on_mouse_move(event)
@@ -39,7 +27,7 @@ export class Mouse extends EventDispatcher
         let raycaster = new Raycaster();                                        
         raycaster.setFromCamera(mouse3D, this.view.camera);
         let intersects = raycaster.intersectObjects(
-            this.view.cells, true);
+            this.cells, true);
         if (intersects.length > 0)
         {
             let selected = intersects[0].object;
@@ -65,17 +53,9 @@ export class Mouse extends EventDispatcher
 
     on_left_click(event)
     {
-        event.preventDefault();
         this.dispatchEvent({
             type: 'left_click', cell: this.selected_cell});
         this.on_mouse_move(event);
     }
 
-    on_right_click(event)
-    {
-        event.preventDefault();
-        this.dispatchEvent({
-            type: 'right_click', cell: this.selected_cell});
-        this.on_mouse_move(event);
-    }
 }
