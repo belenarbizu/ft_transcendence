@@ -480,7 +480,7 @@ msgstr "Ven"
 
 #: .\backend\templates\backend\components\play_modal.html:24
 msgid "IA"
-msgstr IA"
+msgstr "IA"
 
 #: .\backend\templates\backend\components\profile_modal.html:32
 msgid "Bio"
