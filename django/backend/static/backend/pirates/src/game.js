@@ -1,8 +1,6 @@
-
-import { Model } from './newmodel.js';
+import { Model } from './model.js';
 import { View } from './view.js';
 import { Controller, Human, CPU } from './controller.js';
-
 
 export class PiratesGame
 {
@@ -15,24 +13,20 @@ export class PiratesGame
         this.controller = new Controller(this.model, this.view, url, mode);
         if (mode == "local" || mode == "home" || mode == "cpu")
         {
-            this.home = new CPU(this.controller, "home");
+            this.home = new Human(this.controller, "home");
         }
         if (mode == "local" || mode == "guest")
+        {
+            this.guest = new Human(this.controller, "guest");
+        }
+        if (mode == "cpu")
         {
             this.guest = new CPU(this.controller, "guest");
         }
     }
 
     start()
-    {
-        //this.on_loop();
-    }
-
-    on_loop()
-    {
-        this.view.draw(Date.now());
-        window.requestAnimationFrame(this.on_loop.bind(this));
-    }
+    { }
 
     disconnect()
     {

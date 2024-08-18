@@ -1,15 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   mouse.js                                           :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: plopez-b <plopez-b@student.42malaga.com    +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/06/10 02:35:23 by plopez-b          #+#    #+#             */
-/*   Updated: 2024/08/17 04:35:21 by plopez-b         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 import {EventDispatcher, Vector3, Raycaster} from "three";
 
 export class Mouse extends EventDispatcher
@@ -22,11 +10,11 @@ export class Mouse extends EventDispatcher
         this.view = view;
         this.selected_cell = null;
         document.addEventListener(
-            'mousemove', (o) => this.on_mouse_move(o));
+            'mousemove', this.on_mouse_move.bind(this));
         document.addEventListener(
-            'click', (o) => this.on_left_click(o));
+            'click', this.on_left_click.bind(this));
         document.addEventListener(
-            'contextmenu', (o) => this.on_right_click(o));
+            'contextmenu', this.on_right_click.bind(this));
 
         this.cells = [];
     }

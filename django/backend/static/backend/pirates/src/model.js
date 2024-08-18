@@ -1,428 +1,219 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   model.js                                           :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: plopez-b <plopez-b@student.42malaga.com    +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/06/09 22:31:24 by plopez-b          #+#    #+#             */
-/*   Updated: 2024/08/15 15:19:53 by plopez-b         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 import { EventDispatcher } from "three";
 
-export class ShipModel extends EventDispatcher
+export class Model extends EventDispatcher
 {
 
-    constructor(length, grid, model)
+    constructor()
     {
         super();
-        this.model = model;
-        this.length = length;
-        this.grid = grid;
-        this.x_position = -1;
-        this.z_position = -1;
-        this.direction = -1;
-        this.cells = [];
-        this.touched_cells = [];
+        this.state = {
+            "player": "home",
+            "home": {
+                "grid": [[0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0],
+                    [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0],
+                    [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0]],
+                "ships": {
+                    "small": {
+                        "x": -1,
+                        "y": -1,
+                        "direction": 0,
+                        "cells": [],
+                        "hit_cells": [],
+                        "state": "invisible"
+                    },
+                    "medium": {
+                        "x": -1,
+                        "y": -1,
+                        "direction": 0,
+                        "cells": [],
+                        "hit_cells": [],
+                        "state": "invisible"
+                    },
+                    "large": {
+                        "x": -1,
+                        "y": -1,
+                        "direction": 0,
+                        "cells": [],
+                        "hit_cells": [],
+                        "state": "invisible"
+                    },
+                },
+                "score": 0,
+            },
+            "guest": {
+                "grid": [[0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0],
+                    [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0],
+                    [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0]],
+                "ships": {
+                    "small": {
+                        "x": -1,
+                        "y": -1,
+                        "direction": 0,
+                        "cells": [],
+                        "hit_cells": [],
+                        "state": "invisible"
+                    },
+                    "medium": {
+                        "x": -1,
+                        "y": -1,
+                        "direction": 0,
+                        "cells": [],
+                        "hit_cells": [],
+                        "state": "invisible"
+                    },
+                    "large": {
+                        "x": -1,
+                        "y": -1,
+                        "direction": 0,
+                        "cells": [],
+                        "hit_cells": [],
+                        "state": "invisible"
+                    },
+                },
+                "score": 0,
+            }
+        };
     }
 
-    is_sunk()
+    _cell_in_list(list, x, y)
     {
-        return this.cells.length > 0
-            && this.cells.length == this.touched_cells.length;
-    }
-
-    is_touched_at(x, z)
-    {
-        for (let i = 0; i < this.touched_cells.length; i++)
+        for (let i = 0; i < list.length; i++)
         {
-            if (this.touched_cells[i][0] == x
-                && this.touched_cells[i][1] == z)
+            var cell = list[i];
+            if (cell[0] == x && cell[1] == y)
             {
-                return true;
+                return (true);
             }
         }
+        return (false);
     }
 
-    has_definitive_location()
+    _get_ship_at_pos(player, x, y)
     {
-        return this.cells.length != 0;
-    }
-
-    is_well_located()
-    {
-        let grid = this.grid;
-        let t = this;
-        for (let i = 0; i < this.grid.ships.length; i++)
+        var ships = ["small", "medium", "large"];
+        for (let i = 0; i < ships.length; i++)
         {
-            if (!this.is_inside_grid())
+            for (let j = 0;
+                j < this.state[player]["ships"][ships[i]]["cells"].length; j++)
             {
-                this.dispatchEvent({type: 'outside_grid', ship: this});
-                return false;
-            }
-            if (this.overlaps(this.grid.ships[i]))
-            {
-                this.dispatchEvent({type: 'overlap', ship: this});
-                return false;
-            }
-        }
-        this.dispatchEvent({type: 'good_location', ship: this});
-        return true;
-    }
-
-    hide()
-    {
-        this.dispatchEvent({type: 'hide', ship: this});
-    }
-
-    get_occupied_cells()
-    {
-        let occupied_cells = [];
-        let x_pos, z_pos;
-
-        for (let i = 0; i < this.length; i++)
-        {
-            x_pos = this.x_position + this.direction * i;
-            z_pos = this.z_position + (1 - this.direction) * i;
-            occupied_cells.push([x_pos, z_pos]);
-        }
-        return occupied_cells;
-    }
-
-    is_at(x, z)
-    {
-        for (let i = 0; i < this.get_occupied_cells().length; i++)
-        {
-            if (this.get_occupied_cells[i][0] == x
-                && this.get_occupied_cells[i][1] == z)
-            {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    move(x, z, direction)
-    {
-        this.x_position = x;
-        this.z_position = z;
-        this.direction = direction;
-        this.is_well_located();
-        this.dispatchEvent({type: 'move', ship: this});
-    }
-
-    set_location()
-    {
-        if (this.is_well_located())
-        {
-            this.cells = this.get_occupied_cells();
-            this.dispatchEvent({type: 'locate', ship: this});
-        }
-        if (this.grid.is_ready())
-        {
-            this.model.change_player();
-        }
-    }
-
-    set_random_location()
-    {
-        do
-        {
-            this.x_position = Math.floor(Math.random() * 5);
-            this.z_position = Math.floor(Math.random() * 5);
-            this.direction = Math.floor(Math.random() * 2);
-        }
-        while (!this.is_well_located());
-        this.set_location();
-    }
-
-    set_sunk_location(x, z, direction)
-    {
-        this.x_position = x;
-        this.z_position = z;
-        this.direction = direction;
-        this.touched_cells = this.get_occupied_cells();
-        this.dispatchEvent({type: 'sunk', target: this});
-    }
-
-    overlaps(ship)
-    {
-        let occupied_cells = this.get_occupied_cells();
-
-        if (ship.grid != this.grid || this == ship)
-        {
-            return false;
-        }
-        for (let i = 0; i < occupied_cells.length; i++)
-        {
-            for (let j = 0; j < ship.cells.length; j++)
-            {
-                if (ship.cells[j][0] == occupied_cells[i][0]
-                    && ship.cells[j][1] == occupied_cells[i][1])
+                var cell = this.state[player]["ships"][ships[i]]["cells"][j];
+                if (cell[0] == x && cell[1] == y)
                 {
-                    return true;
+                    return (ships[i]);
                 }
             }
         }
-        return false;
+        return (null);
     }
 
-    is_inside_grid()
+    _get_cells(ship, x, y, direction)
     {
-        let occupied_cells = this.get_occupied_cells();
-
-        for (let i = 0; i < occupied_cells.length; i++)
+        var horizontal = direction == "horizontal" ? 1 : 0;
+        var vertical = direction == "vertical" ? 1 : 0;
+        var cells = [
+            [x + vertical * 0, y + horizontal * 0],
+            [x + vertical * 1, y + horizontal * 1]
+        ];
+        if (ship == "medium")
         {
-            if (occupied_cells[i][0] >= this.grid.width_x
-                || occupied_cells[i][0] < 0
-                || occupied_cells[i][1] >= this.grid.width_z
-                || occupied_cells[i][1] < 0)
+            cells.push([x + vertical * 2, y + horizontal * 2]);
+        }
+        if (ship == "large")
+        {
+            cells.push([x + vertical * 2, y + horizontal * 2]);
+            cells.push([x + vertical * 3, y + horizontal * 3]);
+        }
+        return (cells);
+    }
+
+    _cell_outside_grid(cell)
+    {
+        return (cell[0] < 0 || cell[0] > 5 || cell[1] < 0 || cell[1] > 5);
+    }
+
+    _is_sinking_shot(player, ship, x, y)
+    {
+        var cells = this.state[player]["ships"][ship]["cells"];
+        var hit_cells = this.state[player]["ships"][ship]["hit_cells"];
+        if (hit_cells.length != cells.length - 1)
+        {
+            return (false);
+        }
+        if (this._cell_in_list(hit_cells, x, y))
+        {
+            return (false);
+        }
+        return (true);
+    }
+
+    get_score(player)
+    {
+        var opponent = this.get_opponent(player);
+        var score = 0;
+        if (this.state[opponent]["ships"]["small"]["state"] == "sunk")
+            score ++;
+        if (this.state[opponent]["ships"]["medium"]["state"] == "sunk")
+            score ++;
+        if (this.state[opponent]["ships"]["large"]["state"] == "sunk")
+            score ++;
+        return (score);
+    }
+
+    get_winner()
+    {
+        if (this.get_score("home") == 3)
+            return ("home");
+        if (this.get_score("guest") == 3)
+            return ("guest");
+        return (null);
+    }
+
+    next_ship_to_place(player)
+    {
+        if (this.state[player]["ships"]["small"]["state"] != "placed"
+            && this.state[player]["ships"]["small"]["state"] != "sunk"
+            && this.state[player]["ships"]["small"]["state"] != "hidden")
+        {
+            return ("small");
+        }
+        if (this.state[player]["ships"]["medium"]["state"] != "placed"
+            && this.state[player]["ships"]["medium"]["state"] != "sunk"
+            && this.state[player]["ships"]["medium"]["state"] != "hidden")
+        {
+            return ("medium");
+        }
+        if (this.state[player]["ships"]["large"]["state"] != "placed"
+            && this.state[player]["ships"]["large"]["state"] != "sunk"
+            && this.state[player]["ships"]["large"]["state"] != "hidden")
+        {
+            return ("large");
+        }
+        return (null);
+    }
+
+    all_ships_placed(player)
+    {
+        return (this.next_ship_to_place(player) == null);
+    }
+
+    valid_placement(player, ship, x, y, direction)
+    {
+        var cells = this._get_cells(ship, x, y, direction);
+        for (let i = 0; i < cells.length; i++)
+        {
+            var cell = cells[i];
+            var ship = this._get_ship_at_pos(player, cell[0], cell[1]);
+            if (ship != null 
+                && (this.state[player]["ships"][ship]["state"] == "placed"))
             {
-                return false;
+                return (false);
+            }
+            if (this._cell_outside_grid(cell))
+            {
+                return (false);
             }
         }
-        return true;
-    }
-
-    touch(x, z)
-    {
-        for (let i = 0; i < this.cells.length; i++)
-        {
-            if (this.cells[i][0] == x
-                && this.cells[i][1] == z
-                && !this.is_touched_at(x, z))
-            {
-                this.touched_cells.push([x, z]);
-            }
-        }
-        if (this.is_sunk())
-        {
-            this.dispatchEvent({type: 'sunk', target: this});
-        }
-    }
-
-}
-
-
-export class GridModel extends EventDispatcher
-{
-
-    constructor(width_x, width_z, model)
-    {
-        super();
-        this.model = model;
-        this.width_x = width_x;
-        this.width_z = width_z;
-        this.ships = [];
-    }
-
-    is_ready()
-    {
-        for (let i = 0; i < this.ships.length; i++)
-        {
-            if (!this.ships[i].has_definitive_location())
-            {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    add_ship(ship)
-    {
-        if (!this.contains_ship(ship))
-        {
-            this.ships.push(ship);
-            this.dispatchEvent({type: 'add_ship', ship: ship});
-        }
-    }
-
-    contains_ship(ship)
-    {
-        for (let i = 0; i < this.ships.length; i++)
-        {
-            if (this.ships[i] === ship)
-            {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    set_random_location()
-    {
-        for (let i = 0; i < this.ships.length; i++)
-        {
-            this.ships[i].set_random_location();
-        }
-    }
-
-    touch(x, z)
-    {
-        for (let i = 0; i < this.ships.length; i++)
-        {
-            this.ships[i].touch(x, z);
-            if (this.ships[i].is_touched_at(x, z))
-            {
-                this.dispatchEvent({type: 'hit', cell: [x, z]});
-                return;
-            }
-        }
-        this.dispatchEvent({type: 'miss', cell: [x, z]})
-    }
-
-    set_hit(x, z)
-    {
-        this.dispatchEvent({type: 'hit', cell: [x, z]});
-    }
-
-    set_miss(x, z)
-    {
-        this.dispatchEvent({type: 'miss', cell: [x, z]});
-    }
-
-    set_sunk(x, z, length, direction)
-    {
-        for (let i = 0; i < this.ships.length; i++)
-        {
-            var ship = this.ships[i];
-            if (ship.length == length && !ship.has_definitive_location())
-            {
-                ship.set_sunk_location(x, z, direction)
-                return;
-            }
-        }
-    }
-
-    is_touched_at(x, z)
-    {
-        for (let i = 0; i < this.ships.length; i++)
-        {
-            if (this.ships[i].is_touched_at(x, z))
-            {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    is_sunk_at(x, z)
-    {
-        var ship = this.ship_at(x, z);
-        return (ship != null && ship.is_sunk());
-    }
-
-    ships_sunk()
-    {
-        for (let i = 0; i < this.ships.length; i++)
-        {
-            if (!this.ships[i].is_sunk())
-            {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    ship_at(x, z)
-    {
-        for (let i = 0; i < this.ships.length; i++)
-        {
-            if (this.ships[i].is_at(x, z))
-            {
-                return this.ships[i];
-            }
-        }
-        return null;
-    }
-
-    hide_ships()
-    {
-        this.ships.forEach((ship) => ship.hide());
-    }
-
-}
-
-
-export class GameModel extends EventDispatcher
-{
-
-    constructor(width_x, width_z, ships, starting_player)
-    {
-        super();
-        this.width_x = width_x;
-        this.width_z = width_z;
-        this.player = starting_player;
-        this.ships = ships;
-    }
-
-    init()
-    {
-        this.home_grid = new GridModel(this.width_x, this.width_z, this);
-        this.dispatchEvent({type: 'home_grid', grid: this.home_grid});
-        this.guest_grid = new GridModel(this.width_x, this.width_z, this);
-        this.dispatchEvent({type: 'guest_grid', grid: this.guest_grid});
-        for (let i = 0; i < this.ships.length; i++)
-        {
-            this.home_grid.add_ship(
-                new ShipModel(this.ships[i], this.home_grid, this));
-            this.guest_grid.add_ship(
-                new ShipModel(this.ships[i], this.guest_grid, this));
-        }
-    }
-
-    get_player_grid(player)
-    {
-        if (player == "home")
-        {
-            return this.home_grid;
-        }
-        return this.guest_grid;
-    }
-
-    utility()
-    {
-        if (this.home_grid.ships_sunk())
-        {
-            return 1;
-        }
-        if (this.guest_grid.ships_sunk())
-        {
-            return -1;
-        }
-        return 0;
-    }
-
-    ev_()
-    {
-        this.dispatchEvent('hola', "Hellooo");
-    }
-
-    hide_ships()
-    {
-        this.home_grid.hide_ships();
-        this.guest_grid.hide_ships();
-    }
-
-    is_terminal()
-    {
-        return this.utility() != 0;
-    }
-
-    change_player()
-    {
-        this.player = -1 * this.player;
-        console.log(this.player);
-        this.dispatchEvent({type: 'player_change', new_player: this.player});
-    }
-
-    move(x, z)
-    {
-        let target_grid = this.get_player_grid(this.player);
-        target_grid.touch(x, z);
-        this.change_player();
+        return (true);
     }
 
     get_opponent(player)
@@ -430,8 +221,159 @@ export class GameModel extends EventDispatcher
         if (player == "home")
         {
             return ("guest");
-        } 
+        }
         return ("home");
+    }
+
+    check_shot(player, x, y)
+    {
+        var ship = this._get_ship_at_pos(player, x, y);
+        if (ship == null)
+        {
+            return ({
+                "player": player,
+                "type": "miss",
+                "x": x,
+                "y": y
+            });
+        }
+        else
+        {
+            if (this._is_sinking_shot(player, ship, x, y))
+            {
+                return ({
+                    "player": player,
+                    "type": "sunk",
+                    "x": x,
+                    "y": y,
+                    "ship_x": this.state[player]["ships"][ship]["x"],
+                    "ship_y": this.state[player]["ships"][ship]["y"],
+                    "ship": ship,
+                    "direction": this.state[player]["ships"][ship]["direction"]
+                });
+            }
+            else
+            {
+                return ({
+                    "player": player,
+                    "type": "hit",
+                    "x": x,
+                    "y": y
+                });
+            }
+        }
+    }
+
+    hide_all()
+    {
+        if (this.state["home"]["ships"]["small"]["state"] == "placed")
+            this.state["home"]["ships"]["small"]["state"] = "hidden";
+        if (this.state["home"]["ships"]["medium"]["state"] == "placed")
+            this.state["home"]["ships"]["medium"]["state"] = "hidden";
+        if (this.state["home"]["ships"]["large"]["state"] == "placed")
+            this.state["home"]["ships"]["large"]["state"] = "hidden";
+        if (this.state["guest"]["ships"]["small"]["state"] == "placed")
+            this.state["guest"]["ships"]["small"]["state"] = "hidden";
+        if (this.state["guest"]["ships"]["medium"]["state"] == "placed")
+            this.state["guest"]["ships"]["medium"]["state"] = "hidden";
+        if (this.state["guest"]["ships"]["large"]["state"] == "placed")
+            this.state["guest"]["ships"]["large"]["state"] = "hidden";
+        this.dispatchEvent({type: 'update', ship: this});
+    }
+
+    update_model(message)
+    {
+        if (message["type"] == "preview")
+        {
+            var player = message["player"];
+            var x = message["x"];
+            var y = message["y"];
+            var ship = message["ship"];
+            var direction = message["direction"];
+            this.state[player]["ships"][ship]["direction"] = direction;
+            this.state[player]["ships"][ship]["x"] = x;
+            this.state[player]["ships"][ship]["y"] = y;
+            if (this.valid_placement(player, ship, x, y, direction))
+            {
+                this.state[player]["ships"][ship]["state"] = "valid";
+            }
+            else
+            {
+                this.state[player]["ships"][ship]["state"] = "invalid";
+            }
+            this.state[player]["ships"][ship]["cells"] = this._get_cells(
+                ship, x, y, direction);
+            this.state[player]["ships"][ship]["hit_cells"] = [];
+        }
+        if (message["type"] == "hide")
+        {
+            var player = message["player"];
+            var x = message["x"];
+            var y = message["y"];
+            var ship = message["ship"];
+            this.state[player]["ships"][ship]["x"] = x;
+            this.state[player]["ships"][ship]["y"] = y;
+            this.state[player]["ships"][ship]["hit_cells"] = [];
+            this.state[player]["ships"][ship]["state"] = "invisible";
+        }
+        if (message["type"] == "placement")
+        {
+            var player = message["player"];
+            var x = message["x"];
+            var y = message["y"];
+            var ship = message["ship"];
+            var direction = message["direction"];
+            if (this.valid_placement(player, ship, x, y, direction))
+            {
+                this.state[player]["ships"][ship]["direction"] = direction;
+                this.state[player]["ships"][ship]["x"] = x;
+                this.state[player]["ships"][ship]["y"] = y;
+                this.state[player]["ships"][ship]["state"] = "placed";
+                this.state[player]["ships"][ship]["cells"] = this._get_cells(
+                    ship, x, y, direction);
+                this.state[player]["ships"][ship]["hit_cells"] = [];
+            }
+        }
+        else if (message["type"] == "hit")
+        {
+            var player = message["player"];
+            var x = message["x"];
+            var y = message["y"];
+            var ship = this._get_ship_at_pos(player, x, y);
+            this.state[player]["grid"][x][y] = "hit";
+            if (ship != null)
+            {
+                var hit_cells = this.state[player]["ships"][ship]["hit_cells"];
+                if (!this._cell_in_list(hit_cells, x, y))
+                {
+                    this.state[player]["ships"][ship]["hit_cells"].push([x, y]);
+                }
+            }
+        }
+        else if (message["type"] == "miss")
+        {
+            var player = message["player"];
+            var x = message["x"];
+            var y = message["y"];
+            this.state[player]["grid"][x][y] = "miss";
+        }
+        else if (message["type"] == "sunk")
+        {
+            var player = message["player"];
+            var x = message["x"];
+            var y = message["y"];
+            this.state[player]["grid"][x][y] = "hit";
+            var ship_x = message["ship_x"];
+            var ship_y = message["ship_y"];
+            var ship = message["ship"];
+            var direction = message["direction"];
+            var hit_cells = this.state[player]["ships"][ship]["hit_cells"];
+            this.state[player]["ships"][ship]["direction"] = direction;
+            this.state[player]["ships"][ship]["x"] = ship_x;
+            this.state[player]["ships"][ship]["y"] = ship_y;
+            this.state[player]["ships"][ship]["state"] = "sunk";
+        }
+        this.dispatchEvent({type: 'update', ship: this});
     }
 
 }
