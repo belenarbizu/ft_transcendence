@@ -385,6 +385,7 @@ class Match(models.Model):
         self.save()
         self.update_ELO()
         layer = get_channel_layer()
+        
         if competitor == self.home:
             self.guest.eliminated = True
             self.guest.save()
@@ -401,6 +402,10 @@ class Match(models.Model):
                     "type": "forward",
                     "data":json.dumps({"type": "end", "winner": "guest"})
                     })
+        LiveUpdateConsumer.update_forms(
+			[f"user_{self.home.user.id}", f"user_{self.guest.user.id}"],
+			["#user-games-refresh"]
+		)
         if self.tournament:
             Tournament.objects.new_round(self.tournament)
 
@@ -442,6 +447,10 @@ class Match(models.Model):
         if self.guest.user == user:
             self.guest_ready = True
         self.try_start()
+        LiveUpdateConsumer.update_forms(
+			[f"user_{self.home.user.id}", f"user_{self.guest.user.id}"],
+			["#user-games-refresh"]
+		)
         self.save()
 
     def leave(self, user):
@@ -455,6 +464,10 @@ class Match(models.Model):
                 self.home_ready = False
             if self.guest.user == user:
                 self.guest_ready = False
+        LiveUpdateConsumer.update_forms(
+			[f"user_{self.home.user.id}", f"user_{self.guest.user.id}"],
+			["#user-games-refresh"]
+		)
         self.save()
 
 
@@ -545,7 +558,7 @@ class Competitor(models.Model):
             return self.user.picture.url
         
     def disqualify(self):
-        for match in Match.objects.played_by(self).not_finished():
+        for match in Match.objects.played_by(self.user).not_finished():
             match.lose(self)
         self.eliminated = True
 
