@@ -33,6 +33,7 @@ GAME_CHOICES = (
 LANGUAGE_CHOICES = (
     ('es', _('Spanish')),
     ('en', _('English')),
+    ('da-dk', _('Danish'))
 )
 
 class CustomUser(AbstractUser):
