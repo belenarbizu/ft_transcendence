@@ -53,7 +53,8 @@ export class Controller
             var opponent = this.model.get_opponent(message["player"]);
             if (this.mode == "local")
             {
-                this.model.hide_all();
+                this.model.hide_all("home");
+                this.model.hide_all("guest");
             }
             if (message["player"] == "home")
             {
@@ -498,6 +499,7 @@ export class CPU
                     Math.random() * 2) == 0 ? "horizontal" : "vertical"
             });
         }
+        this.model.hide_all(this.player);
         this.controller.interface({
             "player": this.player,
             "type": "placed"

@@ -6,7 +6,7 @@
 /*   By: plopez-b <plopez-b@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 00:46:06 by plopez-b          #+#    #+#             */
-/*   Updated: 2024/08/18 02:39:05 by plopez-b         ###   ########.fr       */
+/*   Updated: 2024/08/18 05:06:41 by plopez-b         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,22 +91,6 @@ export class GridCell extends THREE.Object3D
     }
 }
 
-function ship_factory(length)
-{
-    if (length == 2)
-    {
-        return new Ship('/static/backend/pirates/ship2.glb', 2, 0, 0.6, 0.5);
-    }
-    if (length == 3)
-    {
-        return  new Ship('/static/backend/pirates/ship3.glb', 3, 0, 0.8, 0.9);
-    }
-    if (length == 4)
-    {
-        return  new Ship('/static/backend/pirates/ship4.glb', 4, 0, 1, 1.6);
-    }
-}
-
 export class PlayerGrid extends THREE.Object3D
 {
     constructor(model, player)
@@ -133,61 +117,6 @@ export class PlayerGrid extends THREE.Object3D
                 cell.position.set(z_, 0, x_);
                 this.cells.push(cell.mesh);
                 this.add(cell);
-            }
-        }
-    }
-
-    on_new_ship(event)
-    {
-        let ship = ship_factory(event.ship.length);
-        this.ships.push(ship);
-        this.add(ship);
-        event.ship.addEventListener(
-            'good_location', (o) => ship.on_good_location(o));
-        event.ship.addEventListener(
-            'outside_grid', (o) => ship.on_bad_location(o));
-        event.ship.addEventListener(
-            'overlap', (o) => ship.on_overlap(o));
-        event.ship.addEventListener(
-            'move', (o) => ship.on_move(o));
-        event.ship.addEventListener(
-            'locate', (o) => ship.on_locate(o));
-        event.ship.addEventListener(
-            'sunk', (o) => ship.on_sunk(o));
-        event.ship.addEventListener(
-            'hide', (o) => ship.on_hide(o));
-    }
-
-    on_hit(event)
-    {
-        for (let i = 0; i < this.cells.length; i++)
-        {
-            let cell = this.cells[i];
-            if (cell.value[0] == event.cell[0]
-                && cell.value[1] == event.cell[1])
-            {
-                cell.default_material = new THREE.MeshPhongMaterial(
-                    { color: 0xff0000, side: THREE.DoubleSide });
-                cell.default_material.opacity = 0.3;
-                cell.default_material.transparent = true
-                cell.material = cell.default_material;
-            }
-        }
-    }
-
-    on_miss(event)
-    {
-        for (let i = 0; i < this.cells.length; i++)
-        {
-            let cell = this.cells[i];
-            if (cell.value[0] == event.cell[0]
-                && cell.value[1] == event.cell[1])
-            {
-                cell.default_material = new THREE.MeshPhongMaterial(
-                    { color: 0xffffff, side: THREE.DoubleSide });
-                cell.default_material.opacity = 0.3;
-                cell.default_material.transparent = true
-                cell.material = cell.default_material;
             }
         }
     }
@@ -306,66 +235,6 @@ export class Ship extends THREE.Object3D
                 }
             });
         }
-    }
-
-    on_good_location(event)
-    {
-        this.visible = true;
-        this.traverse((o) => {
-            if (o.isMesh)
-            {
-                o.material = this.hover_material;
-            }
-        });
-    }
-
-    on_overlap(event)
-    {
-        this.visible = true;
-        this.traverse((o) => {
-            if (o.isMesh)
-            {
-                o.material = this.overlap_material;
-            }
-        });
-    }
-
-    on_bad_location(event)
-    {
-        this.visible = false;
-    }
-
-    on_move()
-    {
-        this.position.set(event.ship.x_position, 0, event.ship.z_position);
-        this.rotation.set(0, event.ship.direction * Math.PI / 2, 0);
-    }
-
-    on_locate(event)
-    {
-        this.visible = true;
-        this.traverse((o) => {
-            if (o.isMesh)
-            {
-                o.material = o.default_material;
-            }
-        })
-    }
-
-    on_sunk(event)
-    {
-        this.visible = true;
-        this.traverse((o) => {
-            if (o.isMesh)
-            {
-                o.material = this.death_material;
-            }
-        });
-    }
-
-    on_hide(event)
-    {
-        this.visible = false;
     }
 
     set_default_material()

@@ -30,6 +30,7 @@ export class View extends GameView
         this.guest_x = (6 / 2 + 2);
 
         this._lights();
+        this._sound();
         this._objects();
         this._renderer();
         this._listeners();
@@ -45,6 +46,31 @@ export class View extends GameView
         this.directional_light = new THREE.DirectionalLight(0xffffaa, 5);
         this.directional_light.position.set(100, 100, 0);
         this.scene.add(this.directional_light);
+    }
+
+    _sound()
+    {
+        this.listener = new THREE.AudioListener();
+        this.camera.add(this.listener);
+
+        this.sound = new THREE.Audio(this.listener);
+        var sound_ = this.sound;
+
+        this.audioLoader = new THREE.AudioLoader();
+        this.audioLoader.load(
+            '/static/backend/pirates/pirates_revenge.mp3',
+            function(buffer) {
+                sound_.setBuffer(buffer);
+                sound_.setLoop(true);
+                sound_.setVolume(0.5);
+                sound_.play();
+                this.sound = sound_;
+            }.bind(this));
+    }
+
+    end()
+    {
+        this.sound.pause();
     }
 
     _objects()

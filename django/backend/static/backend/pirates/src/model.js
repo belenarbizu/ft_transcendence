@@ -264,20 +264,14 @@ export class Model extends EventDispatcher
         }
     }
 
-    hide_all()
+    hide_all(player)
     {
-        if (this.state["home"]["ships"]["small"]["state"] == "placed")
-            this.state["home"]["ships"]["small"]["state"] = "hidden";
-        if (this.state["home"]["ships"]["medium"]["state"] == "placed")
-            this.state["home"]["ships"]["medium"]["state"] = "hidden";
-        if (this.state["home"]["ships"]["large"]["state"] == "placed")
-            this.state["home"]["ships"]["large"]["state"] = "hidden";
-        if (this.state["guest"]["ships"]["small"]["state"] == "placed")
-            this.state["guest"]["ships"]["small"]["state"] = "hidden";
-        if (this.state["guest"]["ships"]["medium"]["state"] == "placed")
-            this.state["guest"]["ships"]["medium"]["state"] = "hidden";
-        if (this.state["guest"]["ships"]["large"]["state"] == "placed")
-            this.state["guest"]["ships"]["large"]["state"] = "hidden";
+        if (this.state[player]["ships"]["small"]["state"] == "placed")
+            this.state[player]["ships"]["small"]["state"] = "hidden";
+        if (this.state[player]["ships"]["medium"]["state"] == "placed")
+            this.state[player]["ships"]["medium"]["state"] = "hidden";
+        if (this.state[player]["ships"]["large"]["state"] == "placed")
+            this.state[player]["ships"]["large"]["state"] = "hidden";
         this.dispatchEvent({type: 'update', ship: this});
     }
 

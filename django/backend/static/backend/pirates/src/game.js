@@ -13,11 +13,11 @@ export class PiratesGame
         this.controller = new Controller(this.model, this.view, url, mode);
         if (mode == "local" || mode == "home" || mode == "cpu")
         {
-            this.home = new Human(this.controller, "home");
+            this.home = new CPU(this.controller, "home");
         }
         if (mode == "local" || mode == "guest")
         {
-            this.guest = new Human(this.controller, "guest");
+            this.guest = new CPU(this.controller, "guest");
         }
         if (mode == "cpu")
         {
@@ -31,6 +31,7 @@ export class PiratesGame
     disconnect()
     {
         this.controller.webSocket.close();
+        this.view.end();
     }
 }
 
