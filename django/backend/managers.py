@@ -71,7 +71,14 @@ class ChatMessageManager(
 
 class MatchManager(
     models.Manager.from_queryset(querysets.MatchQuerySet)):
-	pass
+	
+	def create(self, *args, **kwargs):
+		result = super().create(*args, **kwargs)
+		LiveUpdateConsumer.update_forms(
+			[f"user_{result.home.user.id}", f"user_{result.guest.user.id}"],
+			["#user-games-refresh"]
+		)
+		return result
         
 
 class TournamentManager(

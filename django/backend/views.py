@@ -82,6 +82,17 @@ def user_view_friends(request, username):
 
 @require_http_methods(["POST"])
 @login_401
+def user_view_games(request, username):
+	user = get_object_or_404(CustomUser, username=username)
+	data = {
+		"user": user,
+		"games": Match.objects.played_by(user),
+	}
+	#user_id = int(request.POST.get("user_id"))
+	return render(request, "backend/components/last_games.html", data)
+
+@require_http_methods(["POST"])
+@login_401
 def user_view_info(request, username):
 	user = get_object_or_404(CustomUser, username=username)
 	data = {
@@ -399,10 +410,17 @@ def remove_match(request):
 	user_id = int(request.POST.get("user_id"))
 	user = CustomUser.objects.get(id=user_id)
 	match_id = request.POST.get("match_id")
-	Match.objects.get(id=match_id).delete()
+	match = Match.objects.get(id=match_id)
+	home = match.home.user
+	guest = match.guest.user
+	match.delete()
 	LiveUpdateConsumer.update_forms(
 		[f"user_{user_id}"],
 		["#chat-refresh"]
+	)
+	LiveUpdateConsumer.update_forms(
+		[f"user_{home.id}", f"user_{guest.id}"],
+		["#user-games-refresh"]
 	)
 	data = {
 		'messages': ChatMessage.objects.between(user, request.user).ordered(),
