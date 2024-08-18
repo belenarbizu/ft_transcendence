@@ -428,3 +428,8 @@ def remove_match(request):
 		"online_status": user.see_online_status_as(request.user),
 		}
 	return render(request, "backend/components/chat/chat_messages.html", data)
+
+@require_http_methods(["POST"])
+@login_401
+def modal_play(request):
+	pass
