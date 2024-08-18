@@ -6,7 +6,7 @@
 /*   By: plopez-b <plopez-b@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 00:49:29 by plopez-b          #+#    #+#             */
-/*   Updated: 2024/08/18 02:36:46 by plopez-b         ###   ########.fr       */
+/*   Updated: 2024/08/18 02:51:13 by plopez-b         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -130,6 +130,10 @@ export class Controller
                     this.shot_phase(message["player"]);
                 }.bind(this));
         }
+        else if (message["type"] == "end")
+        {
+            this.view.set_winner(message["winner"]);
+        }
     }
 
     activate_controller(player)
@@ -184,6 +188,15 @@ export class Controller
             var player_controller = this.players[player];
             if (player_controller != null)
             {
+                var winner = this.model.get_winner();
+                if (winner != null)
+                {
+                    this.interface({
+                        "type": "end",
+                        "winner": winner
+                    });
+                    return;
+                }
                 if (player_controller.mouse != null)
                 {
                     player_controller.mouse.cells = this.view.get_player_cells(

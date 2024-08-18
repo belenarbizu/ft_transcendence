@@ -159,6 +159,15 @@ export class Model extends EventDispatcher
         return (score);
     }
 
+    get_winner()
+    {
+        if (this.get_score("home") == 3)
+            return ("home");
+        if (this.get_score("guest") == 3)
+            return ("guest");
+        return (null);
+    }
+
     next_ship_to_place(player)
     {
         if (this.state[player]["ships"]["small"]["state"] != "placed"
