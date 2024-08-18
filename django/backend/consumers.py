@@ -128,6 +128,7 @@ class GameConsumer(WebsocketConsumer):
         self.game.join(self.user)
     
     def disconnect(self, code):
+        self.game.refresh_from_db()
         self.game.leave(self.user)
         async_to_sync(self.channel_layer.group_discard)(
             self.group_name, self.channel_name)

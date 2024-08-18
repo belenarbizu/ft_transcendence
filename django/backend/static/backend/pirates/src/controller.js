@@ -75,6 +75,15 @@ export class Controller
             this.view.set_scores(
                 this.model.get_score("home"),
                 this.model.get_score("guest"));
+            var winner = this.model.get_winner();
+            if (winner != null)
+            {
+                this.interface({
+                    "type": "end",
+                    "winner": winner
+                });
+                return;
+            }
         }
         else if (message["type"] == "shot")
         {
@@ -82,13 +91,7 @@ export class Controller
             var shot = this.model.check_shot(
                 opponent, message["x"], message["y"]);
             this.interface(shot);
-            if (shot["type"] == "sunk")
-            {
-                this.interface({
-                    "player": opponent,
-                    "type": "goal"
-                });
-            }
+            
         }
         else if (message["type"] == "hit"
             || message["type"] == "sunk")
@@ -103,6 +106,13 @@ export class Controller
                     this.view.set_scores(
                         this.model.get_score("home"),
                         this.model.get_score("guest"));
+                    if (message["type"] == "sunk")
+                    {
+                        this.interface({
+                            "player": message["player"],
+                            "type": "goal"
+                        });
+                    }
                     this.shot_phase(message["player"]);
                 }.bind(this));
         }
@@ -169,22 +179,13 @@ export class Controller
     shot_phase(player)
     {
         this.view.set_turn(player);
-        this.activate_controller(null);
         var opponent = this.model.get_opponent(player);
+        this.activate_controller(null);
         this.view.focus_grid(opponent).then(function(o){
             this.activate_controller(player);
             var player_controller = this.players[player];
             if (player_controller != null)
             {
-                var winner = this.model.get_winner();
-                if (winner != null)
-                {
-                    this.interface({
-                        "type": "end",
-                        "winner": winner
-                    });
-                    return;
-                }
                 if (player_controller.mouse != null)
                 {
                     player_controller.mouse.cells = this.view.get_player_cells(
@@ -257,10 +258,6 @@ export class Human
 
     on_hover_leave(event)
     {
-        if (!this.is_active)
-        {
-            return;
-        }
         if (this.model.all_ships_placed(this.player))
         {
             // Shot
@@ -295,6 +292,7 @@ export class Human
             if (this.model.all_ships_placed(this.player))
             {
                 // Shot
+                this.controller.activate_controller(null);
                 var x = event.cell.value[0];
                 var y = event.cell.value[1];
                 event.cell.material = event.cell.default_material;
