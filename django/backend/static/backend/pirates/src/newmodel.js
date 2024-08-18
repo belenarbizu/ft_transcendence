@@ -331,11 +331,14 @@ export class Model extends EventDispatcher
             var x = message["x"];
             var y = message["y"];
             var ship = this._get_ship_at_pos(player, x, y);
-            var hit_cells = this.state[player]["ships"][ship]["hit_cells"];
             this.state[player]["grid"][x][y] = "hit";
-            if (!this._cell_in_list(hit_cells, x, y))
+            if (ship != null)
             {
-                this.state[player]["ships"][ship]["hit_cells"].push([x, y]);
+                var hit_cells = this.state[player]["ships"][ship]["hit_cells"];
+                if (!this._cell_in_list(hit_cells, x, y))
+                {
+                    this.state[player]["ships"][ship]["hit_cells"].push([x, y]);
+                }
             }
         }
         else if (message["type"] == "miss")
@@ -350,6 +353,7 @@ export class Model extends EventDispatcher
             var player = message["player"];
             var x = message["x"];
             var y = message["y"];
+            this.state[player]["grid"][x][y] = "hit";
             var ship_x = message["ship_x"];
             var ship_y = message["ship_y"];
             var ship = message["ship"];
@@ -359,11 +363,6 @@ export class Model extends EventDispatcher
             this.state[player]["ships"][ship]["x"] = ship_x;
             this.state[player]["ships"][ship]["y"] = ship_y;
             this.state[player]["ships"][ship]["state"] = "sunk";
-            this.state[player]["grid"][x][y] = "hit";
-            if (!this._cell_in_list(hit_cells, x, y))
-            {
-                this.state[player]["ships"][ship]["hit_cells"].push([x, y]);
-            }
         }
         this.dispatchEvent({type: 'update', ship: this});
     }

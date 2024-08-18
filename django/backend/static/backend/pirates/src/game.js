@@ -1,7 +1,7 @@
 
 import { Model } from './newmodel.js';
 import { View } from './view.js';
-import { Controller, Human } from './controller.js';
+import { Controller, Human, CPU } from './controller.js';
 
 
 export class PiratesGame
@@ -11,9 +11,16 @@ export class PiratesGame
     {
         this.model = new Model();
         this.view = new View(this.model);
-        this.controller = new Controller(this.model, this.view, url, "local");
-        this.home = new Human(this.controller, "home");
-        this.guest = new Human(this.controller, "guest");
+        this.mode = mode;
+        this.controller = new Controller(this.model, this.view, url, mode);
+        if (mode == "local" || mode == "home" || mode == "cpu")
+        {
+            this.home = new CPU(this.controller, "home");
+        }
+        if (mode == "local" || mode == "guest")
+        {
+            this.guest = new CPU(this.controller, "guest");
+        }
     }
 
     start()

@@ -6,7 +6,7 @@
 /*   By: plopez-b <plopez-b@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 00:49:29 by plopez-b          #+#    #+#             */
-/*   Updated: 2024/08/17 07:55:31 by plopez-b         ###   ########.fr       */
+/*   Updated: 2024/08/18 02:36:46 by plopez-b         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,6 @@ export class Controller
 
         this.home_placed = false;
         this.guest_placed = false;
-        this.place_phase("home");
     }
     
     receiver(message)
@@ -52,6 +51,14 @@ export class Controller
         if (message["type"] == "ready")
         {
             this.view.hide_waiting_screen();
+            if (this.mode == "guest")
+            {
+                this.place_phase("guest");
+            }
+            if (this.mode == "home" || this.mode == "local")
+            {
+                this.place_phase("home");
+            }
         }
         else if (message["type"] == "placed")
         {
@@ -90,7 +97,7 @@ export class Controller
             if (shot["type"] == "sunk")
             {
                 this.interface({
-                    "player": message["player"],
+                    "player": opponent,
                     "type": "goal"
                 });
             }
@@ -159,6 +166,10 @@ export class Controller
                     player_controller.mouse.cells = this.view.get_player_cells(
                         player);
                 }
+                if (player_controller.on_place_phase != null)
+                {
+                    player_controller.on_place_phase();
+                }
             }
         }.bind(this));
     }
@@ -177,6 +188,10 @@ export class Controller
                 {
                     player_controller.mouse.cells = this.view.get_player_cells(
                         opponent);
+                }
+                if (player_controller.on_shot_phase != null)
+                {
+                    player_controller.on_shot_phase();
                 }
             }
         }.bind(this));
@@ -313,4 +328,196 @@ export class Human
             }
         }        
     }
+}
+
+export class CPU
+{
+
+    constructor(controller, player)
+    {
+        this.controller = controller;
+        this.player = player;
+        this.view = controller.view;
+        this.model = controller.model;
+        this.controller.players[player] = this;
+        this.is_active = true;
+        this.opponent = this.model.get_opponent(this.player);
+
+        this.grid = [[0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0]];
+        this.count = [];
+        this.has_hit = 0;
+    }
+
+    _update_sunk_ship(ship)
+    {
+        var ships = this.model.state[this.opponent]["ships"];
+        if (ships[ship]["state"] == "sunk")
+        {
+            var cells = this.model._get_cells(
+                ship,
+                ships[ship]["x"],
+                ships[ship]["y"],
+                ships[ship]["direction"]);
+            for (let i = 0; i < cells.length; i++)
+            {
+                var cell = cells[i];
+                this.grid[cell[0]][cell[1]] = "miss";
+            }
+        }
+    }
+
+    _update_grid()
+    {
+        this.has_hit = 0;
+        for (let x = 0; x < 6; x++)
+        {
+            for (let y = 0; y < 6; y++)
+            {
+                this.grid[x][y] = this.model.state[this.opponent]["grid"][x][y];
+            }
+        }
+        this._update_sunk_ship("small");
+        this._update_sunk_ship("medium");
+        this._update_sunk_ship("large");
+        for (let x = 0; x < 6; x++)
+        {
+            for (let y = 0; y < 6; y++)
+            {
+                if (this.grid[x][y] == "hit")
+                {
+                    this.has_hit += 1;
+                }
+            }
+        }
+    }
+
+    _add_count(ship, direction)
+    {
+        if (this.model.state[this.opponent]["ships"][ship]["state"] 
+            != "sunk")
+        {
+            for (let x = 0; x < 6; x++)
+            {
+                for (let y = 0; y < 6; y++)
+                {
+                    if (this.model.valid_placement(
+                        this.opponent, ship, x, y, direction))
+                    {
+                        var cells = this.model._get_cells(
+                            ship, x, y, direction);
+                        var valid = true;
+                        var hit = 0
+                        for (let i = 0; i < cells.length; i++)
+                        {
+                            var cell = cells[i];
+                            if (this.grid[cell[0]][cell[1]] == "miss")
+                            {
+                                valid = false;
+                            }
+                            if (this.grid[cell[0]][cell[1]] == "hit")
+                            {
+                                hit += 1;
+                            }
+                        }
+                        if (this.has_hit > 0)
+                        {
+                            valid = valid && hit > 0;
+                        }
+                        if (valid)
+                        {
+                            for (let i = 0; i < cells.length; i++)
+                            {
+                                var cell = cells[i];
+                                if (this.grid[cell[0]][cell[1]] != "hit")
+                                    this.count[cell[0]][cell[1]] += 1;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    _max_count()
+    {
+        for (let x = 0; x < 6; x++)
+        {
+            for (let y = 0; y < 6; y++)
+            {
+                if (this.count[x][y] > this.max_count)
+                {
+                    this.max_count = this.count[x][y];
+                }
+            }
+        }
+    }
+
+    _get_options()
+    {
+        var options = [];
+        for (let x = 0; x < 6; x++)
+        {
+            for (let y = 0; y < 6; y++)
+            {
+                if (this.count[x][y] == this.max_count)
+                {
+                    options.push([x, y]);
+                }
+            }
+        }
+        return (options);
+    }
+
+    _update_count()
+    {
+        this.count = [[0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0]];
+        this.max_count = 0;
+        this._add_count("small", "horizontal");
+        this._add_count("small", "vertical");
+        this._add_count("medium", "horizontal");
+        this._add_count("medium", "vertical");
+        this._add_count("large", "horizontal");
+        this._add_count("large", "vertical");
+        this._max_count();
+    }
+
+    on_place_phase()
+    {
+        while (!this.model.all_ships_placed(this.player))
+        {
+            this.model.update_model({
+                "type": "placement",
+                "player": this.player,
+                "x": Math.floor(Math.random() * 6),
+                "y": Math.floor(Math.random() * 6),
+                "ship": this.model.next_ship_to_place(this.player),
+                "direction": Math.floor(
+                    Math.random() * 2) == 0 ? "horizontal" : "vertical"
+            });
+        }
+        this.controller.interface({
+            "player": this.player,
+            "type": "placed"
+        });
+    }
+
+    on_shot_phase()
+    {
+        this._update_grid();
+        this._update_count();
+        var options = this._get_options();
+        var option_id = Math.floor(Math.floor(Math.random() * options.length));
+        var option = options[option_id];
+        this.controller.interface({
+            "player": this.player,
+            "type": "shot",
+            "x": option[0],
+            "y": option[1]
+        });
+    }
+
 }

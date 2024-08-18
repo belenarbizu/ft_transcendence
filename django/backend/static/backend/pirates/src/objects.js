@@ -6,7 +6,7 @@
 /*   By: plopez-b <plopez-b@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 00:46:06 by plopez-b          #+#    #+#             */
-/*   Updated: 2024/08/17 06:42:21 by plopez-b         ###   ########.fr       */
+/*   Updated: 2024/08/18 02:39:05 by plopez-b         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -421,7 +421,6 @@ export class Asteroid extends THREE.Object3D
                         _this.add(gltf.scene);
                         _this.animations = gltf.animations;
                         _this.scene = gltf.scene;
-                        console.log(_this.animations);
                         o.position.set(x, y, z);
                     }
                 });
