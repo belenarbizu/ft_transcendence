@@ -13,8 +13,6 @@ export class Mouse extends EventDispatcher
             'mousemove', this.on_mouse_move.bind(this));
         document.addEventListener(
             'click', this.on_left_click.bind(this));
-        document.addEventListener(
-            'contextmenu', this.on_right_click.bind(this));
 
         this.cells = [];
     }
@@ -60,11 +58,4 @@ export class Mouse extends EventDispatcher
         this.on_mouse_move(event);
     }
 
-    on_right_click(event)
-    {
-        event.preventDefault();
-        this.dispatchEvent({
-            type: 'right_click', cell: this.selected_cell});
-        this.on_mouse_move(event);
-    }
 }

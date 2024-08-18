@@ -1,15 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   objects.js                                         :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: plopez-b <plopez-b@student.42malaga.com    +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/06/10 00:46:06 by plopez-b          #+#    #+#             */
-/*   Updated: 2024/08/18 05:06:41 by plopez-b         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 
@@ -262,7 +250,8 @@ export class SkyBox extends THREE.Object3D
         this.geometry = new THREE.SphereGeometry(500, 60, 40);
         this.geometry.scale(-1, 1, 1);
 
-        this.texture = new THREE.TextureLoader().load( '/static/backend/pirates/space.jpg' );
+        this.texture = new THREE.TextureLoader().load(
+            '/static/backend/pirates/space.jpg' );
         this.texture.colorSpace = THREE.SRGBColorSpace;
         this.material = new THREE.MeshBasicMaterial({map: this.texture});
 

@@ -19,6 +19,9 @@ export class View extends GameView
 
         this.clock = new THREE.Clock();
 
+        this.item = [];
+        this.camera_movement = 0;
+
         this.mouse_cell = null;
         this.pointer_down_x = 0;
         this.theta = 0;
@@ -184,8 +187,9 @@ export class View extends GameView
     _listeners()
     {
         window.addEventListener('resize', (o) => this.on_window_resize(o));
-        document.addEventListener('wheel', (o) => this.on_mouse_wheel(o));
         this.model.addEventListener('update', (o) => this.on_model_update(o));
+        document.addEventListener("keyup", this.on_key_up.bind(this));
+        document.addEventListener("keydown", this.on_key_down.bind(this));
     }
 
     on_window_resize(event)
@@ -196,11 +200,38 @@ export class View extends GameView
         this.renderer.setPixelRatio( window.devicePixelRatio );
         this.renderer.setSize( positionInfo.width, positionInfo.height );
     }
-    
-    on_mouse_wheel(event)
-    {
-        this.lon = this.lon + event.deltaY * 0.05;
-        this.camera.updateProjectionMatrix();
+
+    on_key_down(event) {
+        if (this.item.indexOf(event.key) < 0)
+        {
+            this.item.push(event.key);
+        }
+        else
+        {
+            return;
+        }
+        if (event.key == "a")
+        {
+            this.camera_movement += 1;
+        }
+        if (event.key == "d")
+        {
+            this.camera_movement -= 1;
+        }
+    }
+
+    on_key_up(event) {
+        let i = this.item.indexOf(event.key);
+        if (i > -1)
+            this.item.splice(i, 1);
+        if (event.key == "a")
+        {
+            this.camera_movement -= 1;
+        }
+        if (event.key == "d")
+        {
+            this.camera_movement += 1;
+        }
     }
 
     on_model_update(event)
@@ -272,6 +303,7 @@ export class View extends GameView
             this.asteroid.mixer.update(delta);
         }
 
+        this.lon += delta * this.camera_movement * 100;
         var phi = THREE.MathUtils.degToRad(55);
         this.theta = THREE.MathUtils.degToRad(this.lon);
 

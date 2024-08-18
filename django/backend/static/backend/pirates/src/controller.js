@@ -215,15 +215,39 @@ export class Human
 
         this.mouse = new Mouse(this.view);
         this.mouse.addEventListener(
-            'hover_enter', (o) => this.on_hover_enter(o));
+            'hover_enter', this.on_hover_enter.bind(this));
         this.mouse.addEventListener(
-            'hover_leave', (o) => this.on_hover_leave(o));
+            'hover_leave', this.on_hover_leave.bind(this));
         this.mouse.addEventListener(
-            'left_click', (o) => this.on_left_click(o));
+            'left_click', this.on_left_click.bind(this));
+        document.addEventListener("keyup", this.on_key_up.bind(this));
+        document.addEventListener("keydown", this.on_key_down.bind(this));
 
         this.dir = "vertical";
+        this.item = [];
 
         this.is_active = true;
+    }
+
+    on_key_down(event) {
+        if (this.item.indexOf(event.key) < 0)
+        {
+            this.item.push(event.key);
+        }
+        else
+        {
+            return;
+        }
+        if (event.key == "s")
+        {
+            this.dir = this.dir == "vertical" ? "horizontal" : "vertical";
+        }
+    }
+
+    on_key_up(event) {
+        let i = this.item.indexOf(event.key);
+        if (i > -1)
+            this.item.splice(i, 1);
     }
 
     on_hover_enter(event)
