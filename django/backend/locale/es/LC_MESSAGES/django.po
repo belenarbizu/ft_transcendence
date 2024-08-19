@@ -89,8 +89,8 @@ msgid "Pong"
 msgstr "Pong"
 
 #: .\backend\models.py:28
-msgid "Pirates Revenge"
-msgstr "Pirates Revenge"
+msgid "Pirates"
+msgstr "Pirates"
 
 #: .\backend\models.py:32
 #: .\backend\templates\backend\components\profile_modal.html:16
@@ -140,8 +140,8 @@ msgid "Pong ELO"
 msgstr "ELO del Pong"
 
 #: .\backend\models.py:103
-msgid "Pirates Revenge ELO"
-msgstr "ELO de Pirates Revenge"
+msgid "Pirates ELO"
+msgstr "ELO de Pirates"
 
 #: .\backend\models.py:108
 msgid "You cannot invite yourself"
