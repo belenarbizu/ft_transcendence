@@ -357,14 +357,14 @@ class Match(models.Model):
         return self.mode == "cp"
     
     def mode_as(self, user):
+        if self.is_cpu:
+            return "cpu"
         if self.is_practice:
             return "local"
         if self.home.user == user:
             return "home"
         if self.guest.user == user:
             return "guest"
-        if self.is_cpu:
-            return "cpu"
         
     def update_ELO(self):
 

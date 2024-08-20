@@ -9,17 +9,17 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body col-12">
-                <form spa action="{% url 'backend:modal_play' %}" method="POST" autocomplete="off">
+                <form spa hide push action="{% url 'backend:modal_play' %}" method="POST" autocomplete="off">
                 {% csrf_token %}
                     <div class="d-flex justify-content-center mt-2">
                         <div class="form-check">
-                            <input class="form-check-input" type="radio" name="flexRadioDefault" id="radioPong" checked>
+                            <input class="form-check-input" type="radio" name="game" id="radioPong" value="po" checked>
                             <label class="form-check-label" for="radioPong">
                                 Hyperpong
                             </label>
                         </div>
                         <div class="form-check ms-4">
-                            <input class="form-check-input" type="radio" name="flexRadioDefault" id="radioPirates">
+                            <input class="form-check-input" type="radio" name="game" id="radioPirates" value="pr">
                             <label class="form-check-label" for="radioPirates">
                                 Pirates revenge
                             </label>
@@ -28,23 +28,23 @@
                     <div class="row mb-3">
                         <label for="inputAlias1" class="col-sm-4 col-form-label">{% translate 'Alias' %}</label>
                         <div class="col-sm-8">
-                            <input name="name" type="text" class="form-control" id="inputAlias1" required>
+                            <input name="alias_home" type="text" class="form-control" id="inputAliasHome">
                         </div>
                     </div>
                     <div class="row mb-3 d-flex align-items-center">
                         <label for="inputAlias2" class="col-sm-4 col-form-label">{% translate 'Alias' %}</label>
                         <div class="col-sm-8">
-                            <input name="name" type="text" class="form-control" id="inputAlias2" required>
+                            <input name="alias_guest" type="text" class="form-control" id="inputAliasGuest">
                         </div>
                         <div class="form-check d-flex align-items-center ms-2">
-                            <input class="form-check-input" type="checkbox" value="" id="checkboxIA">
+                            <input class="form-check-input" type="checkbox" name="mode" value="cp" id="checkboxIA">
                             <label class="form-check-label ms-1" for="checkboxIA">
                                 {% translate 'IA' %}
                             </label>
                         </div>
                     </div>
                     <div class="mt-4 d-flex justify-content-center">
-                        <button spa class="btn btn-dark w-50" type="submit">{% translate 'Play' %}</button>
+                        <button class="btn btn-dark w-50" type="submit">{% translate 'Play' %}</button>
                     </div>
                 </form>
             </div>
