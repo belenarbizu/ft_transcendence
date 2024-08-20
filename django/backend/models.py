@@ -28,7 +28,7 @@ TOURNAMENT_STATE_CHOICES = (
 
 GAME_CHOICES = (
     ("po", _("Pong")),
-    ("pr", _("Pirates Revenge"))
+    ("pr", _("Pirates"))
 )
 
 LANGUAGE_CHOICES = (
@@ -105,7 +105,7 @@ class CustomUser(AbstractUser):
 
     pirates_elo = models.IntegerField(
         default = 0,
-        verbose_name = _("Pirates Revenge ELO"),
+        verbose_name = _("Pirates ELO"),
     )
 
     def create_invitation(self, invited):
