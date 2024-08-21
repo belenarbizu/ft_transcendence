@@ -14,3 +14,9 @@
     <button spa class="btn" type="submit" value="es"><img src="{% static 'backend/images/es.png' %}"
             class="rounded-circle" style="height:25px;" alt=""></button>
 </form>
+<form spa action="{% url 'set_language' %}" method="post" push>{% csrf_token %}
+    <input name="next" type="hidden" value="{{ request.path }}" />
+    <input name="language" type="hidden" value="da-dk" />
+    <button spa class="btn" type="submit" value="da-dk"><img src="{% static 'backend/images/dk.png' %}"
+            class="rounded-circle" style="height:25px;" alt=""></button>
+</form>
