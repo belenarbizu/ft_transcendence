@@ -8,7 +8,7 @@
         <div class="row align-items-center mt-5">
             {% csrf_token %}
             <a spa class="btn btn-primary" href="{% url 'backend:login' %}">{% translate 'Login' %}</a>
-            <button class="btn btn-primary mt-3">{% translate 'Login with 42' %}</button>
+            <a class="btn btn-primary mt-3" href="https://api.intra.42.fr/oauth/authorize?client_id=u-s4t2ud-804fc6cf5bf442b1bc410277789c95288bc80b2c35d2a690e1014414517c132d&redirect_uri=http%3A%2F%2F127.0.0.1%3A8000%2Fes%2Flogin%2Fcallback%2F&response_type=code">{% translate 'Login with 42' %}</a>
             <a spa class="btn btn-primary mt-3" href="{% url 'backend:register' %}">{% translate 'Register' %}</a>
         </div>
     </div>
