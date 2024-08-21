@@ -428,3 +428,28 @@ def remove_match(request):
 		"online_status": user.see_online_status_as(request.user),
 		}
 	return render(request, "backend/components/chat/chat_messages.html", data)
+
+@require_http_methods(["POST"])
+@login_401
+def modal_play(request):
+	game = request.POST.get("game")
+	alias_home = request.POST.get("alias_home")
+	alias_guest = request.POST.get("alias_guest")
+	mode = request.POST.get("mode", "lo")
+	alias_home = "home" if alias_home == "" else alias_home
+	home_competitor = Competitor.objects.create(
+		user=request.user,
+		alias=alias_home
+		)
+	alias_guest = "guest" if alias_guest == "" else alias_guest
+	guest_competitor = Competitor.objects.create(
+		user=request.user,
+		alias=alias_guest
+		)
+	match = Match.objects.create(
+		mode=mode,
+		game=game,
+		home=home_competitor,
+		guest=guest_competitor
+	)
+	return redirect(reverse("backend:game", kwargs={"game_id": match.id}))
