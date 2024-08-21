@@ -20,10 +20,10 @@
                     <td class="px-3 align-middle col-1">
                         <img src="{{ match.home.get_profile_picture }}" class="avatar-sm rounded-circle" alt="">
                         {% if match.winner == match.guest %}
-                        <span class="px-2 link-dark text-decoration-none text-capitalize">
+                        <span class="px-2 link-dark text-decoration-none">
                             <del>{{ match.home.get_display_name }}</del></span>
                         {% else %}
-                        <span class="px-2 link-dark text-decoration-none text-capitalize">
+                        <span class="px-2 link-dark text-decoration-none">
                             {{ match.home.get_display_name }}</span>
                         {% endif %}
                     </td>
@@ -42,10 +42,10 @@
                     </td>
                     <td class="px-3 align-middle text-end col-1">
                         {% if match.winner == match.home %}
-                        <span class="px-2 link-dark text-decoration-none text-capitalize">
+                        <span class="px-2 link-dark text-decoration-none">
                             <del>{{ match.guest.get_display_name }}</del></span>
                         {% else %}
-                        <span class="px-2 link-dark text-decoration-none text-capitalize">
+                        <span class="px-2 link-dark text-decoration-none">
                             {{ match.guest.get_display_name }}</span>
                         {% endif %}
                         <img src="{{ match.guest.get_profile_picture }}" class="avatar-sm rounded-circle" alt="">
