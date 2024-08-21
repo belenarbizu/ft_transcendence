@@ -17,7 +17,6 @@ export class PongGame
         );
         this.view = new View3D(this.model);
         this.controller = new Controller(this.model, this.view, url);
-        console.log(mode);
         if (mode == "home" || mode == "local" || mode == "cpu")
         {
             this.home = new Human(this.controller, "home", "o", "l");
