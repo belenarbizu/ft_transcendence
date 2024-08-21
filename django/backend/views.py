@@ -342,7 +342,7 @@ def login(request):
 
 @require_http_methods(["GET"])
 def login_options(request):
-    return render(request, "backend/login_options.html", {})
+    return render(request, "backend/login_options.html", {"auth_link":settings.AUTH_LINK})
 
 @require_http_methods(["POST", "GET"])
 def register_view(request):

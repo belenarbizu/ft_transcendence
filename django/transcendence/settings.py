@@ -49,11 +49,12 @@ INSTALLED_APPS = [
 
 AUTH_USER_MODEL = "backend.CustomUser"
 
-#Variables del Login de 42
-CLIENT_UID="u-s4t2ud-804fc6cf5bf442b1bc410277789c95288bc80b2c35d2a690e1014414517c132d"
-CLIENT_SECRET="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"
-REDIRECT_URI = "http://127.0.0.1:8000/es/login/callback/"
+#Settings variables for the 42 Login
+CLIENT_UID= os.getenv("42_CLIENT_UID")
+CLIENT_SECRET= os.getenv("42_CLIENT_SECRET")
+REDIRECT_URI = os.getenv("42_REDIRECT_URI")
 LOGIN_42_SUFFIX = " (42)"
+AUTH_LINK= os.getenv("42_AUTH_LINK")
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
