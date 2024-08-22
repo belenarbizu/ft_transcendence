@@ -4,13 +4,9 @@ from .models import CustomUser
 
 class RegistrationForm(UserCreationForm):
 
-    email = forms.EmailField(
-        required=True
-    )
-
     class Meta:
         model = CustomUser
-        fields = ["username", "email", "password1", "password2",
+        fields = ["username", "password1", "password2",
                   "preferred_language"]
 
     def save(self, commit=True):
