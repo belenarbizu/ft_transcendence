@@ -34,7 +34,7 @@
                         {% else %}
                         <img src="{% static 'backend/images/profile.png' %}" class="avatar-sm rounded-circle" alt="">
                         {% endif %}
-                        <a class="px-2 link-dark text-decoration-none text-capitalize" href="{% url 'backend:user' friend.username %}" spa data-bs-toggle="tooltip"
+                        <a class="px-2 link-dark text-decoration-none" href="{% url 'backend:user' friend.username %}" spa data-bs-toggle="tooltip"
                             data-bs-title="{% translate 'View the profile of' %} {{ friend.username }}">
                             {{friend.username }}</a> {% translate 'invited you' %}
                     </td>
@@ -71,7 +71,7 @@
                         {% else %}
                         <img src="{% static 'backend/images/profile.png' %}" class="avatar-sm rounded-circle" alt="">
                         {% endif %}
-                        <a class="px-2 link-dark text-decoration-none text-capitalize" href="{% url 'backend:user' friend.username %}" spa data-bs-toggle="tooltip"
+                        <a class="px-2 link-dark text-decoration-none" href="{% url 'backend:user' friend.username %}" spa data-bs-toggle="tooltip"
                             data-bs-title="{% translate 'View the profile of' %} {{ friend.username }}">
                             {{friend.username }}</a> {% translate 'received your invitation' %}
                     </td>
@@ -97,7 +97,7 @@
                         {% else %}
                         <img src="{% static 'backend/images/profile.png' %}" class="avatar-sm rounded-circle" alt="">
                         {% endif %}
-                        <a class="px-2 link-dark text-decoration-none text-capitalize" href="{% url 'backend:user' friend.username %}" spa data-bs-toggle="tooltip"
+                        <a class="px-2 link-dark text-decoration-none" href="{% url 'backend:user' friend.username %}" spa data-bs-toggle="tooltip"
                             data-bs-title="{% translate 'View profile of' %} {{ friend.friend_of.username }}">
                             {{friend.username }}</a>
                         

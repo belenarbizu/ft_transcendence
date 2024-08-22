@@ -36,5 +36,5 @@ urlpatterns = [
     path('register/', views.register_view, name="register"),
     path('match/create/', views.create_match, name="create_match"),
     path('match/remove/', views.remove_match, name="remove_match"),
-	
+    path('play/', views.modal_play, name="modal_play"),
 ]

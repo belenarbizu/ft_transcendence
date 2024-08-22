@@ -19,7 +19,7 @@
                         <td class="ps-3 align-middle">
                             <img src="{{ game.guest.user.picture.url }}" class="avatar-sm rounded-circle" alt="">
                         </td>
-                        <td class="ps-3"><a href="{% url 'backend:user' game.guest.user.username %}" spa data-bs-toggle="tooltip" data-bs-title="{% translate 'View the profile of' %} {{ game.guest.user.username }}" class="link-dark text-decoration-none text-capitalize">{{ game.guest.user.username }}</a></td>
+                        <td class="ps-3"><a href="{% url 'backend:user' game.guest.user.username %}" spa data-bs-toggle="tooltip" data-bs-title="{% translate 'View the profile of' %} {{ game.guest.user.username }}" class="link-dark text-decoration-none">{{ game.guest.user.username }}</a></td>
                         <td>{{ game.get_game_display }}</td>
                         <td>
                             <a spa hide href="{% url 'backend:game' game.id %}">{% translate 'Play' %}</a>
@@ -46,7 +46,7 @@
                         <td class="ps-3 align-middle">
                             <img src="{{ game.home.user.picture.url }}" class="avatar-sm rounded-circle" alt="">
                         </td>
-                        <td class="ps-3"><a href="{% url 'backend:user' game.home.user.username %}" spa data-bs-toggle="tooltip" data-bs-title="{% translate 'View the profile of' %} {{ game.home.user.username }}" class="link-dark text-decoration-none text-capitalize">{{ game.home.user.username }}</a></td>
+                        <td class="ps-3"><a href="{% url 'backend:user' game.home.user.username %}" spa data-bs-toggle="tooltip" data-bs-title="{% translate 'View the profile of' %} {{ game.home.user.username }}" class="link-dark text-decoration-none">{{ game.home.user.username }}</a></td>
                         <td>{{ game.get_game_display }}</td>
                         <td>
                             <a spa hide href="{% url 'backend:game' game.id %}">{% translate 'Play' %}</a>
@@ -81,7 +81,7 @@
                         <td class="ps-3 align-middle">
                             <img src="{{ game.guest.user.picture.url }}" class="avatar-sm rounded-circle" alt="">
                         </td>
-                        <td class="ps-3"><a href="{% url 'backend:user' game.guest.user.username %}" spa data-bs-toggle="tooltip" data-bs-title="{% translate 'View the profile of' %} {{ game.guest.user.username }}" class="link-dark text-decoration-none text-capitalize">{{ game.guest.user.username }}</a></td>
+                        <td class="ps-3"><a href="{% url 'backend:user' game.guest.user.username %}" spa data-bs-toggle="tooltip" data-bs-title="{% translate 'View the profile of' %} {{ game.guest.user.username }}" class="link-dark text-decoration-none">{{ game.guest.user.username }}</a></td>
                         <td>{{ game.get_game_display }}</td>
                         <td>{{ game.date }}</td>
                         <td>
@@ -95,7 +95,7 @@
                         <td class="ps-3 align-middle">
                             <img src="{{ game.guest.user.picture.url }}" class="avatar-sm rounded-circle" alt="">
                         </td>
-                        <td class="ps-3"><a href="{% url 'backend:user' game.home.user.username %}" spa data-bs-toggle="tooltip" data-bs-title="{% translate 'View the profile of' %} {{ game.home.user.username }}" class="link-dark text-decoration-none text-capitalize">{{ game.home.user.username }}</a></td>
+                        <td class="ps-3"><a href="{% url 'backend:user' game.home.user.username %}" spa data-bs-toggle="tooltip" data-bs-title="{% translate 'View the profile of' %} {{ game.home.user.username }}" class="link-dark text-decoration-none">{{ game.home.user.username }}</a></td>
                         <td>{{ game.get_game_display }}</td>
                         <td>{{ game.date }}</td>
                         <td>

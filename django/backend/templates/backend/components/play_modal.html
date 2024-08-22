@@ -9,23 +9,44 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body col-12">
-                <div class="d-flex justify-content-evenly mt-3">
-                <input type="radio" class="btn-check" name="options-game" id="pong-outlined" autocomplete="off" checked>
-                <label class="btn btn-outline-primary" for="pong-outlined">Hyperpong</label>
-
-                <input type="radio" class="btn-check" name="options-game" id="pirates-outlined" autocomplete="off">
-                <label class="btn btn-outline-primary" for="pirates-outlined">Pirates</label>
-                </div>
-                <div class="d-flex justify-content-evenly mt-4">
-                <input type="radio" class="btn-check" name="options-outlined" id="friend-outlined" autocomplete="off" checked>
-                <label class="btn btn-outline-primary" for="friend-outlined">{% translate 'Friend' %}</label>
-
-                <input type="radio" class="btn-check" name="options-outlined" id="ia-outlined" autocomplete="off">
-                <label class="btn btn-outline-primary" for="ia-outlined">{% translate 'IA' %}</label>
-                </div>
-                <div class="mt-5 d-flex justify-content-center">
-                    <button class="btn btn-dark w-50">{% translate 'Play' %}</button>
-                </div>
+                <form spa hide push action="{% url 'backend:modal_play' %}" method="POST" autocomplete="off">
+                {% csrf_token %}
+                    <div class="d-flex justify-content-center mt-2">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="game" id="radioPong" value="po" checked>
+                            <label class="form-check-label" for="radioPong">
+                                Hyperpong
+                            </label>
+                        </div>
+                        <div class="form-check ms-4">
+                            <input class="form-check-input" type="radio" name="game" id="radioPirates" value="pr">
+                            <label class="form-check-label" for="radioPirates">
+                                Pirates
+                            </label>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <label for="inputAlias1" class="col-sm-4 col-form-label">{% translate 'Alias' %}</label>
+                        <div class="col-sm-8">
+                            <input name="alias_home" type="text" class="form-control" id="inputAliasHome">
+                        </div>
+                    </div>
+                    <div class="row mb-3 d-flex align-items-center">
+                        <label for="inputAlias2" class="col-sm-4 col-form-label">{% translate 'Alias' %}</label>
+                        <div class="col-sm-8">
+                            <input name="alias_guest" type="text" class="form-control" id="inputAliasGuest">
+                        </div>
+                        <div class="form-check d-flex align-items-center ms-2">
+                            <input class="form-check-input" type="checkbox" name="mode" value="cp" id="checkboxIA">
+                            <label class="form-check-label ms-1" for="checkboxIA">
+                                {% translate 'IA' %}
+                            </label>
+                        </div>
+                    </div>
+                    <div class="mt-4 d-flex justify-content-center">
+                        <button class="btn btn-dark w-50" type="submit">{% translate 'Play' %}</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>

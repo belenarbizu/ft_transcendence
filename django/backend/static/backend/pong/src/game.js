@@ -17,7 +17,6 @@ export class PongGame
         );
         this.view = new View3D(this.model);
         this.controller = new Controller(this.model, this.view, url);
-
         if (mode == "home" || mode == "local" || mode == "cpu")
         {
             this.home = new Human(this.controller, "home", "o", "l");
@@ -50,6 +49,10 @@ export class PongGame
 
     disconnect()
     {
+        if (this.view.worker != null)
+        {
+            this.view.worker.terminate();
+        }
         this.controller.webSocket.close();
     }
 }
