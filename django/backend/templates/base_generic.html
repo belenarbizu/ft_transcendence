@@ -20,7 +20,7 @@
 </head>
 
 <body class="hold-transition layout-top-nav">
-    <div id="backgroundImage" style="background-image: url('{% static 'backend/images/background.webp' %}')"></div>
+    <div id="backgroundImage" style="background-image: url('{% static 'backend/images/pong.png' %}')"></div>
     <div class="wrapper" id="wrapper">
         {% endif %}
 
@@ -39,6 +39,7 @@
 
         {% if not request.GET.SPA %}
     </div>
+    {% include "backend/components/play_modal.html" %}
     {% include "backend/components/error_toast.html" %}
     <script type="importmap">
         {
