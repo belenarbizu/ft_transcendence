@@ -49,6 +49,10 @@ export class PongGame
 
     disconnect()
     {
+        if (this.view.worker != null)
+        {
+            this.view.worker.terminate();
+        }
         this.controller.webSocket.close();
     }
 }
