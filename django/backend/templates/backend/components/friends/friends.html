@@ -29,11 +29,7 @@
                 {% for friend in friends.invitations %}
                 <tr>
                     <td class="ps-3 align-middle w-75">
-                        {% if friend.picture %}
-                        <img src="{{ friend.picture.url }}" class="avatar-sm rounded-circle" alt="">
-                        {% else %}
-                        <img src="{% static 'backend/images/profile.png' %}" class="avatar-sm rounded-circle" alt="">
-                        {% endif %}
+                        <img src="{{ friend.get_profile_picture }}" class="avatar-sm rounded-circle" alt="">
                         <a class="px-2 link-dark text-decoration-none" href="{% url 'backend:user' friend.username %}" spa data-bs-toggle="tooltip"
                             data-bs-title="{% translate 'View the profile of' %} {{ friend.username }}">
                             {{friend.username }}</a> {% translate 'invited you' %}
@@ -66,11 +62,7 @@
                 {% for friend in friends.pending %}
                 <tr>
                     <td class="ps-3 align-middle w-75">
-                        {% if friend.picture %}
-                        <img src="{{ friend.picture.url }}" class="avatar-sm rounded-circle" alt="">
-                        {% else %}
-                        <img src="{% static 'backend/images/profile.png' %}" class="avatar-sm rounded-circle" alt="">
-                        {% endif %}
+                        <img src="{{ friend.get_profile_picture }}" class="avatar-sm rounded-circle" alt="">
                         <a class="px-2 link-dark text-decoration-none" href="{% url 'backend:user' friend.username %}" spa data-bs-toggle="tooltip"
                             data-bs-title="{% translate 'View the profile of' %} {{ friend.username }}">
                             {{friend.username }}</a> {% translate 'received your invitation' %}
@@ -92,11 +84,7 @@
                 {% for friend in friends.accepted %}
                 <tr>
                     <td class="ps-3 align-middle w-75">
-                        {% if friend.picture %}
-                        <img src="{{ friend.picture.url }}" class="avatar-sm rounded-circle" alt="">
-                        {% else %}
-                        <img src="{% static 'backend/images/profile.png' %}" class="avatar-sm rounded-circle" alt="">
-                        {% endif %}
+                        <img src="{{ friend.get_profile_picture }}" class="avatar-sm rounded-circle" alt="">
                         <a class="px-2 link-dark text-decoration-none" href="{% url 'backend:user' friend.username %}" spa data-bs-toggle="tooltip"
                             data-bs-title="{% translate 'View profile of' %} {{ friend.friend_of.username }}">
                             {{friend.username }}</a>
