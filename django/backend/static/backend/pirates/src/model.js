@@ -216,6 +216,20 @@ export class Model extends EventDispatcher
         return (true);
     }
 
+    placement_inside_grid(ship, x, y, direction)
+    {
+        var cells = this._get_cells(ship, x, y, direction);
+        for (let i = 0; i < cells.length; i++)
+        {
+            var cell = cells[i];
+            if (this._cell_outside_grid(cell))
+            {
+                return (false);
+            }
+        }
+        return (true);
+    }
+
     get_opponent(player)
     {
         if (player == "home")

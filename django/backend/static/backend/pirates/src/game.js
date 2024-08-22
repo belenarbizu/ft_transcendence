@@ -11,10 +11,7 @@ export class PiratesGame
         this.view = new View(this.model);
         this.mode = mode;
         this.controller = new Controller(this.model, this.view, url, mode);
-        if (mode == "local" || mode == "home" || mode == "cpu")
-        {
-            this.home = new Human(this.controller, "home");
-        }
+        this.home = new Human(this.controller, "home");
         if (mode == "local" || mode == "guest")
         {
             this.guest = new Human(this.controller, "guest");

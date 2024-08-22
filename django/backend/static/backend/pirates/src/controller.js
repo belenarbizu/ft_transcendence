@@ -9,7 +9,7 @@ export class Controller
         this.view = view;
         this.url = url;
         this.mode = mode;
-        
+
         this.model.controller = this;
         this.view.controller = this;
 
@@ -43,7 +43,8 @@ export class Controller
             {
                 this.place_phase("guest");
             }
-            if (this.mode == "home" || this.mode == "local")
+            if (this.mode == "home" || this.mode == "local"
+                || this.mode == "cpu")
             {
                 this.place_phase("home");
             }
@@ -59,7 +60,7 @@ export class Controller
             if (message["player"] == "home")
             {
                 this.home_placed = true;
-                if (this.mode == "local")
+                if (this.mode == "local" || this.mode == "cpu")
                     this.place_phase(opponent);
             }
             else if (message["player"] == "guest")
@@ -427,8 +428,8 @@ export class CPU
             {
                 for (let y = 0; y < 6; y++)
                 {
-                    if (this.model.valid_placement(
-                        this.opponent, ship, x, y, direction))
+                    if (this.model.placement_inside_grid(
+                        ship, x, y, direction))
                     {
                         var cells = this.model._get_cells(
                             ship, x, y, direction);
