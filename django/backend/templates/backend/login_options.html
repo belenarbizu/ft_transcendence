@@ -8,7 +8,7 @@
         <div class="row align-items-center mt-5">
             {% csrf_token %}
             <a spa class="btn btn-primary" href="{% url 'backend:login' %}">{% translate 'Login' %}</a>
-            <button class="btn btn-primary mt-3">{% translate 'Login with 42' %}</button>
+            <a class="btn btn-primary mt-3" href="{{ auth_link }}">{% translate 'Login with 42' %}</a>
             <a spa class="btn btn-primary mt-3" href="{% url 'backend:register' %}">{% translate 'Register' %}</a>
         </div>
     </div>

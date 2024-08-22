@@ -14,6 +14,9 @@ from .managers import CustomUserManager
 from .forms import RegistrationForm, EditProfileForm
 from .consumers import *
 from .exceptions import Notification
+import os
+import requests
+import transcendence.settings as settings
 
 def notifier(view):
 	def decorated_view(*args, **kwargs):
@@ -339,7 +342,7 @@ def login(request):
 
 @require_http_methods(["GET"])
 def login_options(request):
-	return render(request, "backend/login_options.html", {})
+	return render(request, "backend/login_options.html", {"auth_link":settings.AUTH_LINK})
 
 @require_http_methods(["POST", "GET"])
 def register_view(request):
@@ -360,7 +363,6 @@ def three_demo(request):
 def edit_profile(request):
 	next = request.POST.get("next", "/")
 	form = EditProfileForm(request.POST, request.FILES)
-	print(request.POST.get("preferred_language"))
 	if form.is_valid():
 		if form.cleaned_data["bio"] != None:
 			request.user.bio = form.cleaned_data["bio"]
@@ -369,8 +371,10 @@ def edit_profile(request):
 		if form.cleaned_data["picture"] != None:
 			request.user.picture = form.cleaned_data["picture"]
 		request.user.save()
-		return redirect(reverse('backend:user', kwargs={"username":request.user.username}))
+		language = request.POST.get("preferred_language", "es")
+		return redirect(translate_url(reverse('backend:user', kwargs={"username":request.user.username}), language))
 	raise Notification(_("Bad form"))
+
 
 @login_required(login_url=reverse_lazy("backend:login_options"))
 def game_view(request, game_id):
@@ -428,6 +432,51 @@ def remove_match(request):
 		"online_status": user.see_online_status_as(request.user),
 		}
 	return render(request, "backend/components/chat/chat_messages.html", data)
+
+@require_http_methods(["GET"])
+def login_42(request):   
+	
+	try:
+		code = request.GET.get("code")
+
+		data = {
+			"grant_type": "authorization_code",
+			"client_id": settings.CLIENT_UID,
+			"client_secret": settings.CLIENT_SECRET,
+			"code": code,
+			"redirect_uri": settings.REDIRECT_URI
+		}
+
+		
+		auth_response = requests.post(
+			"https://api.intra.42.fr/oauth/token", data=data)
+		access_token = auth_response.json()["access_token"]
+		
+		user_response = requests.get(
+			"https://api.intra.42.fr/v2/me",
+			headers={"Authorization": f"Bearer {access_token}"})
+		user_response_json = user_response.json()
+		username = user_response_json["login"] + settings.LOGIN_42_SUFFIX
+		image = user_response_json['image']['link']
+
+
+		user = CustomUser.objects.filter(username=username)
+		if not user:    
+			user = CustomUser.objects.create_user(
+				username=username,
+				password=CustomUser.objects.make_random_password(),
+				image_42=image,
+			)
+			user.picture = None
+			user.save()
+		else:
+			user = user.first()
+		auth.login(request, user)
+		return redirect(reverse("backend:index"))
+	except Exception as e:
+		return render(request, "backend/error.html", {
+			"reason": _(str(e))
+		})
 
 @require_http_methods(["POST"])
 @login_401

@@ -5,3 +5,4 @@ daphne==4.1.2
 gunicorn==22.0.0
 pillow
 twisted[tls,http2]
+requests

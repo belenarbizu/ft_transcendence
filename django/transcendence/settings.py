@@ -49,6 +49,13 @@ INSTALLED_APPS = [
 
 AUTH_USER_MODEL = "backend.CustomUser"
 
+#Settings variables for the 42 Login
+CLIENT_UID= os.getenv("42_CLIENT_UID")
+CLIENT_SECRET= os.getenv("42_CLIENT_SECRET")
+REDIRECT_URI = os.getenv("42_REDIRECT_URI")
+LOGIN_42_SUFFIX = " (42)"
+AUTH_LINK= os.getenv("42_AUTH_LINK")
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
