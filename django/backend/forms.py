@@ -1,11 +1,25 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from .models import CustomUser
+import transcendence.settings as settings
+from django.core.exceptions import ValidationError
+from django.utils.translation import gettext_lazy as _
+
+def validate_username(value):
+    if value.endswith(settings.LOGIN_42_SUFFIX):
+        raise ValidationError(_("Invalid username"), params={
+            "value": value
+        })
 
 class RegistrationForm(UserCreationForm):
 
     email = forms.EmailField(
         required=True
+    )
+
+    username = forms.CharField(
+        required=True,
+        validators=[validate_username]
     )
 
     class Meta:

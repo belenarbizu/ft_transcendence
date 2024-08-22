@@ -60,6 +60,12 @@ class CustomUser(AbstractUser):
         verbose_name = _("Profile picture"),
     )
 
+    image_42 = models.URLField(
+        null = True,
+        blank = True,
+        verbose_name = _("Picture from 42 API"),
+    )
+
     preferred_language = models.CharField(
         max_length = 20,
         null = True,
@@ -194,8 +200,10 @@ class CustomUser(AbstractUser):
 
     @property
     def get_profile_picture(self):
-        if self.user.picture:
-            return self.user.picture.url
+        if self.picture:
+            return self.picture.url
+        if self.image_42:
+            return self.image_42
         return static('backend/images/profile.png')
 
 

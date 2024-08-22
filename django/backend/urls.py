@@ -32,6 +32,7 @@ urlpatterns = [
     path('logout/', views.logout, name="logout"),
     path('login/options/', views.login_options, name="login_options"),
     path('login/', views.login, name="login"),
+    path('login/callback/', views.login_42, name="login_42"),
     path('register/', views.register_view, name="register"),
     path('match/create/', views.create_match, name="create_match"),
     path('match/remove/', views.remove_match, name="remove_match"),
