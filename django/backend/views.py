@@ -375,6 +375,7 @@ def edit_profile(request):
         return redirect(reverse('backend:user', kwargs={"username":request.user.username}))
     raise Notification(_("Bad form"))
 
+
 @login_required(login_url=reverse_lazy("backend:login_options"))
 def game_view(request, game_id):
     game = Match.objects.get(id = int(game_id))
@@ -432,49 +433,52 @@ def remove_match(request):
         }
     return render(request, "backend/components/chat/chat_messages.html", data)
 
-def login_42(request):
-    if request.method == "GET":
-        code = request.GET.get("code")
-        if code:
-            data = {
-                "grant_type": "authorization_code",
-                "client_id": settings.CLIENT_UID,
-                "client_secret": settings.CLIENT_SECRET,
-                "code": code,
-                "redirect_uri": settings.REDIRECT_URI
-            }
-            auth_response = requests.post(
-                "https://api.intra.42.fr/oauth/token", data=data)
-            print(auth_response.json())
-            access_token = auth_response.json()["access_token"]
-            user_response = requests.get(
-                "https://api.intra.42.fr/v2/me",
-                headers={"Authorization": f"Bearer {access_token}"})
-            user_response_json = user_response.json()
-            username = user_response_json["login"] + settings.LOGIN_42_SUFFIX
-            image = user_response_json['image']['link']
-            try:
-                user = CustomUser.objects.get(username=username)
-                auth.login(request, user)
-                return redirect(reverse("backend:index"))
-            except CustomUser.DoesNotExist:
-                print("Creating user!")
-                user = CustomUser.objects.create_user(
-                    username=username,
-                    password=CustomUser.objects.make_random_password(),
-                    image_42=image,
-                )
-                user.picture = None
-                user.save()
-                auth.login(request, user)
-                return redirect(reverse("backend:index"))
-        else:
-            return render(request, "backend/login_options.html", 
-                   {
-                    "error": _("Authorization code not found"),
-                })
-    else:
-        return render(request, "backend/login_options.html", 
-               {
-                "error": _("Invalid request method"),
-            })
+@require_http_methods(["GET"])
+def login_42(request):   
+    code = request.GET.get("code")
+    if not code:
+        return render(request, "backend/error.html", {
+            "reason": "Error"
+        })
+
+    data = {
+        "grant_type": "authorization_code",
+        "client_id": settings.CLIENT_UID,
+        "client_secret": settings.CLIENT_SECRET,
+        "code": code,
+        "redirect_uri": settings.REDIRECT_URI
+    }
+
+    try:
+        auth_response = requests.post(
+            "https://api.intra.42.fr/oauth/token", data=data)
+        access_token = auth_response.json()["access_token"]
+        if not access_token:
+            raise Exception()
+        
+        user_response = requests.get(
+            "https://api.intra.42.fr/v2/me",
+            headers={"Authorization": f"Bearer {access_token}"})
+        user_response_json = user_response.json()
+        username = user_response_json["login"] + settings.LOGIN_42_SUFFIX
+        image = user_response_json['image']['link']
+
+        if not username or not image:
+            raise Exception()
+
+        user = CustomUser.objects.get(username=username)
+        user = CustomUser.objects.create_user(
+            username=username,
+            password=CustomUser.objects.make_random_password(),
+            image_42=image,
+        )
+        user.picture = None
+        user.save()
+        auth.login(request, user)
+        return redirect(reverse("backend:index"))
+    except Exception as e:
+        return render(request, "backend/error.html", {
+            "reason": _("Error")
+        })
+
+
