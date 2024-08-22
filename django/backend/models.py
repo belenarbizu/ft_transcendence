@@ -574,9 +574,10 @@ class Competitor(models.Model):
             return self.user.picture.url
         
     def disqualify(self):
-        for match in Match.objects.played_by(self.user).not_finished():
+        for match in Match.objects.played_by_competitor(self).not_finished():
             match.lose(self)
         self.eliminated = True
+        self.save()
 
 
 class Tournament(models.Model):

@@ -76,6 +76,9 @@ class MatchQuerySet(models.QuerySet):
     def played_by(self, user):
         return self.as_home(user) | self.as_guest(user)
     
+    def played_by_competitor(self, competitor):
+        return self.filter(home = competitor) | self.filter(guest = competitor)
+
     def won_by(self, user):
         return self.filter(winner__user = user)
     
