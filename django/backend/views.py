@@ -435,26 +435,22 @@ def remove_match(request):
 
 @require_http_methods(["GET"])
 def login_42(request):   
-    code = request.GET.get("code")
-    if not code:
-        return render(request, "backend/error.html", {
-            "reason": "Error"
-        })
-
-    data = {
-        "grant_type": "authorization_code",
-        "client_id": settings.CLIENT_UID,
-        "client_secret": settings.CLIENT_SECRET,
-        "code": code,
-        "redirect_uri": settings.REDIRECT_URI
-    }
-
+    
     try:
+        code = request.GET.get("code")
+
+        data = {
+            "grant_type": "authorization_code",
+            "client_id": settings.CLIENT_UID,
+            "client_secret": settings.CLIENT_SECRET,
+            "code": code,
+            "redirect_uri": settings.REDIRECT_URI
+        }
+
+        
         auth_response = requests.post(
             "https://api.intra.42.fr/oauth/token", data=data)
         access_token = auth_response.json()["access_token"]
-        if not access_token:
-            raise Exception()
         
         user_response = requests.get(
             "https://api.intra.42.fr/v2/me",
@@ -463,22 +459,23 @@ def login_42(request):
         username = user_response_json["login"] + settings.LOGIN_42_SUFFIX
         image = user_response_json['image']['link']
 
-        if not username or not image:
-            raise Exception()
 
-        user = CustomUser.objects.get(username=username)
-        user = CustomUser.objects.create_user(
-            username=username,
-            password=CustomUser.objects.make_random_password(),
-            image_42=image,
-        )
-        user.picture = None
-        user.save()
+        user = CustomUser.objects.filter(username=username)
+        if not user:    
+            user = CustomUser.objects.create_user(
+                username=username,
+                password=CustomUser.objects.make_random_password(),
+                image_42=image,
+            )
+            user.picture = None
+            user.save()
+        else:
+            user = user.first()
         auth.login(request, user)
         return redirect(reverse("backend:index"))
     except Exception as e:
         return render(request, "backend/error.html", {
-            "reason": _("Error")
+            "reason": _(str(e))
         })
 
 
