@@ -13,18 +13,14 @@ def validate_username(value):
 
 class RegistrationForm(UserCreationForm):
 
-    email = forms.EmailField(
-        required=True
-    )
-
     username = forms.CharField(
         required=True,
         validators=[validate_username]
     )
-
+    
     class Meta:
         model = CustomUser
-        fields = ["username", "email", "password1", "password2",
+        fields = ["username", "password1", "password2",
                   "preferred_language"]
 
     def save(self, commit=True):
