@@ -8,7 +8,10 @@ export class View3D extends GameView{
     {
         super();
         window.addEventListener('resize', (o) => this.on_window_resize(o));
+        window.addEventListener('blur', this.on_window_blur.bind(this));
+        window.addEventListener('focus', this.on_window_focus.bind(this));
         this.model = model;
+        this.controller = null;
         this.container = document.getElementById('threejs-container');
         this.positionInfo = this.container.getBoundingClientRect();
         this.scene = new THREE.Scene();
@@ -23,7 +26,6 @@ export class View3D extends GameView{
         this.scene.add(this.directional_light);
         this.skybox = new SkyBox();
         this.scene.add(this.skybox);
-
 
         // Game group
         this.game_group = new THREE.Group();
@@ -56,9 +58,6 @@ export class View3D extends GameView{
         this.pad_home.position.x = this.board.scale.x / 2 + 0.02;
 
         this.game_group.add(this.pad_home);
-    
-        
-        
         
         this.renderer = new THREE.WebGLRenderer();
         this.renderer.setSize( this.positionInfo.width, this.positionInfo.height );
@@ -75,6 +74,24 @@ export class View3D extends GameView{
 
     }
 
+    on_window_blur(event)
+    {
+        if (this.worker == null)
+        {
+            this.worker = new Worker("/static/backend/pong/src/pong_worker.js");
+            this.worker.onmessage = this.animate.bind(this);
+        }
+    }
+
+    on_window_focus(event)
+    {
+        if (this.worker != null)
+        {
+            this.worker.terminate();
+            this.worker = null;
+        }
+    }
+
     on_window_resize(event)
     {
         var positionInfo = this.container.getBoundingClientRect();
@@ -87,6 +104,11 @@ export class View3D extends GameView{
     animate() {
         //this.game_group.rotation.x += 0.01; 
         //cube2.rotation.y += 0.01;
+
+        if (this.controller != null)
+        {
+            this.controller.on_loop();
+        }
 
         // Move ball
         this.skybox.rotation.y += 0.0003;
