@@ -363,7 +363,6 @@ def three_demo(request):
 def edit_profile(request):
 	next = request.POST.get("next", "/")
 	form = EditProfileForm(request.POST, request.FILES)
-	print(request.POST.get("preferred_language"))
 	if form.is_valid():
 		if form.cleaned_data["bio"] != None:
 			request.user.bio = form.cleaned_data["bio"]
@@ -372,7 +371,8 @@ def edit_profile(request):
 		if form.cleaned_data["picture"] != None:
 			request.user.picture = form.cleaned_data["picture"]
 		request.user.save()
-		return redirect(reverse('backend:user', kwargs={"username":request.user.username}))
+		language = request.POST.get("preferred_language", "es")
+		return redirect(translate_url(reverse('backend:user', kwargs={"username":request.user.username}), language))
 	raise Notification(_("Bad form"))
 
 
