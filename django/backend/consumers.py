@@ -162,3 +162,20 @@ class GameConsumer(WebsocketConsumer):
     def ready(self, event):
         self.game.refresh_from_db()
         self.send(json.dumps(event))
+
+
+class MatchmakingConsumer(WebsocketConsumer):
+
+    def connect(self):
+        user = self.scope['user']
+        CustomUser = apps.get_model("backend", "CustomUser")
+        if user.is_authenticated:
+            self.user = CustomUser.objects.get(id = user.id)
+            self.accept()
+        else:
+            self.close()
+    
+    def disconnect(self, code):
+        self.user.matchmaking_type = None
+        self.user.save()
+        return super().disconnect(code)
