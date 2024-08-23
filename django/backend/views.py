@@ -502,3 +502,47 @@ def modal_play(request):
 		guest=guest_competitor
 	)
 	return redirect(reverse("backend:game", kwargs={"game_id": match.id}))
+
+@require_http_methods(["GET"])
+@login_required(login_url=reverse_lazy("backend:login_options"))
+def matchmaking_start(request, game):
+	request.user.matchmaking_type = game
+	request.user.matchmaking_range = 0
+	request.user.matchmaking_match = None
+	request.user.save()
+	return render(request, "backend/matchmaking.html", {
+		"online": CustomUser.objects.looking_for_partner(game).count(),
+		"game": game
+		})
+
+@require_http_methods(["POST"])
+@login_401
+def matchmaking_poll(request, game):
+	if request.user.matchmaking_match:
+		return redirect(reverse("backend:game", kwargs={
+			"game_id": request.user.matchmaking_match.id
+			}))
+	range = int(request.POST.get("range", "0"))
+	can_match = CustomUser.objects.can_match(game, request.user, range)
+	if can_match:
+		home_competitor = Competitor.objects.create(
+			user=request.user
+			)
+		guest_competitor = Competitor.objects.create(
+			user=can_match[0]
+			)
+		match = Match.objects.create(
+			mode="re",
+			game=game,
+			home=home_competitor,
+			guest=guest_competitor
+		)
+		request.user.matchmaking_match = match
+		request.user.save()
+		can_match[0].matchmaking_match = match
+		can_match[0].save()
+		return redirect(reverse("backend:game", kwargs={"game_id": match.id}))
+	return render(request, "backend/matchmaking.html", {
+		"online": CustomUser.objects.looking_for_partner(game).count(),
+		"game": game
+		})
