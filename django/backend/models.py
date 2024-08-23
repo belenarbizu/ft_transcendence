@@ -343,7 +343,7 @@ class Match(models.Model):
 
     @property
     def is_practice(self):
-        return self.mode == "lo"
+        return self.mode == "lo" or self.mode == "cp"
     
     @property
     def is_single_game(self):
@@ -394,8 +394,8 @@ class Match(models.Model):
                 self.guest.user.pong_elo = updated_elo(self.guest.user.pong_elo, self.elo, self.winner == self.guest)
             else:
                 self.elo = elo(self.home.user.pirates_elo, self.guest.user.pirates_elo, 20, self.winner == self.home)
-                self.home.user.pong_elo = updated_elo(self.home.user.pirates_elo, self.elo, self.winner == self.home)
-                self.guest.user.pong_elo = updated_elo(self.guest.user.pirates_elo, self.elo, self.winner == self.guest)
+                self.home.user.pirates_elo = updated_elo(self.home.user.pirates_elo, self.elo, self.winner == self.home)
+                self.guest.user.pirates_elo = updated_elo(self.guest.user.pirates_elo, self.elo, self.winner == self.guest)
             self.save()
             self.home.user.save()
             self.guest.user.save()
