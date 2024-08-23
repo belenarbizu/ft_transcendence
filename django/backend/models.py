@@ -115,6 +115,27 @@ class CustomUser(AbstractUser):
         verbose_name = _("Pirates ELO"),
     )
 
+    matchmaking_type = models.TextField(
+        max_length = 2,
+        null = True,
+        blank = True,
+        verbose_name = _("Matchmaking game type"),
+        choices = GAME_CHOICES,
+    )
+
+    matchmaking_range = models.IntegerField(
+        default = 0,
+        verbose_name = _("Matchmaking opponent range"),
+    )
+
+    matchmaking_match = models.ForeignKey(
+        'Match',
+        null = True,
+        blank = True,
+        on_delete = models.SET_NULL,
+        verbose_name = _("Matchmaking match"),
+    )
+
     def create_invitation(self, invited):
         if self.username == invited:
             raise Notification(_("You cannot invite yourself"))

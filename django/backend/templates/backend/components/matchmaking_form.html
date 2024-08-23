@@ -1,0 +1,9 @@
+{% load i18n %}
+
+<div id="matchmaking-reload">
+    <p class="text-white">{{ online }} {% translate 'online players' %}</p>
+    <form spa action="{% url 'backend:matchmaking_poll' game %}" method="POST" id="matchmaking-form">
+        {% csrf_token %}
+        <input name="range" type="hidden" value="0" id="matchmaking-range"/>
+    </form>
+</div>

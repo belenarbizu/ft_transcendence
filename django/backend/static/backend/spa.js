@@ -131,6 +131,7 @@ function start_spa() {
     create_tooltips();
     webSocketManager.update_sockets();
     gameManager.update_games();
+    matchmakingSystem.update();
 }
 
 function end_spa(hide) {

@@ -1,0 +1,15 @@
+{% extends "base_generic.html" %}
+{% load i18n %}
+{% load static %}
+
+{% block content %}
+<div class="row justify-content-evenly mt-5">
+  <div class="col-4"></div>
+  <div class="col-12 col-lg-4 text-center">
+    <h4 class="text-white">{% translate 'Searching for an opponent' %}</h4>
+    {% include "backend/components/matchmaking_form.html" %}
+    <socket group="ws/matchmaking" onmessage="live_handler"></socket>
+  </div>
+  <div class="col-4"></div> 
+</div>
+{% endblock %}

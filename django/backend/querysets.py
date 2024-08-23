@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import F
 
 class CustomUserQuerySet(models.QuerySet):
 
@@ -36,8 +37,29 @@ class CustomUserQuerySet(models.QuerySet):
         return self.exclude(
             id = user.id
         )
+    
     def find_name(self, username):
         return self.filter(username=username)
+    
+    def looking_for_partner(self, game):
+        return self.filter(matchmaking_type = game).without_match()
+    
+    def in_range(self, game, user, range):
+        if (game == "po"):
+            elo = user.pong_elo
+            return (self.filter(pong_elo__lt = elo + range ) \
+                & self.filter(pong_elo__gt = elo - range))
+        if (game == "pr"):
+            elo = user.pirates_elo
+            return (self.filter(pirates_elo__lt = elo + range ) \
+                & self.filter(pirates_elo__gt = elo - range))
+        return self
+    
+    def without_match(self):
+        return self.filter(matchmaking_match__isnull = True)
+    
+    def can_match(self, game, user, range):
+        return self.in_range(game, user, range).looking_for_partner(game).not_me(user).without_match()
 
       
 class ChatMessageQuerySet(models.QuerySet):

@@ -37,4 +37,6 @@ urlpatterns = [
     path('match/create/', views.create_match, name="create_match"),
     path('match/remove/', views.remove_match, name="remove_match"),
     path('play/', views.modal_play, name="modal_play"),
+    path('matchmaking/<game>/', views.matchmaking_start, name="matchmaking_start"),
+    path('matchmaking_poll/<game>/', views.matchmaking_poll, name="matchmaking_poll"),
 ]
