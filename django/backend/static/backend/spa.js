@@ -1,4 +1,5 @@
 
+var request_confirmation = false;
 
 /**
  * Retrieves action and target attributes from HTML elements.
@@ -173,7 +174,10 @@ function handle_response(response, target, push, hide) {
             history.pushState({ path: url }, '', url);
         }
         response.text().then(partHtml => {
-            document.querySelector(target).innerHTML = partHtml;
+            try
+            {
+                document.querySelector(target).innerHTML = partHtml;
+            } catch {}
             start_spa();
         })
     }
@@ -192,18 +196,54 @@ function handle_response(response, target, push, hide) {
     }
 }
 
+function confirm_request()
+{
+    return new Promise(function (resolve) {
+        if (!request_confirmation)
+        {
+            resolve(true);
+        }
+        else
+        {
+            const myModal = new bootstrap.Modal(
+                document.getElementById('confirmModal'));
+            myModal.show();
+            document.getElementById('confirmYes').addEventListener('click',
+                function() {
+                    myModal.hide();
+                    resolve(true);
+                });
+            document.getElementById('confirmNo').addEventListener('click',
+                function() {
+                    myModal.hide();
+                    resolve(false);
+                });
+        }
+    });
+}
+
 function get_request(action, target, push, hide) {
-    fetch(action + "?SPA=True")
-        .then(response => {
-            handle_response(response, target, push, hide);
-        });
+    confirm_request().then(function(value){
+        if (value)
+        {
+            fetch(action + "?SPA=True")
+            .then(response => {
+                handle_response(response, target, push, hide);
+            });
+        }
+    });
 }
 
 function post_request(action, data, target, push, hide) {
-    fetch(action, { method: 'post', body: data, })
-        .then(response => {
-            handle_response(response, target, push, hide);
-        });
+    confirm_request().then(function(value){
+        if (value)
+        {
+            fetch(action, { method: 'post', body: data, })
+            .then(response => {
+                handle_response(response, target, push, hide);
+            });
+        }
+    });
 }
 
 /**

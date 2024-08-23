@@ -133,6 +133,7 @@ export class Controller
         }
         else if (message["type"] == "end")
         {
+            request_confirmation = false;
             this.view.set_winner(message["winner"]);
         }
     }

@@ -27,8 +27,8 @@ class GameManager{
     }
 
     update_games(){
-        this.create_games();
         this.remove_games();
+        this.create_games();
     }
 
     create_games(){
@@ -45,11 +45,13 @@ class GameManager{
             if (!this.games[group]){
                 if (type == "po" && this.pong_loaded)
                 {
+                    request_confirmation = true;
                     this.games[group] = new PongGame(mode, url);
                     this.games[group].start();
                 }
                 if (type == "pr" && this.pirates_loaded)
                 {
+                    request_confirmation = true;
                     this.games[group] = new PiratesGame(mode, url);
                     this.games[group].start();
                 }
@@ -62,6 +64,7 @@ class GameManager{
             var game = document.querySelectorAll(
                 `game[group="${group}"]`);
             if (game.length == 0){
+                request_confirmation = false;
                 this.games[group].disconnect();
                 delete this.games[group];
             }
