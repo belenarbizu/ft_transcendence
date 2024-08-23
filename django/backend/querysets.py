@@ -60,12 +60,15 @@ class ChatMessageQuerySet(models.QuerySet):
 
 
 class MatchQuerySet(models.QuerySet):
+
+    def competitive(self):
+        return self.filter(mode = "re")
     
     def losses_of(self, user, game):
-        return self.finished().of_game(game).played_by(user).lost_by(user).count()
+        return self.competitive().finished().of_game(game).played_by(user).lost_by(user).count()
     
     def wins_of(self, user, game):
-        return self.finished().of_game(game).played_by(user).won_by(user).count()
+        return self.competitive().finished().of_game(game).played_by(user).won_by(user).count()
 
     def as_home(self, user):
         return self.filter(home__user = user)

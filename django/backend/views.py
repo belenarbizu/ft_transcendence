@@ -49,7 +49,7 @@ def user_view(request, username):
 			"invitations": user.invited_users.all(),
 			"accepted": CustomUser.objects.friend_of(user),
 		},
-		"games": Match.objects.played_by(user),
+		"games": Match.objects.competitive().played_by(user),
 		"is_blocked": user in request.user.blocked_users.all(),
 		"online_status": user.see_online_status_as(request.user),
 		"can_invite": user in CustomUser.objects.uninvited_users(request.user, user.username),
@@ -57,8 +57,8 @@ def user_view(request, username):
 		"received_invitation": user in request.user.invited_users.all(),
 		"stats": {
 			"pirates": {
-				"losses": Match.objects.losses_of(request.user, "pi"),
-				"wins": Match.objects.wins_of(request.user, "pi")
+				"losses": Match.objects.losses_of(request.user, "pr"),
+				"wins": Match.objects.wins_of(request.user, "pr")
 			},
 			"pong": {
 				"losses": Match.objects.losses_of(request.user, "po"),
@@ -89,7 +89,7 @@ def user_view_games(request, username):
 	user = get_object_or_404(CustomUser, username=username)
 	data = {
 		"user": user,
-		"games": Match.objects.played_by(user),
+		"games": Match.objects.competitive().played_by(user),
 	}
 	#user_id = int(request.POST.get("user_id"))
 	return render(request, "backend/components/last_games.html", data)

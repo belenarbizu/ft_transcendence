@@ -87,8 +87,10 @@
                         <td>
                             {% if game.winner.user == user %}
                             <span class="badge rounded-pill bg-success">{{ game.home_score }} - {{ game.guest_score }}</span>
+                            <span class="ms-2">+{{game.elo}}<i class="bi bi-award-fill" style="color:#007bff"></i></span>
                             {% else %}
                             <span class="badge rounded-pill bg-danger">{{ game.home_score }} - {{ game.guest_score }}</span>
+                            <span class="ms-2">-{{game.elo}}<i class="bi bi-award-fill" style="color:#007bff"></i></span>
                             {% endif %}
                         </td>
                         {% else %}
@@ -101,8 +103,10 @@
                         <td>
                             {% if game.winner.user == user %}
                             <span class="badge rounded-pill bg-success">{{ game.home_score }} - {{ game.guest_score }}</span>
+                            <span class="ms-2">+{{game.elo}}<i class="bi bi-award-fill" style="color:#007bff"></i></span>
                             {% else %}
                             <span class="badge rounded-pill bg-danger">{{ game.home_score }} - {{ game.guest_score }}</span>
+                            <span class="ms-2">-{{game.elo}}<i class="bi bi-award-fill" style="color:#007bff"></i></span>
                             {% endif %}
                         </td>
                         {% endif %}
