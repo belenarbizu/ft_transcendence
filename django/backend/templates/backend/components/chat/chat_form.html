@@ -44,16 +44,20 @@
             {% csrf_token %}
             <input name="user_id" type="hidden" value="{{ user.id }}" />
             <input name="game" type="hidden" value="pr" />
-            <button type="submit" class="btn btn-link m-0 p-0"><i class="fs-3 bi bi-controller ms-5 text-primary" data-bs-toggle="tooltip"
-                data-bs-title="{% translate 'Play with' %} {{ user.username }}"></i></button>
+            <button type="submit" class="btn btn-link m-0 p-0">
+                <div class="custom-icon-button fs-3 ms-5 text-primary" data-bs-toggle="tooltip"
+                data-bs-title="{% translate 'Play with' %} {{ user.username }}">{% include 'backend/components/icons/pirates.html' %}</div>
+            </button>
         </form>
     
         <form spa target=".chat-messages" action="{% url 'backend:create_match' %}" method="POST">
             {% csrf_token %}
             <input name="user_id" type="hidden" value="{{ user.id }}" />
             <input name="game" type="hidden" value="po" />
-            <button type="submit" class="btn btn-link m-0 p-0"><i class="fs-3 bi bi-controller ms-5 text-primary" data-bs-toggle="tooltip"
-                data-bs-title="{% translate 'Play with' %} {{ user.username }}"></i></button>
+            <button type="submit" class="btn btn-link m-0 p-0">
+                <div class="custom-icon-button fs-3 ms-5 text-primary" data-bs-toggle="tooltip"
+                data-bs-title="{% translate 'Play with' %} {{ user.username }}">{% include 'backend/components/icons/pong.html' %}</div>
+            </button>
         </form>
 
         <form spa action="{% url 'backend:block_user' %}" method="POST">

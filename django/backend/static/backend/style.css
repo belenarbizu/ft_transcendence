@@ -179,3 +179,9 @@ html, body {
   font-size: 40px;
   margin-top: -10px;
 }
+
+.custom-icon-button {
+  width: 25px;
+  height: 25px;
+  margin-top: -7px;
+}
