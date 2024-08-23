@@ -207,6 +207,7 @@ function confirm_request()
         {
             const myModal = new bootstrap.Modal(
                 document.getElementById('confirmModal'));
+            hide_modals();
             myModal.show();
             document.getElementById('confirmYes').addEventListener('click',
                 function() {
