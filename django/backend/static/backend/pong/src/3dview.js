@@ -118,6 +118,15 @@ export class View3D extends GameView{
         this.ball.position.x *= this.board.scale.x;
         this.point_light.position.set( this.ball.position.x, this.ball.position.y, this.ball.position.z );
 
+        if (this.model.get_ball_position(current_time) > 1)
+        {
+            this.ball.visible = false;
+        }
+        else
+        {
+            this.ball.visible = true;
+        }
+
         // Move guest pad
         this.pad_guest.position.z = this.model.get_pad_y("guest", current_time) - 0.5;
         // Move guest pad
