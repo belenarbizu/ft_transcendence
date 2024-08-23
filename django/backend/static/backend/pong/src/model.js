@@ -32,11 +32,11 @@ export class Model
         this.pad_velocity = pad_velocity;
         this.pad_height = pad_height;
         this.ball_initial_velocity = ball_velocity;
-        this.pad_fantasy = 1.1;
+        this.pad_fantasy = 1.25;
         this.turns = 0;
         this.goal = false;
         this.hit = false;
-        this.goal_position = 1.1;
+        this.goal_position = 1.5;
         this.win_condition = win_condition;
     }
 
@@ -120,9 +120,26 @@ export class Model
         return (position);
     }
 
-    get_new_slope()
+    get_new_slope(movement)
     {
-        return ((Math.random() - 0.5) * 2);
+        let player = "guest";
+        if (movement == 1)
+        {
+            player = "home";
+        }
+        let pad_y = this.get_pad_y(player, Date.now());
+        let ball_y = this.get_ball_y(1);
+        let max = 1.5;
+        let slope = 2 * max * (ball_y - pad_y) / this.pad_height;
+        if (slope < -max)
+        {
+            slope = -max;
+        }
+        if (slope > max)
+        {
+            slope = max;
+        }
+        return (slope);
     }
 
     goal_to(player)

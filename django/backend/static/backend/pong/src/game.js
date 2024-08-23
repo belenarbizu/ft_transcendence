@@ -27,11 +27,11 @@ export class PongGame
         }
         if (mode == "cpu" || mode == "2cpu")
         {
-            this.guest = new CPU(this.controller, "guest", 0);
+            this.guest = new CPU(this.controller, "guest", 1.4);
         }
         if (mode == "2cpu")
         {
-            this.home = new CPU(this.controller, "home", 0);
+            this.home = new CPU(this.controller, "home", 1.4);
         }
     }
 

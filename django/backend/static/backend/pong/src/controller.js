@@ -29,12 +29,6 @@ export class Controller
 
     receiver(message)
     {
-        if (message["type"] == "ready")
-        {
-            this.view.hide_waiting_screen();
-            new Promise((resolve) => setTimeout(resolve, 5000)).then(
-                this.on_start.bind(this));
-        }
         if (message["type"] == "hit")
         {
             this.model.set_ball_movement(
@@ -111,7 +105,7 @@ export class Controller
                 "movement": this.model.ball["movement"] * -1,
                 "position": 0,
                 "last_height": this.model.get_ball_y(1),
-                "slope": this.model.get_new_slope(),
+                "slope": this.model.get_new_slope(this.model.ball["movement"]),
                 "velocity": this.model.get_ball_velocity(),
             });
         }
@@ -123,7 +117,7 @@ export class Controller
                 "movement": this.model.ball["movement"] * -1,
                 "position": 0,
                 "last_height": this.model.get_ball_y(1),
-                "slope": this.model.get_new_slope(),
+                "slope": this.model.get_new_slope(this.model.ball["movement"]),
                 "velocity": this.model.get_ball_velocity(),
             });
         }
@@ -136,10 +130,10 @@ export class Controller
             this.interface({
                 "player": "home",
                 "type": "goal",
-                "movement": this.model.ball["movement"] * -1,
+                "movement": this.model.ball["movement"],
                 "position": 0.5,
                 "last_height": 0.5,
-                "slope": this.model.get_new_slope(),
+                "slope": this.model.get_new_slope(this.model.ball["movement"]),
                 "velocity": this.model.ball_initial_velocity
             });
         }
@@ -151,7 +145,7 @@ export class Controller
                 "movement": this.model.ball["movement"] * -1,
                 "position": 0.5,
                 "last_height": 0.5,
-                "slope": this.model.get_new_slope(),
+                "slope": this.model.get_new_slope(this.model.ball["movement"]),
                 "velocity": this.model.ball_initial_velocity
             });
         }
@@ -197,7 +191,15 @@ export class Human
 
     receiver(message)
     {
-
+        if (message["type"] == "ready")
+        {
+            this.controller.view.hide_waiting_screen();
+            if (this.player == "home")
+            {
+                new Promise((resolve) => setTimeout(resolve, 5000)).then(
+                    this.controller.on_start.bind(this.controller));
+            }
+        }
     }
 
     on_loop(current_time)
@@ -284,6 +286,15 @@ export class CPU
 
     receiver(message)
     {
+        if (message["type"] == "ready")
+        {
+            this.controller.view.hide_waiting_screen();
+            if (this.player == "home")
+            {
+                new Promise((resolve) => setTimeout(resolve, 5000)).then(
+                    this.controller.on_start.bind(this.controller));
+            }
+        }
         let opponent = "guest";
         if (this.player == "guest")
         {
