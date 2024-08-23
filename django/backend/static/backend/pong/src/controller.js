@@ -72,6 +72,7 @@ export class Controller
         }
         if (message["type"] == "end")
         {
+            request_confirmation = false;
             this.view.set_winner(message["winner"]);
             this.model.set_ball_movement(
                 1, 0.5,
