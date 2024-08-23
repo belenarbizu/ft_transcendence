@@ -42,21 +42,13 @@
             </div>
         </div>
         <div class="m-2">
-            {% if message.sender.picture %}
-            <img src="{{ message.sender.picture.url }}" class="avatar-sm rounded-circle" alt="">
-            {% else %}
-            <img src="{% static 'backend/images/profile.png' %}" class="avatar-sm rounded-circle" alt="">
-            {% endif %}
+            <img src="{{ message.sender.get_profile_picture }}" class="avatar-sm rounded-circle" alt="">
         </div>
     </div>
     {% else %}
     <div class="d-flex">
         <div class="m-2">
-            {% if message.sender.picture %}
-            <img src="{{ message.sender.picture.url }}" class="avatar-sm rounded-circle" alt="">
-            {% else %}
-            <img src="{% static 'backend/images/profile.png' %}" class="avatar-sm rounded-circle" alt="">
-            {% endif %}
+            <img src="{{ message.sender.get_profile_picture }}" class="avatar-sm rounded-circle" alt="">
         </div>
         <div class="card">
             <div class="card-body">

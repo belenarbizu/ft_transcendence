@@ -10,9 +10,9 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-header">
-        <form spa action="{% url 'backend:uninvited_users' %}" method="POST" target=".invitation_list_body" autocomplete="off">
+        <form spa action="{% url 'backend:uninvited_users' %}" method="POST" target=".invitation_list_body" autocomplete="off" class="w-100">
           {% csrf_token %}
-          <input spa type="text" name="username" class="form-control" placeholder="{% translate 'username' %}"
+          <input spa type="text" name="username" class="form-control w-100" placeholder="{% translate 'username' %}"
             aria-label="{% translate 'username' %}" aria-describedby="button-addon2">
         </form>
       </div>

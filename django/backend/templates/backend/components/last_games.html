@@ -17,7 +17,7 @@
                     <tr>
                         {% if game.home.user == user %}
                         <td class="ps-3 align-middle">
-                            <img src="{{ game.guest.user.picture.url }}" class="avatar-sm rounded-circle" alt="">
+                            <img src="{{ game.guest.get_profile_picture }}" class="avatar-sm rounded-circle" alt="">
                         </td>
                         <td class="ps-3"><a href="{% url 'backend:user' game.guest.user.username %}" spa data-bs-toggle="tooltip" data-bs-title="{% translate 'View the profile of' %} {{ game.guest.user.username }}" class="link-dark text-decoration-none">{{ game.guest.user.username }}</a></td>
                         <td>{{ game.get_game_display }}</td>
@@ -44,7 +44,7 @@
                         </td>
                         {% else %}
                         <td class="ps-3 align-middle">
-                            <img src="{{ game.home.user.picture.url }}" class="avatar-sm rounded-circle" alt="">
+                            <img src="{{ game.home.get_profile_picture }}" class="avatar-sm rounded-circle" alt="">
                         </td>
                         <td class="ps-3"><a href="{% url 'backend:user' game.home.user.username %}" spa data-bs-toggle="tooltip" data-bs-title="{% translate 'View the profile of' %} {{ game.home.user.username }}" class="link-dark text-decoration-none">{{ game.home.user.username }}</a></td>
                         <td>{{ game.get_game_display }}</td>
@@ -79,7 +79,7 @@
                     <tr>
                         {% if game.home.user == user %}
                         <td class="ps-3 align-middle">
-                            <img src="{{ game.guest.user.picture.url }}" class="avatar-sm rounded-circle" alt="">
+                            <img src="{{ game.guest.get_profile_picture }}" class="avatar-sm rounded-circle" alt="">
                         </td>
                         <td class="ps-3"><a href="{% url 'backend:user' game.guest.user.username %}" spa data-bs-toggle="tooltip" data-bs-title="{% translate 'View the profile of' %} {{ game.guest.user.username }}" class="link-dark text-decoration-none">{{ game.guest.user.username }}</a></td>
                         <td>{{ game.get_game_display }}</td>
@@ -93,7 +93,7 @@
                         </td>
                         {% else %}
                         <td class="ps-3 align-middle">
-                            <img src="{{ game.guest.user.picture.url }}" class="avatar-sm rounded-circle" alt="">
+                            <img src="{{ game.guest.get_profile_picture }}" class="avatar-sm rounded-circle" alt="">
                         </td>
                         <td class="ps-3"><a href="{% url 'backend:user' game.home.user.username %}" spa data-bs-toggle="tooltip" data-bs-title="{% translate 'View the profile of' %} {{ game.home.user.username }}" class="link-dark text-decoration-none">{{ game.home.user.username }}</a></td>
                         <td>{{ game.get_game_display }}</td>

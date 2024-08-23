@@ -578,8 +578,8 @@ class Competitor(models.Model):
     def get_profile_picture(self):
         if self.is_practice:
             return self.picture.url
-        elif self.user and self.user.picture:
-            return self.user.picture.url
+        elif self.user:
+            return self.user.get_profile_picture
         
     def disqualify(self):
         for match in Match.objects.played_by_competitor(self).not_finished():

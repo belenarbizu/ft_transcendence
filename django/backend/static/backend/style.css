@@ -154,21 +154,25 @@ html, body {
 .avatar-sm {
   aspect-ratio: 1/1;
   width: 2em;
+  object-fit: cover;
 }
 
 .avatar-l {
   aspect-ratio: 1/1;
   width: 100px;
+  object-fit: cover;
 }
 
 .avatar-xl {
   aspect-ratio: 1/1;
   width: 200px;
+  object-fit: cover;
 }
 
 .avatar-xxl {
   aspect-ratio: 1/1;
   width: 16em;
+  object-fit: cover;
 }
 
 .player-turn {
