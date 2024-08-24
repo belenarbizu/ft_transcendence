@@ -34,19 +34,19 @@
                         <label for="inputGameType" class="col-sm-4 col-form-label">{% translate 'Select your opponent' %}</label>
                         <div class="col-sm-8 mt-2">
                             <div class="form-check">
-                                <input class="form-check-input" type="radio" name="mode" id="radioPartner" value="lo" checked>
+                                <input class="form-check-input" type="radio" name="mode" id="radioPartner" value="lo" onclick="update_play_form();" checked>
                                 <label class="form-check-label" for="radioPartner">
                                     {% translate 'Play with a partner' %}
                                 </label>
                             </div>
                             <div class="form-check">
-                                <input class="form-check-input" type="radio" name="mode" id="radioCPU" value="cp">
+                                <input class="form-check-input" type="radio" name="mode" id="radioCPU" value="cp" onclick="update_play_form();">
                                 <label class="form-check-label" for="radioCPU">
                                     {% translate 'Play with the CPU' %}
                                 </label>
                             </div>
                             <div class="form-check">
-                                <input class="form-check-input" type="radio" name="mode" id="radioMatchmaking" value="matchmaking">
+                                <input class="form-check-input" type="radio" name="mode" id="radioMatchmaking" value="matchmaking" onclick="update_play_form();">
                                 <label class="form-check-label" for="radioMatchmaking">
                                     {% translate 'Use the matchmaking system' %}
                                 </label>
