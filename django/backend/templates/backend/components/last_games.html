@@ -19,12 +19,18 @@
                         <td class="ps-3 align-middle">
                             <img src="{{ game.guest.get_profile_picture }}" class="avatar-sm rounded-circle" alt="">
                         </td>
-                        <td class="ps-3"><a href="{% url 'backend:user' game.guest.user.username %}" spa data-bs-toggle="tooltip" data-bs-title="{% translate 'View the profile of' %} {{ game.guest.user.username }}" class="link-dark text-decoration-none">{{ game.guest.user.username }}</a></td>
-                        <td>{{ game.get_game_display }}</td>
-                        <td>
+                        <td class="align-middle"><a href="{% url 'backend:user' game.guest.user.username %}" spa data-bs-toggle="tooltip" data-bs-title="{% translate 'View the profile of' %} {{ game.guest.user.username }}" class="link-dark text-decoration-none">{{ game.guest.user.username }}</a></td>
+                        <td class="align-middle">
+                            {% if game.game == "po" %}
+                            <div class="custom-icon-list">{% include 'backend/components/icons/pong.html' %}</div>
+                            {% else %}
+                            <div class="custom-icon-list">{% include 'backend/components/icons/pirates.html' %}</div>
+                            {% endif %}</td>
+                        </td>
+                        <td class="align-middle">
                             <a spa hide href="{% url 'backend:game' game.id %}">{% translate 'Play' %}</a>
                         </td>
-                        <td>
+                        <td class="align-middle">
                             {% if not game.is_single_game %}
                             <form spa class="form px-1 d-flex justify-content-between align-items-center"
                             action="{% url 'backend:tournament_disqualify_competitor' game.tournament.id %}" method="POST">
@@ -46,9 +52,14 @@
                         <td class="ps-3 align-middle">
                             <img src="{{ game.home.get_profile_picture }}" class="avatar-sm rounded-circle" alt="">
                         </td>
-                        <td class="ps-3"><a href="{% url 'backend:user' game.home.user.username %}" spa data-bs-toggle="tooltip" data-bs-title="{% translate 'View the profile of' %} {{ game.home.user.username }}" class="link-dark text-decoration-none">{{ game.home.user.username }}</a></td>
-                        <td>{{ game.get_game_display }}</td>
-                        <td>
+                        <td class="align-middle"><a href="{% url 'backend:user' game.home.user.username %}" spa data-bs-toggle="tooltip" data-bs-title="{% translate 'View the profile of' %} {{ game.home.user.username }}" class="link-dark text-decoration-none">{{ game.home.user.username }}</a></td>
+                        <td class="align-middle">
+                            {% if game.game == "po" %}
+                            <div class="custom-icon-list">{% include 'backend/components/icons/pong.html' %}</div>
+                            {% else %}
+                            <div class="custom-icon-list">{% include 'backend/components/icons/pirates.html' %}</div>
+                            {% endif %}</td></td>
+                        <td class="align-middle">
                             <a spa hide href="{% url 'backend:game' game.id %}">{% translate 'Play' %}</a>
                         </td>
                         <td>
@@ -81,10 +92,15 @@
                         <td class="ps-3 align-middle">
                             <img src="{{ game.guest.get_profile_picture }}" class="avatar-sm rounded-circle" alt="">
                         </td>
-                        <td class="ps-3"><a href="{% url 'backend:user' game.guest.user.username %}" spa data-bs-toggle="tooltip" data-bs-title="{% translate 'View the profile of' %} {{ game.guest.user.username }}" class="link-dark text-decoration-none">{{ game.guest.user.username }}</a></td>
-                        <td>{{ game.get_game_display }}</td>
-                        <td>{{ game.date }}</td>
-                        <td>
+                        <td class="align-middle"><a href="{% url 'backend:user' game.guest.user.username %}" spa data-bs-toggle="tooltip" data-bs-title="{% translate 'View the profile of' %} {{ game.guest.user.username }}" class="link-dark text-decoration-none">{{ game.guest.user.username }}</a></td>
+                        <td class="align-middle">
+                            {% if game.game == "po" %}
+                            <div class="custom-icon-list">{% include 'backend/components/icons/pong.html' %}</div>
+                            {% else %}
+                            <div class="custom-icon-list">{% include 'backend/components/icons/pirates.html' %}</div>
+                            {% endif %}</td>
+                        <td class="align-middle">{{ game.date }}</td>
+                        <td class="align-middle">
                             {% if game.winner.user == user %}
                             <span class="badge rounded-pill bg-success">{{ game.home_score }} - {{ game.guest_score }}</span>
                             <span class="ms-2">+{{game.elo}}<i class="bi bi-award-fill" style="color:#007bff"></i></span>
@@ -97,10 +113,15 @@
                         <td class="ps-3 align-middle">
                             <img src="{{ game.guest.get_profile_picture }}" class="avatar-sm rounded-circle" alt="">
                         </td>
-                        <td class="ps-3"><a href="{% url 'backend:user' game.home.user.username %}" spa data-bs-toggle="tooltip" data-bs-title="{% translate 'View the profile of' %} {{ game.home.user.username }}" class="link-dark text-decoration-none">{{ game.home.user.username }}</a></td>
-                        <td>{{ game.get_game_display }}</td>
-                        <td>{{ game.date }}</td>
-                        <td>
+                        <td class="align-middle"><a href="{% url 'backend:user' game.home.user.username %}" spa data-bs-toggle="tooltip" data-bs-title="{% translate 'View the profile of' %} {{ game.home.user.username }}" class="link-dark text-decoration-none">{{ game.home.user.username }}</a></td>
+                        <td class="align-middle">
+                            {% if game.game == "po" %}
+                            <div class="custom-icon-list">{% include 'backend/components/icons/pong.html' %}</div>
+                            {% else %}
+                            <div class="custom-icon-list">{% include 'backend/components/icons/pirates.html' %}</div>
+                            {% endif %}</td>
+                        <td class="align-middle">{{ game.date }}</td>
+                        <td class="align-middle">
                             {% if game.winner.user == user %}
                             <span class="badge rounded-pill bg-success">{{ game.home_score }} - {{ game.guest_score }}</span>
                             <span class="ms-2">+{{game.elo}}<i class="bi bi-award-fill" style="color:#007bff"></i></span>
