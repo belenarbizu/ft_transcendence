@@ -389,18 +389,22 @@ def game_view(request, game_id):
 
 @require_http_methods(["POST"])
 @login_401
+@notifier
 def create_match(request):
 	user_id = int(request.POST.get("user_id"))
 	user = CustomUser.objects.get(id=user_id)
 	game = request.POST.get("game")
 	if not user in request.user.blocked_users.all() \
 		and not request.user in user.blocked_users.all():
-		home_competitor = Competitor.objects.create(user=request.user)
-		guest_competitor = Competitor.objects.create(user=user)
-		match = Match.objects.create(mode="re",
-			game=game, home=home_competitor, guest=guest_competitor)
-		ChatMessage.objects.send_message(
-			sender=request.user, recipient=user, match=match, message="new match")
+		if Match.objects.already_invited(request.user, user, game).count() == 0:
+			home_competitor = Competitor.objects.create(user=request.user)
+			guest_competitor = Competitor.objects.create(user=user)
+			match = Match.objects.create(mode="re",
+				game=game, home=home_competitor, guest=guest_competitor)
+			ChatMessage.objects.send_message(
+				sender=request.user, recipient=user, match=match, message="new match")
+		else:
+			raise Notification(_("You already sent an invitation"))
 	data = {
 		'messages': ChatMessage.objects.between(user, request.user).ordered(),
 		'user': user,
@@ -414,18 +418,21 @@ def remove_match(request):
 	user_id = int(request.POST.get("user_id"))
 	user = CustomUser.objects.get(id=user_id)
 	match_id = request.POST.get("match_id")
-	match = Match.objects.get(id=match_id)
-	home = match.home.user
-	guest = match.guest.user
-	match.delete()
-	LiveUpdateConsumer.update_forms(
-		[f"user_{user_id}"],
-		["#chat-refresh"]
-	)
-	LiveUpdateConsumer.update_forms(
-		[f"user_{home.id}", f"user_{guest.id}"],
-		["#user-games-refresh"]
-	)
+	try:
+		match = Match.objects.get(id=match_id)
+		home = match.home.user
+		guest = match.guest.user
+		match.delete()
+		LiveUpdateConsumer.update_forms(
+			[f"user_{user_id}"],
+			["#chat-refresh"]
+		)
+		LiveUpdateConsumer.update_forms(
+			[f"user_{home.id}", f"user_{guest.id}"],
+			["#user-games-refresh"]
+		)
+	except:
+		pass
 	data = {
 		'messages': ChatMessage.objects.between(user, request.user).ordered(),
 		'user': user,

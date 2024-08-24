@@ -194,3 +194,8 @@ html, body {
   stroke:#000000;
   fill:#000000;
 }
+
+.btn:focus,.btn:active {
+  outline: none !important;
+  box-shadow: none;
+}

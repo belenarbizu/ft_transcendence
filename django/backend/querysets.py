@@ -83,8 +83,11 @@ class ChatMessageQuerySet(models.QuerySet):
 
 class MatchQuerySet(models.QuerySet):
 
+    def with_users(self):
+        return self.prefetch_related('home', 'guest', 'home__user', 'guest__user')
+
     def competitive(self):
-        return self.filter(mode = "re")
+        return self.with_users().filter(mode = "re")
     
     def losses_of(self, user, game):
         return self.competitive().finished().of_game(game).played_by(user).lost_by(user).count()
@@ -124,6 +127,9 @@ class MatchQuerySet(models.QuerySet):
     
     def waiting(self):
         return self.filter(state = "wa")
+
+    def already_invited(self, user, invited, game):
+        return self.as_home(user).as_guest(invited).waiting().of_game(game)
 
 
 class CompetitorQuerySet(models.QuerySet):
