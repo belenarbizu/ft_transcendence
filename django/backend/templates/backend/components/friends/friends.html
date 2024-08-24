@@ -35,7 +35,7 @@
                             {{friend.username }}</a> {% translate 'invited you' %}
                     </td>
                     <td>
-                        <div class="d-flex">
+                        <div class="d-flex flex-row-reverse">
                             <form spa class="form px-1 d-flex justify-content-between align-items-center"
                                 action="{% url 'backend:invitation_accept' %}" method="POST">
                                 {% csrf_token %}
@@ -68,15 +68,17 @@
                             {{friend.username }}</a> {% translate 'received your invitation' %}
                     </td>
                     <td>
-                        <form spa class="form px-1 d-flex justify-content-between align-items-center"
-                            action="{% url 'backend:invitation_cancel' %}" method="POST">
-                            {% csrf_token %}
-                            <input name="next" type="hidden" value="{% url 'backend:user' user.username %}" />
-                            <input name="username" type="hidden" value="{{ friend.username }}" />
-                            <button type="submit" spa class="btn btn-link m-0 p-0"><i
-                                    class="fs-5 text-danger bi bi-x-circle-fill" data-bs-toggle="tooltip"
-                                    data-bs-title="{% translate 'Cancel invitation for' %} {{ friend.username }}"></i></button>
-                        </form>
+                        <div class="d-flex flex-row-reverse">
+                            <form spa class="form px-1 d-flex justify-content-between align-items-center"
+                                action="{% url 'backend:invitation_cancel' %}" method="POST">
+                                {% csrf_token %}
+                                <input name="next" type="hidden" value="{% url 'backend:user' user.username %}" />
+                                <input name="username" type="hidden" value="{{ friend.username }}" />
+                                <button type="submit" spa class="btn btn-link m-0 p-0"><i
+                                        class="fs-5 text-danger bi bi-x-circle-fill" data-bs-toggle="tooltip"
+                                        data-bs-title="{% translate 'Cancel invitation for' %} {{ friend.username }}"></i></button>
+                            </form>
+                        </div>
                     </td>
                 </tr>
                 {% endfor %}
@@ -92,7 +94,7 @@
                     </td>
                     {% if friend in request.user.friends.all %}
                     <td>
-                        <div class="d-flex">
+                        <div class="d-flex flex-row-reverse">
                             <form spa target=".chat-modal" class="form px-1 iconMsg text-decoration-none"
                                 action="{% url 'backend:chat_messages' %}" method="POST">
                                 {% csrf_token %}
@@ -103,10 +105,6 @@
                                     </i>
                                 </button>
                             </form>
-                            <button type="submit" class="btn btn-link m-0 p-0" data-bs-toggle="modal" data-bs-target="#localModal">
-                                <i class="fs-4 text-primary bi bi-controller ms-3 mt-neg" data-bs-toggle="tooltip"
-                                    data-bs-title="{% translate 'Play with' %} {{ friend.username }}"></i>
-                            </button>
                         </div>
                     </td>
                     {% else %}

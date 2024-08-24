@@ -184,4 +184,13 @@ html, body {
   width: 25px;
   height: 25px;
   margin-top: -7px;
+  stroke:#0d6efd;
+  fill:#0d6efd;
+}
+
+.custom-icon-list {
+  width: 25px;
+  height: 25px;
+  stroke:#000000;
+  fill:#000000;
 }
