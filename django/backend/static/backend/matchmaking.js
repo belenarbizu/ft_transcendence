@@ -25,6 +25,7 @@ class MatchmakingSystem{
             '[group="ws/matchmaking"]');
         if (socket_elements.length != 0 && this.interval == null)
         {
+            this.value = 0;
             this.interval = setInterval(
                 this.reload.bind(this),
                 1000
@@ -33,14 +34,11 @@ class MatchmakingSystem{
     }
 
     remove_matchmaking(){
-        for (var group in this.games){
-            var sockets = document.querySelectorAll('[group="ws/matchmaking"]');
-            if (sockets.length == 0 && this.interval != null){
-                clearInterval(this.interval);
-                this.interval = null;
-                this.value = 0;
-                console.log(this.value);
-            }
+        var sockets = document.querySelectorAll('[group="ws/matchmaking"]');
+        if (sockets.length == 0 && this.interval != null){
+            clearInterval(this.interval);
+            this.interval = null;
+            this.value = 0;
         }
     }
     
