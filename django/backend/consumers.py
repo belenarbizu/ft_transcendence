@@ -3,6 +3,7 @@ from asgiref.sync import async_to_sync
 from channels.generic.websocket import WebsocketConsumer
 from channels.layers import get_channel_layer
 from django.apps import apps
+from django.utils import translation
 
 class LiveUpdateConsumer(WebsocketConsumer):
     
@@ -20,6 +21,16 @@ class LiveUpdateConsumer(WebsocketConsumer):
         return super().disconnect(code)
 
     def spa_update(self, event):
+        try:
+            language = self.scope["cookies"]["django_language"]
+            if event["action"] == "notification":
+                message = ""
+                with translation.override(language):
+                    for msg in event["message"]:
+                        message += " " + translation.gettext(msg)
+                event["message"] = message
+        except:
+            pass
         self.send(text_data=json.dumps(event))
         
     @classmethod
