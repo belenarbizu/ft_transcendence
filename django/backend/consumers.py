@@ -22,7 +22,9 @@ class LiveUpdateConsumer(WebsocketConsumer):
 
     def spa_update(self, event):
         try:
-            language = self.scope["cookies"]["django_language"]
+            CustomUser = apps.get_model("backend", "CustomUser")
+            user = CustomUser.objects.get(id = self.scope["user"].id)
+            language = user.preferred_language
             if event["action"] == "notification":
                 message = ""
                 with translation.override(language):
