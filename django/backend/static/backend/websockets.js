@@ -1,6 +1,4 @@
 
-const ws_protocol = "ws://";
-
 class WebSocketManager{
 
     constructor(){
@@ -17,8 +15,8 @@ class WebSocketManager{
         socket_elements.forEach(socket_element => {
             var group = socket_element.getAttribute("group");
             if (!this.sockets[group]){
-                this.sockets[group] = new WebSocket(
-                    ws_protocol + window.location.host + '/' + group + '/');
+                var url = ws_protocol + window.location.host + '/' + group + '/';
+                this.sockets[group] = new WebSocket(url);
                 if (socket_element.hasAttribute("onmessage")){
                     var callback = socket_element.getAttribute("onmessage");
                     this.sockets[group].onmessage = function (e){
