@@ -37,7 +37,7 @@ def login_401(view):
 @login_required(login_url=reverse_lazy("backend:login_options"))
 def index_view(request):
 	return redirect(reverse("backend:user",
-		kwargs={'username':request.user.username}))
+		kwargs={'username':request.user.username}) + "?SPA=True")
 
 @login_required(login_url=reverse_lazy("backend:login_options"))
 def user_view(request, username):
@@ -219,7 +219,7 @@ def tournament_view(request, tournament_id):
 	try:
 		tournament = Tournament.objects.get(id = tournament_id)
 	except Exception as e:
-		return redirect(reverse("backend:tournament_list", kwargs={}))
+		return redirect(reverse("backend:tournament_list", kwargs={}) + "?SPA=True")
 	return render(request, "backend/tournament.html", {
 		"tournament": tournament,
 		"rounds": reversed(range(1, tournament.round+1)),
@@ -241,7 +241,7 @@ def tournament_competitors(request, tournament_id):
 def tournament_remove_competitor(request, tournament_id):
 	Competitor.objects.remove_competitor(request.POST.get("competitor", ""))
 	return redirect(reverse("backend:tournament",
-		kwargs={'tournament_id':tournament_id}))
+		kwargs={'tournament_id':tournament_id}) + "?SPA=True")
 
 @require_http_methods(["POST"])
 @login_401
@@ -250,7 +250,7 @@ def tournament_disqualify_competitor(request, tournament_id):
 	comp = Competitor.objects.get(id = request.POST.get("competitor", ""))
 	comp.disqualify()
 	return redirect(reverse("backend:tournament",
-		kwargs={'tournament_id':tournament_id}))
+		kwargs={'tournament_id':tournament_id}) + "?SPA=True")
 
 @require_http_methods(["POST"])
 @login_401
@@ -260,7 +260,7 @@ def tournament_register_competitor(request, tournament_id):
 	Competitor.objects.register_competitor(
 		tournament, request.user, request.POST.get("alias", ""))
 	return redirect(reverse("backend:tournament",
-		kwargs={'tournament_id':tournament_id}))
+		kwargs={'tournament_id':tournament_id}) + "?SPA=True")
 
 @require_http_methods(["POST"])
 @login_401
@@ -268,7 +268,7 @@ def tournament_register_competitor(request, tournament_id):
 def tournament_start(request, tournament_id):
 	Tournament.objects.start_tournament(tournament_id, request.user)
 	return redirect(reverse("backend:tournament",
-		kwargs={'tournament_id':tournament_id}))
+		kwargs={'tournament_id':tournament_id}) + "?SPA=True")
 
 @require_http_methods(["POST"])
 @login_401
@@ -281,7 +281,7 @@ def tournament_remove(request, tournament_id):
 	LiveUpdateConsumer.update_forms("tournament_list", "#tournament_list_update")
 	LiveUpdateConsumer.reload_page(f"tournament_{tournament_id}")
 	return redirect(reverse("backend:tournament",
-		kwargs={'tournament_id':tournament_id}))
+		kwargs={'tournament_id':tournament_id}) + "?SPA=True")
 
 @login_required(login_url=reverse_lazy("backend:login_options"))
 @require_http_methods(["GET"])
@@ -306,7 +306,7 @@ def tournament_create(request):
 	)
 	print(tournament)
 	return redirect(reverse("backend:tournament",
-							kwargs = {"tournament_id": tournament.id}))
+							kwargs = {"tournament_id": tournament.id}) + "?SPA=True")
 
 @require_http_methods(["POST"])
 @login_401
@@ -319,7 +319,7 @@ def tournament_list_update(request):
 @login_required(login_url=reverse_lazy("backend:login_options"))
 def logout(request):
 	auth.logout(request)
-	return redirect(reverse("backend:login_options"))
+	return redirect(reverse("backend:login_options") + "?SPA=True")
 
 @require_http_methods(["GET", "POST"])
 def login(request):
@@ -332,7 +332,7 @@ def login(request):
 			language = user.preferred_language
 			if not language:
 				language = "es"
-			return redirect(translate_url(reverse("backend:user", kwargs={"username": user.username}), language))
+			return redirect(translate_url(reverse("backend:user", kwargs={"username": user.username}), language) + "?SPA=True")
 		else:
 			return render(request, "backend/login.html", {
 				"error": _("Authentication failed"),
@@ -351,7 +351,7 @@ def register_view(request):
 		form = RegistrationForm(request.POST)
 		if form.is_valid():
 			form.save()
-			return redirect(reverse('backend:login_options'))
+			return redirect(reverse('backend:login_options') + "?SPA=True")
 	return render(request, 'backend/signup.html', {"form": form})
 
 def three_demo(request):
@@ -372,7 +372,7 @@ def edit_profile(request):
 			request.user.picture = form.cleaned_data["picture"]
 		request.user.save()
 		language = request.POST.get("preferred_language", "es")
-		return redirect(translate_url(reverse('backend:user', kwargs={"username":request.user.username}), language))
+		return redirect(translate_url(reverse('backend:user', kwargs={"username":request.user.username}), language) + "?SPA=True")
 	raise Notification(_("Bad form"))
 
 
@@ -479,7 +479,7 @@ def login_42(request):
 		else:
 			user = user.first()
 		auth.login(request, user)
-		return redirect(reverse("backend:index"))
+		return redirect(reverse("backend:index") + "?SPA=True")
 	except Exception as e:
 		return render(request, "backend/error.html", {
 			"reason": _(str(e))
@@ -493,7 +493,7 @@ def modal_play(request):
 	alias_guest = request.POST.get("alias_guest")
 	mode = request.POST.get("mode", "lo")
 	if mode == "matchmaking":
-		return redirect(reverse("backend:matchmaking_start", kwargs={"game": game}))
+		return redirect(reverse("backend:matchmaking_start", kwargs={"game": game}) + "?SPA=True")
 	alias_home = "home" if alias_home == "" else alias_home
 	home_competitor = Competitor.objects.create(
 		user=request.user,
@@ -510,7 +510,7 @@ def modal_play(request):
 		home=home_competitor,
 		guest=guest_competitor
 	)
-	return redirect(reverse("backend:game", kwargs={"game_id": match.id}))
+	return redirect(reverse("backend:game", kwargs={"game_id": match.id}) + "?SPA=True")
 
 @require_http_methods(["GET"])
 @login_required(login_url=reverse_lazy("backend:login_options"))
@@ -532,7 +532,7 @@ def matchmaking_poll(request, game):
 	if request.user.matchmaking_match:
 		return redirect(reverse("backend:game", kwargs={
 			"game_id": request.user.matchmaking_match.id
-			}))
+			}) + "?SPA=True")
 	range = int(request.POST.get("range", "0"))
 	can_match = CustomUser.objects.can_match(game, request.user, range)
 	if can_match:
@@ -552,5 +552,5 @@ def matchmaking_poll(request, game):
 		request.user.save()
 		can_match[0].matchmaking_match = match
 		can_match[0].save()
-		return redirect(reverse("backend:game", kwargs={"game_id": match.id}))
-	return redirect(reverse("backend:matchmaking_start", kwargs={"game": game}) + "?init=false")
+		return redirect(reverse("backend:game", kwargs={"game_id": match.id}) + "?SPA=True")
+	return redirect(reverse("backend:matchmaking_start", kwargs={"game": game}) + "?SPA=True&init=false")
