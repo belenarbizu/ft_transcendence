@@ -1,4 +1,5 @@
 {% load static %}
+{% load backend_extras %}
 
 {% if not request.GET.SPA %}
 <!doctype html>
@@ -49,6 +50,9 @@
             "three/addons/": "/static/threejs/examples/jsm/"
           }
         }
+    </script>
+    <script>
+        const ws_protocol = "{% ws_protocol %}";
     </script>
     <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
     <script src="{% static 'backend/notifications.js' %}"></script>

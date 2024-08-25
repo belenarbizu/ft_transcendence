@@ -24,7 +24,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-(58)_y!i2iub$$4p))#a2wu74wcsh$lz#ihq34o6w))6!3anm='
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
+
+# Websocket protocol
+WEBSOCKET_PROTOCOL = "wss://"
 
 CSRF_TRUSTED_ORIGINS = [
     'https://localhost:1025',
