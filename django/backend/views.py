@@ -364,8 +364,7 @@ def edit_profile(request):
 	next = request.POST.get("next", "/")
 	form = EditProfileForm(request.POST, request.FILES)
 	if form.is_valid():
-		if form.cleaned_data["bio"] != None:
-			request.user.bio = form.cleaned_data["bio"]
+		request.user.bio = form.cleaned_data["bio"]
 		if form.cleaned_data["preferred_language"] != None:
 			request.user.preferred_language = form.cleaned_data["preferred_language"]
 		if form.cleaned_data["picture"] != None:

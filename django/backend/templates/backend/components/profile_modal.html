@@ -9,25 +9,25 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body col-12">
-              <form spa hide enctype="multipart/form-data" method="POST" action="{% url 'backend:edit_profile' %}">
+              <form spa hide push enctype="multipart/form-data" method="POST" action="{% url 'backend:edit_profile' %}">
                 {% csrf_token %}
                 <div class="mb-3">
                   <label for="exampleFormControlInput1" class="form-label">{% translate 'Preferred language' %}</label>
                   <div class="d-flex">
                     <div class="form-check ms-1">
-                      <input class="form-check-input" type="radio" name="preferred_language" id="languageEs" value="es">
+                      <input class="form-check-input" type="radio" name="preferred_language" id="languageEs" value="es" {% if user.preferred_language == "es" %} checked {% endif %}>
                       <label class="form-check-label" for="languageEs">
                         {% translate 'Spanish' %}
                       </label>
                     </div>
                     <div class="form-check ms-5">
-                      <input class="form-check-input" type="radio" name="preferred_language" id="languageEn" value="en">
+                      <input class="form-check-input" type="radio" name="preferred_language" id="languageEn" value="en" {% if user.preferred_language == "en" %} checked {% endif %}>
                       <label class="form-check-label" for="languageEn">
                         {% translate 'English' %}
                       </label>
                     </div>
                     <div class="form-check ms-5">
-                      <input class="form-check-input" type="radio" name="preferred_language" id="languageDa-dk" value="da-dk">
+                      <input class="form-check-input" type="radio" name="preferred_language" id="languageDa-dk" value="da-dk" {% if user.preferred_language == "da-dk" %} checked {% endif %}>
                       <label class="form-check-label" for="languageDa-dk">
                         {% translate 'Danish' %}
                       </label>
@@ -36,7 +36,7 @@
                 </div>
                 <div class="mb-3">
                   <label for="exampleFormControlTextarea1" class="form-label">{% translate 'Bio' %}</label>
-                  <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" name="bio"></textarea>
+                  <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" name="bio">{{ user.bio |default_if_none:"" }}</textarea>
                 </div>
                 <div class="mb-3">
                   <label for="inputGroupFile02" class="form-label">{% translate 'Profile picture' %}</label>
