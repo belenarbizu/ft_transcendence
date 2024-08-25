@@ -69,6 +69,23 @@ html, body {
   left: -30%;
 }
 
+.winner-title {
+  height: 50px;
+  z-index: 0;
+  margin-top: -10px;
+  margin-bottom: -40px;
+  border-radius: 15px;
+  width: 60%;
+  position: relative;
+  top: -350px;
+  left: -30%;
+}
+
+.winner-text {
+  font-size:50px;
+  color: white;
+}
+
 .winner {
   position: relative;
   top:-50%;

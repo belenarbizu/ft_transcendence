@@ -38,6 +38,11 @@
                                 {{ match.home.get_display_name }}
                             </h4>
                         </div>
+                        <div class="text-center winner-title">
+                            <h4 class="winner-info text-middle winner-text">
+                                {% translate 'WINNER' %}
+                            </h4>
+                        </div>
                     </span>
                     <!-- end of Home winner -->
 
@@ -48,6 +53,11 @@
                         <div class="card text-center winner-player-info border-0">
                             <h4 class="winner-info text-middle">
                                 {{ match.guest.get_display_name }}
+                            </h4>
+                        </div>
+                        <div class="text-center winner-title">
+                            <h4 class="winner-info text-middle winner-text">
+                                {% translate 'WINNER' %}
                             </h4>
                         </div>
                     </span>
