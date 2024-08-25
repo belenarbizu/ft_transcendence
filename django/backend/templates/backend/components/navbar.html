@@ -3,26 +3,25 @@
 <header>
     <nav class="navbar navbar-expand-lg bg-primary">
         <div class="container-fluid">
-            <a class="navbar-brand link-dark" href="#">Transcendence</a>
+            <div class="text-center">
+                {% if request.user.is_authenticated %}
+                <img src="{{ request.user.get_profile_picture }}" class="avatar-sm rounded-circle" alt="">
+                <a spa class="link-dark text-decoration-none ms-2 text-white" href="{% url 'backend:user' request.user.username %}">{{ request.user.username }}</a>
+                {% endif %}
+            </div>
                 <div class="d-flex align-items-center">
-                    <div class="nav-item pe-3">
-                        <a spa class="link-dark text-decoration-none" href="{% if request.user.is_authenticated %}{% url 'backend:user' request.user.username %}{% endif %}">{{ request.user.username }}</a>
-                    </div>
                         {% if request.user.is_authenticated %}
-                    <div class="nav-item">
-                        <button class="btn btn-dark mx-1" data-bs-toggle="modal" data-bs-target="#playModal">{% translate 'Play' %}</button>
+                    <div class="nav-item pe-3">
+                        <a class="link-dark text-white" data-bs-toggle="modal" data-bs-target="#playModal" href="#playModal">{% translate 'Play' %}</button>
                     </div>
                     <div class="nav-item pe-3">
-                        <form spa push action="{% url 'backend:logout' %}" method="POST">
-                            {% csrf_token %}
-                            <input type="hidden" name="next" value="{{ request.url }}" />
-                            <button class="btn btn-dark mx-1" type="submit">{% translate 'Logout' %}</button>
-                        </form>
-                    </div>
-                    <div class="nav-item pe-3">
-                        <a spa class="link-dark" href="{% url 'backend:tournament_list' %}">
+                        <a spa class="link-dark text-white" href="{% url 'backend:tournament_list' %}">
                             {% translate 'Tournaments' %}
                         </a>
+                    </div>
+                    <div class="nav-item pe-3">
+                        <input type="hidden" name="next" value="{{ request.url }}" />
+                        <a spa class="link-dark text-white" href="{% url 'backend:logout' %}">{% translate 'Logout' %}</a>
                     </div>
                         {% endif %}
                     {% include "backend/components/language_switch.html" %}
