@@ -104,6 +104,7 @@ export class View3D extends GameView{
     animate() {
         //this.game_group.rotation.x += 0.01; 
         //cube2.rotation.y += 0.01;
+        this.on_window_resize();
 
         if (this.controller != null)
         {

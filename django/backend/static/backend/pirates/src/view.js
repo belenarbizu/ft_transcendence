@@ -298,6 +298,8 @@ export class View extends GameView
     {
         const delta = this.clock.getDelta();
 
+        this.on_window_resize();
+
         if (this.asteroid.animating == true)
         {
             this.asteroid.mixer.update(delta);
