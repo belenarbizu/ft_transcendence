@@ -515,10 +515,12 @@ def modal_play(request):
 @require_http_methods(["GET"])
 @login_required(login_url=reverse_lazy("backend:login_options"))
 def matchmaking_start(request, game):
-	request.user.matchmaking_type = game
-	request.user.matchmaking_range = 0
-	request.user.matchmaking_match = None
-	request.user.save()
+	init = request.GET.get("init", "true")
+	if init == "true":
+		request.user.matchmaking_type = game
+		request.user.matchmaking_range = 0
+		request.user.matchmaking_match = None
+		request.user.save()
 	return render(request, "backend/matchmaking.html", {
 		"online": CustomUser.objects.looking_for_partner(game).count(),
 		"game": game
@@ -551,7 +553,4 @@ def matchmaking_poll(request, game):
 		can_match[0].matchmaking_match = match
 		can_match[0].save()
 		return redirect(reverse("backend:game", kwargs={"game_id": match.id}))
-	return render(request, "backend/matchmaking.html", {
-		"online": CustomUser.objects.looking_for_partner(game).count(),
-		"game": game
-		})
+	return redirect(reverse("backend:matchmaking_start", kwargs={"game": game}) + "?init=false")
