@@ -23,7 +23,8 @@ export class Controller
         };
         this.interface = function (data) {
             var msg = JSON.stringify(data);
-            this.webSocket.send(msg);
+            if (this.webSocket.readyState == WebSocket.OPEN)
+                this.webSocket.send(msg);
         };
     }
 
