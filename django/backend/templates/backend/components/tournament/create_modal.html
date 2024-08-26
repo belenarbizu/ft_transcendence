@@ -45,13 +45,8 @@
                     <label for="inputTournamentMode" class="col-sm-4 col-form-label">{% translate 'Mode' %}</label>
                     <div class="col-sm-8">
                         <select name="tournament_mode" class="form-select" id="inputTournamentMode">
-                            {% for option in mode_options %}
-                            <option 
-                            {% if forloop.first %}
-                            selected
-                            {% endif %}
-                            value="{{ option.0 }}">{{ option.1 }}</option>
-                            {% endfor %}
+                            <option selected value="{{ mode_options.0.0 }}">{{ mode_options.0.1 }}</option>
+                            <option value="{{ mode_options.1.0 }}">{{ mode_options.1.1 }}</option>
                         </select>
                     </div>
                     </div>
