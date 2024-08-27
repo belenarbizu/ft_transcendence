@@ -82,12 +82,27 @@
                 <div class="p-2">{% translate 'How to play' %}</div>
             </h4> 
             <div class="card-body">
+                {% if match.game == "po" %}
                 <p>{% translate 'This game is a ping pong-style game that has two paddles and one ball.' %}
                     {% translate 'The goal of this game is to defeat your opponent by being the first to score 5 points.' %}
                     {% translate 'You earn a point when your opponent misses the ball.' %}</p>
                 <p>{% translate 'Use the keyboard to control the paddle and hit the ball.' %}
                     {% translate 'If you are playing on the left side of the screen, press “W” to move the paddle up and “S” to move it down.' %}
                     {% translate 'If you are playing on the right side, press “O” to move the paddle up and “L” to move it down.' %}</p>
+                {% else %}
+                <p>
+                    {% translate 'Game controls:' %}
+                    {% translate 'Select the box on which to place your ship with the mouse and press "s" to rotate it.' %}
+                    {% translate 'Press "a" or "d" to rotate the camera in both directions.' %}
+                    {% translate 'Once the game starts, select the square on which to shoot by moving the mouse over it and clicking with the mouse.' %}</p>
+                    <p>
+                    {% translate 'Game description:' %}
+                    {% translate 'Pirates is inspired by the classic strategy game "Battleship".' %}
+                    {% translate 'First, each player places three ships on the board without the opposing player seeing their positions.' %}
+                    {% translate 'Then each player tries to guess the position of the opponent's ships by choosing a square on the board in their turn.' %}
+                    {% translate 'If the shot is accurate, the box will turn red and white otherwise.' %}
+                    {% translate 'The winner will be the first to guess the position of all the enemy ships.' %}</p>
+                {% endif %}
             </div>
         </div>
     </div>
