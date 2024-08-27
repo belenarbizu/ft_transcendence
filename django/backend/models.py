@@ -402,7 +402,6 @@ class Match(models.Model):
             winner_elo = a if result else b
             loser_elo = b if result else a
             elo = int(k / (1 + 10 ** ((winner_elo - loser_elo) / 400)))
-            print (elo)
             return elo
         
         def updated_elo(prev_elo, elo, result):

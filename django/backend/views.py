@@ -304,7 +304,6 @@ def tournament_create(request):
 		game = request.POST["game"],
 		tournament_mode = request.POST["tournament_mode"],
 	)
-	print(tournament)
 	return redirect(reverse("backend:tournament",
 							kwargs = {"tournament_id": tournament.id}) + "?SPA=True")
 

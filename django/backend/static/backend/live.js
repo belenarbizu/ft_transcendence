@@ -11,7 +11,6 @@ function live_handler(event){
         get_request(window.location.href, "#wrapper", true, true);
     }
     if (data["action"] == "notification") {
-        console.log("NOTIFICATION");
         show_notification(data["message"] + '\n');
     }
 }
