@@ -152,7 +152,7 @@ export class View3D extends GameView{
 
         this.audioLoader = new THREE.AudioLoader();
         this.audioLoader.load(
-            '/static/backend/pong/pirates_revenge.mp3',
+            '/static/backend/pong/hyperpong.mp3',
             function(buffer) {
                 sound_.setBuffer(buffer);
                 sound_.setLoop(true);
