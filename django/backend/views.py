@@ -494,12 +494,12 @@ def modal_play(request):
 	mode = request.POST.get("mode", "lo")
 	if mode == "matchmaking":
 		return redirect(reverse("backend:matchmaking_start", kwargs={"game": game}) + "?SPA=True")
-	alias_home = "home" if alias_home == "" else alias_home
+	alias_home = _("home") if alias_home == "" else alias_home
 	home_competitor = Competitor.objects.create(
 		user=request.user,
 		alias=alias_home
 		)
-	alias_guest = "guest" if alias_guest == "" else alias_guest
+	alias_guest = _("guest") if alias_guest == "" else alias_guest
 	guest_competitor = Competitor.objects.create(
 		user=request.user,
 		alias=alias_guest
