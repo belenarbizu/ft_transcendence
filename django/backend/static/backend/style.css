@@ -48,13 +48,11 @@ html, body {
   padding: 10px;
   display: flex;
   white-space: nowrap;
-  overflow: hidden;
 }
 
 .winner-info {
   padding: 10px;
   white-space: nowrap;
-  overflow: hidden;
 }
 
 .winner-player-info {
