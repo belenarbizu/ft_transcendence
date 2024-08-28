@@ -1,7 +1,7 @@
 from django.db import models
 from . import querysets
 from django.contrib.auth.models import UserManager
-from django.utils.translation import gettext_lazy as _
+from django.utils.translation import gettext_noop, gettext_lazy as _
 from .consumers import LiveUpdateConsumer
 from django.apps import apps
 import random
@@ -65,7 +65,7 @@ class ChatMessageManager(
 				)
 				LiveUpdateConsumer.send_notification(
 					[f"user_{kwargs['recipient'].id}"],
-					[kwargs['sender'].username + " " + _("sent you a message")]
+					[kwargs['sender'].username, gettext_noop("sent you a message")]
 				)
 
 

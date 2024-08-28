@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
-from django.utils.translation import gettext_lazy as _
+from django.utils.translation import gettext_noop, gettext_lazy as _
 from django.templatetags.static import static
 from . import managers
 from .consumers import *
@@ -156,7 +156,7 @@ class CustomUser(AbstractUser):
         )
         LiveUpdateConsumer.send_notification(
             f"user_{invited_user.id}",
-            self.username + " " + _("sent you a friend request")
+            [self.username, gettext_noop("sent you a friend request")]
         )
 
     def dismiss_invitation(self, invited):
@@ -183,7 +183,7 @@ class CustomUser(AbstractUser):
         )
         LiveUpdateConsumer.send_notification(
             f"user_{invited_user.id}",
-            self.username + " " + _("accepted your friend request")
+            [self.username, gettext_noop("accepted your friend request")]
         )
 
     def cancel_invitation(self, invited):
