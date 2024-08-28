@@ -71,6 +71,7 @@ export class View3D extends GameView{
 
         this.animate();
         this.renderer.setAnimationLoop( this.animate.bind(this) );
+        this._sound();
 
     }
 
@@ -139,6 +140,31 @@ export class View3D extends GameView{
         //cube2.scale.x = 2;
         //cube2.scale.y = 0.2;
         this.renderer.render( this.scene, this.camera );
+    }
+
+    _sound()
+    {
+        this.listener = new THREE.AudioListener();
+        this.camera.add(this.listener);
+
+        this.sound = new THREE.Audio(this.listener);
+        var sound_ = this.sound;
+
+        this.audioLoader = new THREE.AudioLoader();
+        this.audioLoader.load(
+            '/static/backend/pong/hyperpong.mp3',
+            function(buffer) {
+                sound_.setBuffer(buffer);
+                sound_.setLoop(true);
+                sound_.setVolume(0.5);
+                sound_.play();
+                this.sound = sound_;
+            }.bind(this));
+    }
+
+    end()
+    {
+        this.sound.pause();
     }
 
     draw(t)

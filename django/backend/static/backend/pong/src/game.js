@@ -54,6 +54,7 @@ export class PongGame
             this.view.worker.terminate();
         }
         this.controller.webSocket.close();
+        this.view.end();
     }
 }
 
