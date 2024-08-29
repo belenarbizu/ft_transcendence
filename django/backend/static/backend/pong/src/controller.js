@@ -131,7 +131,7 @@ export class Controller
             this.interface({
                 "player": "home",
                 "type": "goal",
-                "movement": this.model.ball["movement"],
+                "movement": this.model.ball["movement"] * -1,
                 "position": 0.5,
                 "last_height": 0.5,
                 "slope": this.model.get_new_slope(this.model.ball["movement"]),
