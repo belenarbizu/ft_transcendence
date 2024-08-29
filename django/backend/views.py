@@ -31,8 +31,11 @@ def login_401(view):
 
 @login_required(login_url=reverse_lazy("backend:login_options"))
 def index_view(request):
+	spa = request.GET.get("SPA", "")
+	if spa != "":
+		spa = "?SPA=True"
 	return redirect(reverse("backend:user",
-		kwargs={'username':request.user.username}) + "?SPA=True")
+		kwargs={'username':request.user.username}) + spa)
 
 @login_required(login_url=reverse_lazy("backend:login_options"))
 def user_view(request, username):
@@ -472,7 +475,7 @@ def login_42(request):
 		else:
 			user = user.first()
 		auth.login(request, user)
-		return redirect(reverse("backend:index") + "?SPA=True")
+		return redirect(reverse("backend:index"))
 	except Exception as e:
 		return render(request, "backend/error.html", {
 			"reason": _(str(e))
