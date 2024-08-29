@@ -86,7 +86,14 @@
                         </form>
                         {% endif %}
                         {% if user in request.user.friends.all %}
-                        <button class="btn btn-primary mx-1" data-bs-toggle="modal" data-bs-target="#chatModal">{% translate 'Chat' %}</button>
+
+                        <form spa target=".chat-modal" class="form px-1 iconMsg text-decoration-none"
+                            action="{% url 'backend:chat_messages' %}" method="POST">
+                            {% csrf_token %}
+                            <input name="username" type="hidden" value="{{ user.username }}" />
+                            <button type="submit" class="btn btn-primary mx-1" data-bs-toggle="modal" data-bs-target="#chatModal">{% translate 'Chat' %}</button>
+                        </form>
+
                         <form spa action="{% url 'backend:block_user' %}" method="POST">
                             {% csrf_token %}
                             <input name="next" type="hidden" value="{% url 'backend:user' user.username %}" />
