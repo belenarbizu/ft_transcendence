@@ -8,11 +8,11 @@
     <div class="d-flex">
         <div class="card">
             <div class="card-body">
-                <small class="my-0">
+                <small class="my-0 chat-msg-text">
                     {{ message.sender.username }}  {{ message.date }}
                 </small>
                 {% if message.match %}
-                <p class="my-0">
+                <p class="my-0 chat-msg-text">
                 {{ message.sender.username }} {% translate 'sent an invitation to play' %}
                 </p>
                     {% if message.match.is_waiting %}
@@ -35,7 +35,7 @@
                         {% endif %}
                     {% endif %}
                 {% else %}
-                <p class="my-0">
+                <p class="my-0 chat-msg-text">
                 {{ message.message }}
                 </p>
                 {% endif %}
@@ -52,11 +52,11 @@
         </div>
         <div class="card">
             <div class="card-body">
-                <small class="my-0">
+                <small class="my-0 chat-msg-text">
                     {{ message.sender.username }}  {{ message.date }}
                 </small>
                 {% if message.match %}
-                <p class="my-0">
+                <p class="my-0 chat-msg-text">
                     {{ message.sender.username }} {% translate 'sent an invitation to play' %}
                     </p>
                         {% if message.match.is_waiting %}
@@ -79,7 +79,7 @@
                             {% endif %}
                         {% endif %}
                 {% else %}
-                <p class="my-0">
+                <p class="my-0 chat-msg-text">
                 {{ message.message }}
                 </p>
                 {% endif %}
