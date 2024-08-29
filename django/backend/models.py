@@ -4,7 +4,6 @@ from django.utils.translation import gettext_lazy as _
 from django.templatetags.static import static
 from . import managers
 from .consumers import *
-import random
 from django.utils import timezone
 from .exceptions import Notification
 
