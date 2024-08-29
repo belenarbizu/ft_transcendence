@@ -22,7 +22,7 @@ GAME_STATE_CHOICES = (
 TOURNAMENT_STATE_CHOICES = (
     ("cr", _("Open to new competitors")),
     ("st", _("The tournament is being played")),
-    ("fi", _("The tournamen ended"))
+    ("fi", _("The tournament ended"))
 )
 
 GAME_CHOICES = (
