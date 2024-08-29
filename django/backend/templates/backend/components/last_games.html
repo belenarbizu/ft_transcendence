@@ -111,7 +111,7 @@
                         </td>
                         {% else %}
                         <td class="ps-3 align-middle">
-                            <img src="{{ game.guest.get_profile_picture }}" class="avatar-sm rounded-circle" alt="">
+                            <img src="{{ game.home.get_profile_picture }}" class="avatar-sm rounded-circle" alt="">
                         </td>
                         <td class="align-middle"><a href="{% url 'backend:user' game.home.user.username %}" spa data-bs-toggle="tooltip" data-bs-title="{% translate 'View the profile of' %} {{ game.home.user.username }}" class="link-dark text-decoration-none">{{ game.home.user.username }}</a></td>
                         <td class="align-middle">
