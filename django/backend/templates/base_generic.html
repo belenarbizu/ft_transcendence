@@ -38,10 +38,10 @@
         <socket group="ws/user/{{ request.user.id }}" onmessage="live_handler"></socket>
         {% endif %}
 
+        {% include "backend/components/play_modal.html" %}
+        {% include "backend/components/confirm.html" %}
         {% if not request.GET.SPA %}
     </div>
-    {% include "backend/components/play_modal.html" %}
-    {% include "backend/components/confirm.html" %}
     {% include "backend/components/error_toast.html" %}
     <script type="importmap">
         {
