@@ -4,7 +4,6 @@ from django.utils.translation import gettext_noop, gettext_lazy as _
 from django.templatetags.static import static
 from . import managers
 from .consumers import *
-import random
 from django.utils import timezone
 from .exceptions import Notification
 
@@ -402,7 +401,6 @@ class Match(models.Model):
             winner_elo = a if result else b
             loser_elo = b if result else a
             elo = int(k / (1 + 10 ** ((winner_elo - loser_elo) / 400)))
-            print (elo)
             return elo
         
         def updated_elo(prev_elo, elo, result):

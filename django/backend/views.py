@@ -5,16 +5,11 @@ from django.views.decorators.http import require_http_methods
 from django.utils.translation import gettext_lazy as _
 from django.http import HttpResponse
 from django.urls import reverse, reverse_lazy, translate_url
-from django.db import models
 from django.contrib.auth.decorators import login_required
 from django.contrib import auth
-from django.views.decorators.csrf import csrf_exempt
-from django.http import JsonResponse
-from .managers import CustomUserManager
 from .forms import RegistrationForm, EditProfileForm
 from .consumers import *
 from .exceptions import Notification
-import os
 import requests
 import transcendence.settings as settings
 
@@ -304,7 +299,6 @@ def tournament_create(request):
 		game = request.POST["game"],
 		tournament_mode = request.POST["tournament_mode"],
 	)
-	print(tournament)
 	return redirect(reverse("backend:tournament",
 							kwargs = {"tournament_id": tournament.id}) + "?SPA=True")
 
