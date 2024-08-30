@@ -18,7 +18,7 @@ def notifier(view):
 		try:
 			return view(*args, **kwargs)
 		except Notification as e:
-			return HttpResponse(str(e), status=299)
+			return HttpResponse(str(e), status=400)
 	return decorated_view
 
 def login_401(view):
