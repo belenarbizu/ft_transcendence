@@ -11,7 +11,6 @@ RUN pip install --upgrade pip && \
 
 COPY . /app/
 
-EXPOSE 8000
+EXPOSE 8001
 
 CMD ["/bin/bash", "init.sh"]
-

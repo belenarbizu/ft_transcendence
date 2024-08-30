@@ -3,7 +3,7 @@ services:
   daphne:
     build:
       context: ./django
-      dockerfile: Dockerfile.daphne
+      dockerfile: Dockerfile
     container_name: 'daphne'
     volumes:
       - ./django:/app
