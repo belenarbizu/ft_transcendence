@@ -9,8 +9,7 @@ services:
       - ./django:/app
       - static_db:/app/static
     depends_on:
-      database:
-        condition: service_healthy
+      - database
     networks:
       - app_network
     env_file:
@@ -19,20 +18,10 @@ services:
   database:
     image: postgres:latest
     container_name: 'database'
-    environment:
-      POSTGRES_USER: myuser
-      POSTGRES_PASSWORD: mypassword
-      POSTGRES_DB: mydatabase
-    user: postgres
     volumes:
       - postgres_data:/var/lib/postgresql/data
     networks:
       - app_network
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
     env_file:
       - .env
 
