@@ -13,7 +13,7 @@
                 {% csrf_token %}
 
                     <div class="row mb-3">
-                        <label for="inputGameType" class="col-sm-4 col-form-label">{% translate 'Select the game' %}</label>
+                        <p>{% translate 'Select the game' %}</p>
                         <div class="col-sm-8 mt-2">
                                 <div class="form-check">
                                     <input class="form-check-input" type="radio" name="game" id="radioPong" value="po" checked>
@@ -31,7 +31,7 @@
                     </div>
 
                     <div class="row mb-3">
-                        <label for="inputGameType" class="col-sm-4 col-form-label">{% translate 'Select your opponent' %}</label>
+                        <p>{% translate 'Select your opponent' %}</p>
                         <div class="col-sm-8 mt-2">
                             <div class="form-check">
                                 <input class="form-check-input" type="radio" name="mode" id="radioPartner" value="lo" onclick="update_play_form();" checked>

@@ -12,7 +12,7 @@
               <form spa hide push enctype="multipart/form-data" method="POST" action="{% url 'backend:edit_profile' %}">
                 {% csrf_token %}
                 <div class="mb-3">
-                  <label for="exampleFormControlInput1" class="form-label">{% translate 'Preferred language' %}</label>
+                  <p>{% translate 'Preferred language' %}</p>
                   <div class="d-flex">
                     <div class="form-check ms-1">
                       <input class="form-check-input" type="radio" name="preferred_language" id="languageEs" value="es" {% if user.preferred_language == "es" %} checked {% endif %}>
