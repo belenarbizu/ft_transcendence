@@ -12,6 +12,8 @@ services:
         condition: service_healthy
     networks:
       - app_network
+    env_file:
+      - .env
 
   daphne:
     build:
@@ -22,6 +24,8 @@ services:
       - django
     networks:
       - app_network
+    env_file:
+      - .env
 
   database:
     image: postgres:latest
@@ -39,6 +43,8 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    env_file:
+      - .env
 
   nginx:
     build: ./nginx
@@ -51,6 +57,8 @@ services:
       - static_db:/app/static
     networks:
       - app_network
+    env_file:
+      - .env
 
 volumes:
   postgres_data:
