@@ -1,27 +1,16 @@
 services:
-  django:
-    build: 
-      context: ./django
-      dockerfile: Dockerfile
-    container_name: 'django'
-    volumes:
-      - ./django:/app
-      - static_db:/app/static
-    depends_on:
-      database:
-        condition: service_healthy
-    networks:
-      - app_network
-    env_file:
-      - .env
 
   daphne:
     build:
       context: ./django
       dockerfile: Dockerfile.daphne
     container_name: 'daphne'
+    volumes:
+      - ./django:/app
+      - static_db:/app/static
     depends_on:
-      - django
+      database:
+        condition: service_healthy
     networks:
       - app_network
     env_file:
@@ -34,12 +23,13 @@ services:
       POSTGRES_USER: myuser
       POSTGRES_PASSWORD: mypassword
       POSTGRES_DB: mydatabase
+    user: postgres
     volumes:
       - postgres_data:/var/lib/postgresql/data
     networks:
       - app_network
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready"]
+      test: ["CMD-SHELL", "pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}"]
       interval: 10s
       timeout: 5s
       retries: 5
