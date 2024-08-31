@@ -189,7 +189,7 @@ def send_message(request):
 	ChatMessage.objects.send_message(
 		sender = request.user,
 		recipient = user,
-		message = request.POST.get('message', '')
+		message = request.POST.get('message', '')[:500]
 		)
 	data = {
 		'messages': ChatMessage.objects.between(user, request.user).ordered(),
@@ -256,7 +256,7 @@ def tournament_disqualify_competitor(request, tournament_id):
 def tournament_register_competitor(request, tournament_id):
 	tournament = get_object_or_404(Tournament, id = tournament_id)
 	Competitor.objects.register_competitor(
-		tournament, request.user, request.POST.get("alias", ""))
+		tournament, request.user, request.POST.get("alias", "")[:50])
 	return redirect(reverse("backend:tournament",
 		kwargs={'tournament_id':tournament_id}) + "?SPA=True")
 
@@ -297,8 +297,8 @@ def tournament_list(request):
 def tournament_create(request):
 	tournament = Tournament.objects.create(
 		owner = request.user,
-		name = request.POST["name"],
-		description = request.POST["description"],
+		name = request.POST["name"][:120],
+		description = request.POST["description"][:500],
 		game = request.POST["game"],
 		tournament_mode = request.POST["tournament_mode"],
 	)
@@ -485,8 +485,8 @@ def login_42(request):
 @login_401
 def modal_play(request):
 	game = request.POST.get("game")
-	alias_home = request.POST.get("alias_home")
-	alias_guest = request.POST.get("alias_guest")
+	alias_home = request.POST.get("alias_home")[:50]
+	alias_guest = request.POST.get("alias_guest")[:50]
 	mode = request.POST.get("mode", "lo")
 	if mode == "matchmaking":
 		return redirect(reverse("backend:matchmaking_start", kwargs={"game": game}) + "?SPA=True")

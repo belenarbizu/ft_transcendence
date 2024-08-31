@@ -86,7 +86,7 @@ class MatchQuerySet(models.QuerySet):
         return self.prefetch_related('home', 'guest', 'home__user', 'guest__user')
 
     def competitive(self):
-        return self.with_users().filter(mode = "re")
+        return self.with_users().filter(mode = "re").order_by('-date')
     
     def losses_of(self, user, game):
         return self.competitive().finished().of_game(game).played_by(user).lost_by(user).count()

@@ -20,7 +20,7 @@ msgstr ""
 
 #: backend/forms.py:10
 msgid "Invalid username"
-msgstr ""
+msgstr "Nombre de usuario no valido"
 
 #: backend/managers.py:68
 msgid "sent you a message"
@@ -91,7 +91,7 @@ msgid "The tournament is being played"
 msgstr "El torneo se está jugando"
 
 #: backend/models.py:26
-msgid "The tournamen ended"
+msgid "The tournament ended"
 msgstr "El torneo acabó"
 
 #: backend/models.py:30

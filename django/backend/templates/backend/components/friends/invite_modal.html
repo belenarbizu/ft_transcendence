@@ -1,19 +1,18 @@
 {% load i18n %}
 
-<div class="modal fade" id="invitationModal" tabindex="-1" aria-labelledby="invitationModalLabel" aria-hidden="true">
+<div class="modal fade" id="invitationModal" tabindex="-1">
   <div class="modal-dialog modal-lg">
     <div class="modal-content" style="height: 350px;">
       <div class="modal-header">
         <h1 class="modal-title fs-5" id="exampleModalLabel">
           {% translate 'Invite friend' %}
         </h1>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
       <div class="modal-header">
         <form spa action="{% url 'backend:uninvited_users' %}" method="POST" target=".invitation_list_body" autocomplete="off" class="w-100">
           {% csrf_token %}
-          <input spa type="text" name="username" class="form-control w-100" placeholder="{% translate 'username' %}"
-            aria-label="{% translate 'username' %}" aria-describedby="button-addon2">
+          <input spa type="text" name="username" class="form-control w-100" placeholder="{% translate 'username' %}">
         </form>
       </div>
       <div class="card-body table-responsive p-0">

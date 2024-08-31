@@ -8,8 +8,7 @@
         <form spa action="{% url 'backend:tournament_add_competitor' tournament.id %}" method="POST" autocomplete="off">
             {% csrf_token %}
             <div class="input-group">
-                <input chat type="text" name="alias" class="form-control" placeholder="{% translate 'alias' %}"
-                    aria-label="{% translate 'message' %}" aria-describedby="button-addon2">
+                <input chat type="text" name="alias" class="form-control" placeholder="{% translate 'alias' %}">
                 <button type="submit" class="btn btn-primary" type="button" id="button-addon2">
                     {% translate 'Add new competitor' %}
                 </button>
@@ -32,8 +31,7 @@
                 <form spa action="{% url 'backend:tournament_add_competitor' tournament.id %}" method="POST" autocomplete="off">
                     {% csrf_token %}
                     <div class="input-group mx-1">
-                        <input chat type="text" name="alias" class="form-control" placeholder="{% translate 'alias' %}"
-                            aria-label="{% translate 'message' %}" aria-describedby="button-addon2">
+                        <input chat type="text" name="alias" class="form-control" placeholder="{% translate 'alias' %}">
                         <button type="submit" class="btn btn-primary" type="button" id="button-addon2">
                             {% translate 'Join this tournament!' %}
                         </button>

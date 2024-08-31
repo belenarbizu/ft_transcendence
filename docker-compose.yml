@@ -1,44 +1,29 @@
 services:
-  django:
-    build: 
-      context: ./django
-      dockerfile: Dockerfile
-    container_name: 'django'
-    volumes:
-      - ./django:/app
-      - static_db:/app/static
-    depends_on:
-      database:
-        condition: service_healthy
-    networks:
-      - app_network
 
   daphne:
     build:
       context: ./django
-      dockerfile: Dockerfile.daphne
+      dockerfile: Dockerfile
     container_name: 'daphne'
+    volumes:
+      - ./django:/app
+      - static_db:/app/static
     depends_on:
-      - django
+      - database
     networks:
       - app_network
+    env_file:
+      - .env
 
   database:
     image: postgres:latest
     container_name: 'database'
-    environment:
-      POSTGRES_USER: myuser
-      POSTGRES_PASSWORD: mypassword
-      POSTGRES_DB: mydatabase
     volumes:
       - postgres_data:/var/lib/postgresql/data
     networks:
       - app_network
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+    env_file:
+      - .env
 
   nginx:
     build: ./nginx
@@ -51,6 +36,8 @@ services:
       - static_db:/app/static
     networks:
       - app_network
+    env_file:
+      - .env
 
 volumes:
   postgres_data:
