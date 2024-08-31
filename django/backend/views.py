@@ -256,7 +256,7 @@ def tournament_disqualify_competitor(request, tournament_id):
 def tournament_register_competitor(request, tournament_id):
 	tournament = get_object_or_404(Tournament, id = tournament_id)
 	Competitor.objects.register_competitor(
-		tournament, request.user, request.POST.get("alias", ""))[:50]
+		tournament, request.user, request.POST.get("alias", "")[:50])
 	return redirect(reverse("backend:tournament",
 		kwargs={'tournament_id':tournament_id}) + "?SPA=True")
 
