@@ -189,7 +189,7 @@ def send_message(request):
 	ChatMessage.objects.send_message(
 		sender = request.user,
 		recipient = user,
-		message = request.POST.get('message', '')
+		message = request.POST.get('message', '')[:500]
 		)
 	data = {
 		'messages': ChatMessage.objects.between(user, request.user).ordered(),
@@ -485,8 +485,8 @@ def login_42(request):
 @login_401
 def modal_play(request):
 	game = request.POST.get("game")
-	alias_home = request.POST.get("alias_home")
-	alias_guest = request.POST.get("alias_guest")
+	alias_home = request.POST.get("alias_home")[:50]
+	alias_guest = request.POST.get("alias_guest")[:50]
 	mode = request.POST.get("mode", "lo")
 	if mode == "matchmaking":
 		return redirect(reverse("backend:matchmaking_start", kwargs={"game": game}) + "?SPA=True")
