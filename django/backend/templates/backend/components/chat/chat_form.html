@@ -2,7 +2,7 @@
 
 <div class="modal-header">
     <h1 class="modal-title fs-5" id="exampleModalLabel">{% translate 'Chat with' %} {{ user.username }}</h1>
-    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
 </div>
 <div class="modal-body col">
     <div class="container">
@@ -26,8 +26,7 @@
         {% csrf_token %}
         <input name="username" type="hidden" value="{{ user.username }}" />
         <div class="input-group mb-3">
-            <input chat type="text" id="message-input-id" name="message" class="form-control" placeholder="{% translate 'message' %}"
-                aria-label="{% translate 'message' %}" aria-describedby="button-addon2">
+            <input chat type="text" id="message-input-id" name="message" class="form-control" placeholder="{% translate 'message' %}">
             <button type="submit" class="btn btn-primary" type="button" id="button-addon2">
                 {% translate 'Send' %}
             </button>

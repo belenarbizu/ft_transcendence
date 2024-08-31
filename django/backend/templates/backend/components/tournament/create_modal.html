@@ -6,7 +6,7 @@
         <div class="modal-content chat-modal">
             <div class="modal-header">
                 <h1 class="modal-title fs-5">{% translate 'Create tournament' %}</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body col-12">
                 <form spa method="POST" action="{% url 'backend:tournament_create' %}" hide autocomplete="off" push>

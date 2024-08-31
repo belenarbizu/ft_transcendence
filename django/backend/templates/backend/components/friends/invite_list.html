@@ -14,8 +14,7 @@
                 {% csrf_token %}
                 <input name="next" type="hidden" value="{% url 'backend:user' request.user.username %}" />
                 <input type="hidden" name="username" value="{{ user.username }}" class="form-control"
-                    placeholder="{% translate 'username' %}" aria-label="{% translate 'username' %}"
-                    aria-describedby="button-addon2">
+                    placeholder="{% translate 'username' %}">
                 <button spa class="btn btn-sm btn-outline-primary w-100" type="submit" id="button-addon2">
                     {% translate 'Invite' %} {{ user.username }}
                 </button>
