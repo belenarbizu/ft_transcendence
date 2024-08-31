@@ -297,8 +297,8 @@ def tournament_list(request):
 def tournament_create(request):
 	tournament = Tournament.objects.create(
 		owner = request.user,
-		name = request.POST["name"],
-		description = request.POST["description"],
+		name = request.POST["name"][:120],
+		description = request.POST["description"][:500],
 		game = request.POST["game"],
 		tournament_mode = request.POST["tournament_mode"],
 	)
