@@ -15,3 +15,5 @@ Pirates game:
 
 Tournament:
 ![image](https://github.com/user-attachments/assets/90a716b4-d528-4e7b-93d8-e40e919825ff)
+
+42 Project made with plopez-b, fgalan-r, aoropeza, akent-go
